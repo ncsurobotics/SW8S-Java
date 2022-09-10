@@ -11,6 +11,14 @@ plugins {
     id 'application'
 }
 
+java {
+    // Set Java version to 11
+    // https://docs.gradle.org/current/userguide/toolchains.html
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
