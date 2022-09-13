@@ -22,6 +22,8 @@ public abstract class Mission {
      * <p>
      * Extension isn't expected.
      * Guarantees all Mission objects use a thread pool.
+     *
+     * @param pool A non-filled thread pool
      */
     public Mission(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
