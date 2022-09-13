@@ -3,12 +3,23 @@
  */
 package org.aquapackrobotics.sw8s;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import org.aquapackrobotics.sw8s.missions.Mission;
+import org.aquapackrobotics.sw8s.missions.AutoMission;
+
 public class App {
+
+    static final int POOLSIZE = 1;
+
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        Mission mission = (Mission) new AutoMission(pool);
+
+        mission.run();
     }
 }
