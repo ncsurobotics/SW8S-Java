@@ -32,7 +32,7 @@ public abstract class Mission {
      * <p>
      * Proceeds through all states in graph.
      */
-    void run() {
+    public void run() {
         Object currentState = initialState();
         while (currentState != null) {
             executeState(currentState);
@@ -43,7 +43,7 @@ public abstract class Mission {
     /**
      * Returns the machine's starting state.
      */
-    abstract Object initialState();
+    protected abstract Object initialState();
 
     /**
      * Wraps running the code in a state.
@@ -52,7 +52,7 @@ public abstract class Mission {
      *
      * @param state current machine state
      */
-    abstract void executeState(Object state);
+    protected abstract void executeState(Object state);
 
     /**
      * Computes the next machine state.
@@ -61,5 +61,5 @@ public abstract class Mission {
      *
      * @param state current machine state
      */
-    abstract Object nextState(Object state);
+    protected abstract Object nextState(Object state);
 }
