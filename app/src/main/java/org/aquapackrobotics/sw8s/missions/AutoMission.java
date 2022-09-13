@@ -2,7 +2,7 @@ package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.aquapackrobotics.sw8s.missions.Mission;
+import org.aquapackrobotics.sw8s.states.State;
 
 /**
  * Competition mission, fully autonomous.
@@ -15,18 +15,18 @@ public class AutoMission extends Mission {
 
     // TODO: implement
     @Override
-    protected Object initialState() {
+    protected State initialState() {
         return null;
     }
 
     // TODO: implement
     @Override
-    protected void executeState(Object state) {
+    protected void executeState(State state) {
     }
 
     // TODO: implement
     @Override
-    protected Object nextState(Object state) {
+    protected State nextState(State state) {
         return null;
     }
 }
