@@ -70,6 +70,16 @@ public class SimWindow extends JFrame {
         }
     }
 
+    public double getXVel() { return robotXVel; }
+
+    public double getYVel() { return robotYVel; }
+
+    public double getYawVel() { return robotYawVel; }
+
+    public double getXPos() { return robotXPos; }
+
+    public double getYPos() { return robotYPos; }
+
     public double getRobotAngle(){
         return robotAngle;
     }
