@@ -20,7 +20,7 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return new ForwardYState(pool, sim, 300);
+        return new ForwardYState(pool, sim, -400);
     }
 
     // TODO: implement
