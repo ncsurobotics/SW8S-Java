@@ -15,7 +15,9 @@ public class ForwardState extends SimState {
 
     // TODO: implement
     public void onEnter() {
-    	
+    	window.setRobotSpeed(0.0, 0.0, 0.0);
+    	initialX = window.getXPos();
+    	initialY = window.getYPos();
     }
 
     // TODO: implement
