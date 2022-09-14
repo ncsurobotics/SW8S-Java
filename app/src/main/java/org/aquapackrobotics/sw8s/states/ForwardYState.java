@@ -32,6 +32,7 @@ public class ForwardYState extends SimState {
 
     // TODO: implement
     public void onExit() {
+    	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
     // TODO: implement
