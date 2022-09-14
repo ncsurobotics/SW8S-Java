@@ -22,7 +22,7 @@ public class StrokeOneState extends SimState {
         sim.setRobotSpeed(0, -1, 0);
         System.out.println(sim.getYPos());
         if (sim.getYPos() < 300.0) {
-            // sim.setRobotSpeed(0, 0, -0.1);
+            sim.setRobotSpeed(0, 0, 0);
             return true;
         }
         return false;
@@ -35,7 +35,7 @@ public class StrokeOneState extends SimState {
 
     @Override
     public State nextState() {
-        return null;
+        return new StrokeTwoState(pool, sim);
     }
     
 }
