@@ -2,7 +2,7 @@ package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.aquapackrobotics.sw8s.states.ForwardState;
+import org.aquapackrobotics.sw8s.states.ForwardYState;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
@@ -20,7 +20,7 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return new ForwardState(pool, sim);
+        return new ForwardYState(pool, sim);
     }
 
     // TODO: implement

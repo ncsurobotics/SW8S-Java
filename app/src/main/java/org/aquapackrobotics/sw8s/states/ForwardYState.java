@@ -4,25 +4,23 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
-public class ForwardState extends SimState {
+public class ForwardYState extends SimState {
 	
-	double initialX;
 	double initialY;
 	
-    public ForwardState(ScheduledThreadPoolExecutor pool, SimWindow sim) {
+    public ForwardYState(ScheduledThreadPoolExecutor pool, SimWindow sim) {
         super(pool, sim);
     }
 
     // TODO: implement
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
-    	initialX = window.getXPos();
     	initialY = window.getYPos();
     }
 
     // TODO: implement
     public boolean onPeriodic() {
-        return false;
+    	return false;
     }
 
     // TODO: implement
