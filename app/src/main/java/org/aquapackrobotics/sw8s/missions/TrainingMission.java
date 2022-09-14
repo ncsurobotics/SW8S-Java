@@ -26,6 +26,9 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state) {
+    	state.onEnter();
+    	while(state.onPeriodic()) {}
+    	state.onExit();
     }
 
     // TODO: implement
