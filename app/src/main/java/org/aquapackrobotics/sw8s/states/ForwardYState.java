@@ -37,6 +37,6 @@ public class ForwardYState extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return new RotateState(pool, window);
+        return new RotateState(pool, window, 100);
     }
 }

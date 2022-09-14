@@ -6,8 +6,11 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
 public class RotateState extends SimState {
 	
-    public RotateState(ScheduledThreadPoolExecutor pool, SimWindow sim) {
+	double targetRadius;
+	
+    public RotateState(ScheduledThreadPoolExecutor pool, SimWindow sim, double radius) {
         super(pool, sim);
+        targetRadius = radius;
     }
 
     // TODO: implement
