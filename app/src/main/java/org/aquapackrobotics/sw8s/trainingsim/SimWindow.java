@@ -49,7 +49,7 @@ public class SimWindow extends JFrame {
         robotYVel = 0;
         robotYawVel = 0;
         robotXPos = fieldWidth / 2;
-        robotYPos = fieldHeight - robotHeight / 2 - 5;
+        robotYPos = fieldHeight / 2;
         robotAngle = 0;
         waypoints = new HashMap<>();
 
