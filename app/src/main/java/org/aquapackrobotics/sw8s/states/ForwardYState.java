@@ -8,6 +8,7 @@ public class ForwardYState extends SimState {
 	
 	double initialY;
 	double targetDistance;
+	final double kError = 0.5;
 	
     public ForwardYState(ScheduledThreadPoolExecutor pool, SimWindow sim, double distance) {
         super(pool, sim);
@@ -22,7 +23,11 @@ public class ForwardYState extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-    	return false;
+    	window.setRobotSpeed(0.0, -0.5, 0.0);
+    	if (Math.abs(window.getYPos() - (initialY + targetDistance)) < kError)
+    		return false;
+    	else
+    		return true;
     }
 
     // TODO: implement
