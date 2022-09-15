@@ -19,6 +19,7 @@ public class TrainingMission extends Mission {
 
     @Override
     protected State initialState() {
+        // All classes in this training mission use dead reckoning
         return new RightLineState(pool, sim);
     }
 
