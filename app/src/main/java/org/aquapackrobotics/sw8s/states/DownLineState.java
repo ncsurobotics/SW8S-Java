@@ -6,8 +6,15 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class DownLineState extends SimState {
 
+    private double startX;
+    private double startY;
+
     public DownLineState(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
+
+        startX = window.getXPos();
+        startY = window.getYPos();
+
         onEnter();
     }
 
@@ -29,6 +36,6 @@ public class DownLineState extends SimState {
 
     @Override
     public State nextState() {
-        return new SemiCircleState(pool, window);
+        return new SemiCircleState(pool, window, startX, startY);
     }
 }
