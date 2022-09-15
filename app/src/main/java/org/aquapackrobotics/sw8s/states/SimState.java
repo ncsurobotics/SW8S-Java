@@ -14,4 +14,8 @@ public abstract class SimState extends State {
         super(pool);
         this.window = window;
     }
+
+    protected void ResetMomentum() {
+        window.setRobotSpeed(0, 0, 0);
+    }
 }

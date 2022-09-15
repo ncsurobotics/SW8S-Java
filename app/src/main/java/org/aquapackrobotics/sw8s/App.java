@@ -19,7 +19,7 @@ public class App {
 
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        Mission mission = (Mission) new TrainingMission(pool);
+        Mission mission = new TrainingMission(pool);
 
         mission.run();
     }
