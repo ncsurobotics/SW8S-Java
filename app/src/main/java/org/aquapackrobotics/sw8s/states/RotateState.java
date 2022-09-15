@@ -118,6 +118,6 @@ public class RotateState extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new ForwardXState(pool, window, -targetRadius);
     }
 }
