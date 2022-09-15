@@ -23,7 +23,7 @@ public class ForwardYState extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-    	window.setRobotSpeed(0.0, -0.5, 0.0);
+    	window.setRobotSpeed(0.0, -1.0, 0.0);
     	if (Math.abs(window.getYPos() - (initialY + targetDistance)) < kError)
     		return false;
     	else
