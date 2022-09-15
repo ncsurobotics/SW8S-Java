@@ -19,7 +19,6 @@ public class RotateState extends SimState {
         targetRadius = radius;
     }
 
-    // TODO: implement
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     	initialX = window.getXPos();
@@ -111,12 +110,10 @@ public class RotateState extends SimState {
     	return true;
     }
 
-    // TODO: implement
     public void onExit() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
-    // TODO: implement
     public State nextState() {
         return new ForwardXState(pool, window, -targetRadius);
     }

@@ -17,13 +17,11 @@ public class TrainingMission extends Mission {
         sim = new SimWindow();
     }
 
-    // TODO: implement
     @Override
     protected State initialState() {
         return new ForwardYState(pool, sim, -400);
     }
 
-    // TODO: implement
     @Override
     protected void executeState(State state) {
     	state.onEnter();
@@ -31,7 +29,6 @@ public class TrainingMission extends Mission {
     	state.onExit();
     }
 
-    // TODO: implement
     @Override
     protected State nextState(State state) {
         return state.nextState();

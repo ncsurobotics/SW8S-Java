@@ -15,14 +15,12 @@ public class ForwardXState extends SimState {
         targetDistance = distance;        
     }
 
-    // TODO: implement
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     	initialX = window.getXPos();
     	System.out.println(targetDistance);
     }
 
-    // TODO: implement
     public boolean onPeriodic() {
     	window.setRobotSpeed(Math.signum(targetDistance) * 1.0, 0.0, 0.0);
     	if (Math.abs(window.getXPos() - (initialX + targetDistance)) < kError)
@@ -31,12 +29,10 @@ public class ForwardXState extends SimState {
     		return true;
     }
 
-    // TODO: implement
     public void onExit() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
-    // TODO: implement
     public State nextState() {
     	return null;
     }

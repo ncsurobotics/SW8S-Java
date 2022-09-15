@@ -15,13 +15,11 @@ public class ForwardYState extends SimState {
         targetDistance = distance;
     }
 
-    // TODO: implement
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     	initialY = window.getYPos();
     }
 
-    // TODO: implement
     public boolean onPeriodic() {
     	window.setRobotSpeed(0.0, -1.0, 0.0);
     	if (Math.abs(window.getYPos() - (initialY + targetDistance)) < kError)
@@ -30,12 +28,10 @@ public class ForwardYState extends SimState {
     		return true;
     }
 
-    // TODO: implement
     public void onExit() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
-    // TODO: implement
     public State nextState() {
         return new RotateState(pool, window, 100);
     }
