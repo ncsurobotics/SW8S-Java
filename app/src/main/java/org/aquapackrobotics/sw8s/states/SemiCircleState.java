@@ -4,9 +4,9 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-public class DownLineState extends SimState {
+public class SemiCircleState extends SimState {
 
-    public DownLineState(ScheduledThreadPoolExecutor pool, SimWindow window) {
+    public SemiCircleState(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
         onEnter();
     }
@@ -16,9 +16,6 @@ public class DownLineState extends SimState {
 
     @Override
     public boolean onPeriodic() {
-        window.setRobotSpeed(0, 1, 0);
-        this.drawTrace(750, 4);
-
         return true;
     }
 
@@ -29,6 +26,6 @@ public class DownLineState extends SimState {
 
     @Override
     public State nextState() {
-        return new SemiCircleState(pool, window);
+        return null;
     }
 }
