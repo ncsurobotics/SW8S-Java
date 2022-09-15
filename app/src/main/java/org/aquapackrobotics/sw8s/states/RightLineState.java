@@ -39,5 +39,5 @@ public class RightLineState extends SimState {
     }
 
     @Override
-    public State nextState() { return null; }
+    public State nextState() { return new DownLineState(pool, window); }
 }
