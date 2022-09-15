@@ -19,11 +19,16 @@ public class ForwardXState extends SimState {
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     	initialX = window.getXPos();
+    	System.out.println(targetDistance);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
-    	return false;
+    	window.setRobotSpeed(Math.signum(targetDistance) * 1.0, 0.0, 0.0);
+    	if (Math.abs(window.getXPos() - (initialX + targetDistance)) < kError)
+    		return false;
+    	else
+    		return true;
     }
 
     // TODO: implement
