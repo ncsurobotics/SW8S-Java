@@ -21,7 +21,7 @@ public class AutoMission extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) {
+    protected boolean executeState(State state) { return false;
     }
 
     // TODO: implement

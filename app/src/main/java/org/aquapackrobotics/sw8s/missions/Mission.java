@@ -39,8 +39,9 @@ public abstract class Mission {
     public void run() {
         State currentState = initialState();
         while (currentState != null) {
-            executeState(currentState);
-            currentState = nextState(currentState);
+            if (executeState(currentState)) {
+                currentState = nextState(currentState);
+            }
         }
     }
 
@@ -56,7 +57,7 @@ public abstract class Mission {
      *
      * @param state current machine state
      */
-    protected abstract void executeState(State state);
+    protected abstract boolean executeState(State state);
 
     /**
      * Computes the next machine state.

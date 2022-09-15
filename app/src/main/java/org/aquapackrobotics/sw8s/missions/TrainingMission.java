@@ -24,8 +24,8 @@ public class TrainingMission extends Mission {
     }
 
     @Override
-    protected void executeState(State state) {
-        state.onPeriodic();
+    protected boolean executeState(State state) {
+        return state.onPeriodic();
     }
 
     @Override
