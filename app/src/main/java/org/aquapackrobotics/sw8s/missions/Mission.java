@@ -40,6 +40,7 @@ public abstract class Mission {
         State currentState = initialState();
         while (currentState != null) {
             if (executeState(currentState)) {
+                currentState.onExit();
                 currentState = nextState(currentState);
             }
         }
