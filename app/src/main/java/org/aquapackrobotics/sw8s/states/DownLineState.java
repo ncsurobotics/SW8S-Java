@@ -14,16 +14,21 @@ public class DownLineState extends SimState {
     @Override
     public void onEnter() {
 
+
+
     }
 
     @Override
     public boolean onPeriodic() {
-        return false;
+        window.setRobotSpeed(0, 1, 0);
+        this.drawTrace(750, 4);
+
+        return true;
     }
 
     @Override
     public void onExit() {
-
+        ResetMomentum();
     }
 
     @Override

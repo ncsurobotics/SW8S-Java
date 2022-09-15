@@ -28,9 +28,8 @@ public class TrainingMission extends Mission {
         state.onPeriodic();
     }
 
-    // TODO: implement
     @Override
     protected State nextState(State state) {
-        return null;
+        return state.nextState();
     }
 }
