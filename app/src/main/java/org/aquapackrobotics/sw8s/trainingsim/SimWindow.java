@@ -165,7 +165,7 @@ public class SimWindow extends JFrame {
             }
             if(robotYawVel < targetYawVel){
                 robotYawVel = Math.min(robotYawVel + accelRate, targetYawVel);
-            }else if(robotYVel > targetYawVel){
+            }else if(robotYawVel > targetYawVel){
                 robotYawVel = Math.max(robotYawVel - accelRate, targetYawVel);
             }
 
