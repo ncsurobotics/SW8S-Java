@@ -63,8 +63,16 @@ public class RotateState extends SimState {
     		yVelocity = -yVelocity;
     	}
     	
+    	//Calculate targetAngle
+    	double targetAngle = Math.toDegrees(Math.atan(yVelocity / xVelocity)) - 90;
+    	//If robot is going to P2 or P3, then adjusts angle to account for difference in atan() angles
+    	if (Math.signum(xVelocity) == 1.0)
+    		targetAngle = targetAngle - 180;
+    	double currentAngle = window.getRobotAngle();
+    	System.out.println(currentAngle);
+    	
     	//Sets robot speed with calculated velocities
-    	window.setRobotSpeed(xVelocity * kP, yVelocity * kP, 0.0);
+    	window.setRobotSpeed(xVelocity * kP, yVelocity * kP, (targetAngle - currentAngle));
     	
     	//If the robot has reached a point, this conditional switches to the next one (or exits if done)
     	if (Math.abs(window.getXPos() - targetX) < kError && Math.abs(window.getYPos() - targetY) < kError) {
