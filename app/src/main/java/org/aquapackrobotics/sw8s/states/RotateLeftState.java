@@ -21,7 +21,14 @@ public class RotateLeftState extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        return false;
+    	double yawSpeed = -2.0 * (window.getRobotAngle() - targetAngle);
+    	window.setRobotSpeed(0.0, 0.0, yawSpeed);
+    	
+    	if (Math.abs(window.getRobotAngle() - targetAngle) < kError)
+    		return false;
+    	else
+    		return true;
+    		
     }
 
     // TODO: implement
