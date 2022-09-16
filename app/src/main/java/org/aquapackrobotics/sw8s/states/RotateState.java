@@ -123,6 +123,6 @@ public class RotateState extends SimState {
     }
 
     public State nextState() {
-        return new ForwardXState(pool, window, -targetRadius);
+        return new RotateLeftState(pool, window);
     }
 }

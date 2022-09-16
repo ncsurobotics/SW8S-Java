@@ -44,6 +44,6 @@ public class ForwardYState extends SimState {
     
     //Returns an instance of RotateState with a radius of 100
     public State nextState() {
-        return new RotateState(pool, window, 100);
+        return new RotateLeftState(pool, window);
     }
 }
