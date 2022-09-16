@@ -19,8 +19,12 @@ public class RotateState extends SimState {
 	private double targetY;
 	//Radius of circle to "draw"
 	private double targetRadius;
+	//Holds position of X position of last waypoint to prevent duplicates
+	private int lastX = -1;
+	//Holds position of Y position of last waypoint to prevent duplicates
+	private int lastY = -1;
 	//Multiplier for setting velocities
-	private final double kP = 1.5;
+	private final double kP = 2.8;
 	//Minimum distance from target position to be considered done
 	private final double kError = 5.0;
 	
@@ -52,6 +56,17 @@ public class RotateState extends SimState {
      *         oP2o   
      */
     public boolean onPeriodic() {
+    	//Prevents duplicate waypoints
+    	if ((int)window.getXPos() != lastX || (int)window.getYPos() != lastY) {
+    		try {
+    			window.addWaypoint("Gtrace" + System.currentTimeMillis(), (int)window.getXPos(), (int)window.getYPos());
+    		}
+    		catch (Exception e) {}
+    	}
+    	
+    	lastX = (int)window.getXPos();
+    	lastY = (int)window.getYPos();
+    	
     	//Calculates xVelocity based on current point
     	double xVelocity;
     	if (targetX == initialX - targetRadius) //P1
