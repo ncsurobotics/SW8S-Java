@@ -14,7 +14,7 @@ public class RotateLeftState extends SimState {
 
     // TODO: implement
     public void onEnter() {
-    	
+    	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
     // TODO: implement
