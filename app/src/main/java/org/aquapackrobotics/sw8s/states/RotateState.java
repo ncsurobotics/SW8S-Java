@@ -4,6 +4,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
+/**
+ * Moves robot 3/4 of a circle with the given radius
+ */
 public class RotateState extends SimState {
 	
 	double initialX;
@@ -121,7 +124,8 @@ public class RotateState extends SimState {
     public void onExit() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
-
+    
+    //Returns an instance of RotateLeftState
     public State nextState() {
         return new RotateLeftState(pool, window);
     }
