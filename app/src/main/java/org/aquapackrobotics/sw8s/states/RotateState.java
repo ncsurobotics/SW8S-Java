@@ -79,7 +79,6 @@ public class RotateState extends SimState {
     	if (Math.signum(xVelocity) == 1.0)
     		targetAngle = targetAngle - 180;
     	double currentAngle = window.getRobotAngle();
-    	System.out.println(currentAngle);
     	
     	//Sets robot speed with calculated velocities
     	window.setRobotSpeed(xVelocity * kP, yVelocity * kP, (targetAngle - currentAngle));
@@ -87,16 +86,16 @@ public class RotateState extends SimState {
     	//If the robot has reached a point, this conditional switches to the next one (or exits if done)
     	if (Math.abs(window.getXPos() - targetX) < kError && Math.abs(window.getYPos() - targetY) < kError) {
     		if (targetX == initialX && targetY == initialY + targetRadius * 2) { //Switches to Point 3
-    			System.out.println("Switching to point 3");
+    			//System.out.println("Switching to point 3");
     			targetX = initialX + targetRadius;
     			targetY = initialY + targetRadius;
     		}
     		else if (targetX == initialX + targetRadius) { //Done with drawing part of circle, returns false
-    			System.out.println("Done");
+    			//System.out.println("Done");
     			return false;
     		}
     		else { //Switches to Point 2
-    			System.out.println("Switching to point 2");
+    			//System.out.println("Switching to point 2");
     			targetX = initialX;
     			targetY = initialY + targetRadius * 2;
     		}
