@@ -10,11 +10,11 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 public class ForwardYState extends SimState {
 	
 	//Initial Y position of the robot
-	double initialY;
+	private double initialY;
 	//Target distance to be traveled by the robot
-	double targetDistance;
+	private double targetDistance;
 	//Minimum distance from target position to be considered done
-	final double kError = 0.5;
+	private final double kError = 0.5;
 	
     public ForwardYState(ScheduledThreadPoolExecutor pool, SimWindow sim, double distance) {
         super(pool, sim);
