@@ -18,8 +18,7 @@ public class TrainingMission extends Mission {
 
     // TODO: implement
     @Override
-    protected State initialState() {
-    	//create new class and extent simstate
+    protected State initialState() {	
         return null;
     }
 
