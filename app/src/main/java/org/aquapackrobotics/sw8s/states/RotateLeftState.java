@@ -7,6 +7,7 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 public class RotateLeftState extends SimState {
 	
 	private final double kError = 1.0;
+	private double targetAngle;
 	
     public RotateLeftState(ScheduledThreadPoolExecutor pool, SimWindow sim) {
         super(pool, sim);
@@ -15,6 +16,7 @@ public class RotateLeftState extends SimState {
     // TODO: implement
     public void onEnter() {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
+    	targetAngle = window.getRobotAngle() - 90;
     }
 
     // TODO: implement
@@ -29,6 +31,6 @@ public class RotateLeftState extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return null;
+    	return null;
     }
 }
