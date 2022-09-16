@@ -11,6 +11,10 @@ public class ForwardXState extends SimState {
 	
 	//Initial X position of the robot
 	private double initialX;
+	//Holds position of X position of last waypoint to prevent duplicates
+	private int lastX = -1;
+	//Holds position of Y position of last waypoint to prevent duplicates
+	private int lastY = -1;
 	//Target distance to be traveled by the robot
 	private double targetDistance;
 	//Minimum distance from target position to be considered done
@@ -31,6 +35,18 @@ public class ForwardXState extends SimState {
      * Once robot is within kError of the target position, returns false to signal completion
      */
     public boolean onPeriodic() {
+    	//Prevents duplicate waypoints
+    	if ((int)window.getXPos() != lastX || (int)window.getYPos() != lastY) {
+    		try {
+    			window.addWaypoint("Gtrace" + System.currentTimeMillis(), (int)window.getXPos(), (int)window.getYPos());
+    		}
+    		catch (Exception e) {
+    			e.getMessage();
+    		}
+    	}
+    	
+    	lastX = (int)window.getXPos();
+    	lastY = (int)window.getYPos();
     	window.setRobotSpeed(Math.signum(targetDistance) * 1.0, 0.0, 0.0);
     	if (Math.abs(window.getXPos() - (initialX + targetDistance)) < kError)
     		return false;
