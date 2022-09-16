@@ -31,6 +31,11 @@ public class RotateLeftState extends SimState {
 
     // TODO: implement
     public State nextState() {
-    	return null;
+    	//If robot is facing left, returns an instance of RotateState
+    	//Else, returns an instance of ForwardXState
+    	if (targetAngle == -90)
+    		return new RotateState(pool, window, 100);
+    	else
+    		return new ForwardXState(pool, window, -100);
     }
 }
