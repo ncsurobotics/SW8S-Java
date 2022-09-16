@@ -61,7 +61,9 @@ public class RotateState extends SimState {
     		try {
     			window.addWaypoint("Gtrace" + System.currentTimeMillis(), (int)window.getXPos(), (int)window.getYPos());
     		}
-    		catch (Exception e) {}
+    		catch (Exception e) {
+    			e.getMessage();
+    		}
     	}
     	
     	lastX = (int)window.getXPos();
