@@ -9,13 +9,20 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
  */
 public class RotateState extends SimState {
 	
-	double initialX;
-	double initialY;
-	double targetX;
-	double targetY;
-	double targetRadius;
-	final double kP = 1.5;
-	final double kError = 5.0;
+	//Initial X position of the robot
+	private double initialX;
+	//Initial Y position of the robot
+	private double initialY;
+	//Target X position of the robot
+	private double targetX;
+	//Target Y position of the robot
+	private double targetY;
+	//Radius of circle to "draw"
+	private double targetRadius;
+	//Multiplier for setting velocities
+	private final double kP = 1.5;
+	//Minimum distance from target position to be considered done
+	private final double kError = 5.0;
 	
     public RotateState(ScheduledThreadPoolExecutor pool, SimWindow sim, double radius) {
         super(pool, sim);
