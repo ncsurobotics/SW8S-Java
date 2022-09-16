@@ -26,7 +26,7 @@ public class ForwardXState extends SimState {
     	initialX = window.getXPos();
     }
     
-    /*
+    /**
      * Moves robot at a speed of 1.0 to the target position.
      * Once robot is within kError of the target position, returns false to signal completion
      */
@@ -42,7 +42,7 @@ public class ForwardXState extends SimState {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
 
-    /*
+    /**
      * Returns null to signal completion of mission
      */
     public State nextState() {

@@ -4,7 +4,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
-/*
+/**
  * Moves robot a certain distance in the Y-axis
  */
 public class ForwardYState extends SimState {
@@ -26,7 +26,7 @@ public class ForwardYState extends SimState {
     	initialY = window.getYPos();
     }
     
-    /*
+    /**
      * Moves robot at a speed of 1.0 to the target position.
      * Once robot is within kError of the target position, returns false to signal completion
      */
@@ -42,7 +42,9 @@ public class ForwardYState extends SimState {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
     
-    //Returns an instance of RotateState with a radius of 100
+    /**
+     * Returns an instance of RotateState with a radius of 100
+     */
     public State nextState() {
         return new RotateLeftState(pool, window);
     }

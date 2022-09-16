@@ -39,7 +39,7 @@ public class RotateState extends SimState {
     	
     }
 
-    /*
+    /**
      * Robot goes to 3 different points to "draw" the outside of the G
      * The targetRadius field is used to make an imaginary circle on which the 3 points are found
      * P0 is the current position of the robot
@@ -131,7 +131,9 @@ public class RotateState extends SimState {
     	window.setRobotSpeed(0.0, 0.0, 0.0);
     }
     
-    //Returns an instance of RotateLeftState
+    /**
+     * Returns an instance of RotateLeftState
+     */
     public State nextState() {
         return new RotateLeftState(pool, window);
     }
