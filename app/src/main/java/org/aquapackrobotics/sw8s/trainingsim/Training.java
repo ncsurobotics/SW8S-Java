@@ -19,6 +19,11 @@ public class Training {
             double xSpeed = (System.currentTimeMillis() - startTime < 1750) ? 0.85 : 0.0;
             sim.setRobotSpeed(xSpeed, 0, 0);
             Thread.sleep(100);
+            
+            double ySpeed = (System.currentTimeMillis() - startTime > 1750 && System.currentTimeMillis() - startTime < 3750) ? 2 : 0.0;
+            sim.setRobotSpeed(0, ySpeed, 0);
+            Thread.sleep(100);
+            
         }
     }
 }
