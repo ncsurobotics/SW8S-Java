@@ -20,9 +20,9 @@ public class StateOne extends SimState{
 	@Override
 	public boolean onPeriodic() {
 		
-		window.setRobotSpeed(1, 0, 0);
-		
-		if (window.getXPos() < 400) {
+		window.setRobotSpeed(0, 0, 1);
+
+		if (window.getRobotAngle() < 90) {
 			return true;
 		}
 		return false;
