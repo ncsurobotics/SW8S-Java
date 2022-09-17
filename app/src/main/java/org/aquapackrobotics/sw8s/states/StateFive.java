@@ -4,9 +4,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
-public class StateFour extends SimState{
+public class StateFive extends SimState{
 
-	public StateFour(ScheduledThreadPoolExecutor pool, SimWindow window) {
+	public StateFive(ScheduledThreadPoolExecutor pool, SimWindow window) {
 		super(pool, window);
 		// TODO Auto-generated constructor stub
 	}
@@ -20,9 +20,9 @@ public class StateFour extends SimState{
 	@Override
 	public boolean onPeriodic() {
 		
-		window.setRobotSpeed(0, -1, 0);
+		window.setRobotSpeed(1, 0, 0);
 
-		if (window.getYPos() > 175) {
+		if (window.getXPos() < 425) {
 			return true;
 		}
 		return false;
@@ -35,7 +35,7 @@ public class StateFour extends SimState{
 
 	@Override
 	public State nextState() {
-		return new StateFive(pool, window);
+		return null;
 	}
 
 }
