@@ -15,10 +15,10 @@ public class Training {
         long startTime = System.currentTimeMillis();
 
         while(true){
-        	double yawSpeed = kp * (sim.getRobotAngle() - targetAngle);
-            double ySpeed = (System.currentTimeMillis() - startTime < 1750) ? -0.85 : 0.0;
-            sim.setRobotSpeed(0, ySpeed, -yawSpeed);
-            Thread.sleep(10);
+        	//double yawSpeed = kp * (sim.getRobotAngle() - targetAngle);
+            double xSpeed = (System.currentTimeMillis() - startTime < 1750) ? 0.85 : 0.0;
+            sim.setRobotSpeed(xSpeed, 0, 0);
+            Thread.sleep(100);
         }
     }
 }

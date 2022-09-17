@@ -11,8 +11,6 @@ public class InitState extends State {
 
     // TODO: implement
     public void onEnter() {
-    	SimWindow sim = new SimWindow();
-    	sim.setRobotSpeed(0, 0, 0);
     }
 
     // TODO: implement
