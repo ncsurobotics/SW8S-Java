@@ -1,13 +1,26 @@
 package org.aquapackrobotics.sw8s.constants;
 
-// import org.aquapackrobotics.sw8s.constants.Coordinate;
 
 public class GShapeConstants {
-    
-    public static Coordinate gCoord1 = new Coordinate(350, 100);
-    public static Coordinate gCoord2 = new Coordinate(100, 100);
-    public static Coordinate gCoord3 = new Coordinate(100, 400);
-    public static Coordinate gCoord4 = new Coordinate(350, 400);
-    public static Coordinate gCoord5 = new Coordinate(350, 250);
+
+    public static Coordinate[] coords = new Coordinate[]
+    {
+        new Coordinate(350, 100),
+        new Coordinate(100, 100),
+        new Coordinate(100, 400),
+        new Coordinate(350, 400),
+        new Coordinate(350, 250)
+    };
+
+    //Simple index function
+    public static int indexOf(Coordinate newCoord)
+    {
+        for(int i = 0; i < GShapeConstants.coords.length; i++)
+        {
+            if(GShapeConstants.coords[i].equals(newCoord)) return i;
+        }
+
+        return -1;
+    }
 
 }
