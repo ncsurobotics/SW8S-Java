@@ -5,11 +5,13 @@ public class GShapeConstants {
 
     public static Coordinate[] coords = new Coordinate[]
     {
-        new Coordinate(350, 100),
-        new Coordinate(100, 100),
-        new Coordinate(100, 400),
-        new Coordinate(350, 400),
-        new Coordinate(350, 250)
+        new Coordinate(400, 100),
+        new Coordinate(200, 100),
+        new Coordinate(200, 500),
+        new Coordinate(400, 500),
+        new Coordinate(400, 300),
+        new Coordinate(300, 300),
+
     };
 
     //Simple index function
