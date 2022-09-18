@@ -8,11 +8,7 @@ public class MoveEastState extends SimState {
     public MoveEastState(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
     }
-
-    public int getOrder() {
-        return 4;
-    }
-    
+ 
     // TODO: implement
     public void onEnter() {
     }

@@ -20,7 +20,7 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return new InitState();
+        return new InitState(pool, sim);
     }
 
     // TODO: implement
@@ -34,6 +34,6 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State nextState(State state) {
-        return null;
+        return state.nextState();
     }
 }

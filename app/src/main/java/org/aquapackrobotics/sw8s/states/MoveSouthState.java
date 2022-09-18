@@ -9,10 +9,6 @@ public class MoveSouthState extends SimState {
         super(pool, window);
     }
 
-    public int getOrder() {
-        return 3;
-    }
-
     // TODO: implement
     public void onEnter() {
     }
