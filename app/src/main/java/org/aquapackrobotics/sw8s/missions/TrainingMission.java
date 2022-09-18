@@ -20,7 +20,7 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return null;
+        return new InitState();
     }
 
     // TODO: implement
