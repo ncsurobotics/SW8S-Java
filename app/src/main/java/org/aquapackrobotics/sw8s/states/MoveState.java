@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.states;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.constants.Coordinate;
+import org.aquapackrobotics.sw8s.constants.GShapeConstants;
 import org.aquapackrobotics.sw8s.Controller;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
@@ -40,7 +41,16 @@ public class MoveState extends SimState {
 
     public State nextState()
     {
-        return null;
+        //Get the current coord index and check if there are more coords
+        int currentCoordIndex = GShapeConstants.indexOf(currentCoordinate());
+        if(currentCoordIndex - 1 == GShapeConstants.coords.length)
+        {
+            return null;
+        }
+        else
+        {
+            return new MoveState(pool, this.window, GShapeConstants.coords[currentCoordIndex + 1]);
+        }
     }
 
 }
