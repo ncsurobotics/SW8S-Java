@@ -16,7 +16,7 @@ public class MoveSouthState extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if (window.getYPos() == 500) {
+        if (window.getYPos() == 550) {
             return false;
         }
         return true;

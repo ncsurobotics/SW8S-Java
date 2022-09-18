@@ -16,7 +16,7 @@ public class MoveEastState extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if (window.getXPos() == 100) {
+        if (window.getXPos() == 50) {
             return false;
         }
         return true;
