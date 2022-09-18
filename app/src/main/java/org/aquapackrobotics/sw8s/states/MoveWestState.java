@@ -4,9 +4,13 @@ import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-public class MoveSouthState extends SimState {
-    public MoveSouthState(ScheduledThreadPoolExecutor pool, SimWindow window) {
+public class MoveWestState extends SimState {
+    public MoveWestState(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
+    }
+
+    public int getOrder() {
+        return 3;
     }
 
     // TODO: implement
