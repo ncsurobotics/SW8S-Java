@@ -1,10 +1,12 @@
 package org.aquapackrobotics.sw8s.states;
 
+import org.aquapackrobotics.sw8s.states.*;
+import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class MoveNorthState extends SimState {
-    public InitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public MoveNorthState(ScheduledThreadPoolExecutor pool, SimWindow window) {
+        super(pool, window);
     }
 
     // TODO: implement

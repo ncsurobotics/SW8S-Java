@@ -1,5 +1,6 @@
 package org.aquapackrobotics.sw8s.states;
 
+import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class InitState extends State {
@@ -22,6 +23,6 @@ public class InitState extends State {
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new MoveNorthState();
     }
 }
