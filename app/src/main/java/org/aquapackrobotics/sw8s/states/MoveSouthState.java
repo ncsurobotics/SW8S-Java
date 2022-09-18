@@ -11,19 +11,24 @@ public class MoveSouthState extends SimState {
 
     // TODO: implement
     public void onEnter() {
+        window.setRobotSpeed(0, 5, 0);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
-        return false;
+        if (window.getYPos() == 500) {
+            return false;
+        }
+        return true;
     }
 
     // TODO: implement
     public void onExit() {
+        window.setRobotSpeed(0, 0, 0);
     }
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new MoveWestState(pool, window);
     }
 }
