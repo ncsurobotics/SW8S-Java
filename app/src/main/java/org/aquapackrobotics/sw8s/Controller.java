@@ -43,14 +43,22 @@ public class Controller
     }
 
 
-    //Calculate x velocity based on current coordinate
+    /**
+     * Calculate x velocity based on current coordinate.
+     * @param newCurrent A Coordinate object with the robots current coords stored in it.
+     * @return The x velocity the robot should go.
+     */
     public double calculateXVel(Coordinate newCurrent)
     {
         current = newCurrent;
         return Math.min(xMaxVel, Math.max(-xMaxVel, xOffset()/2));
     }
 
-    //Calculate y velocity based on current coordinate
+    /**
+     * Calculate y velocity based on current coordinate
+     * @param newCurrent A Coordinate object with the robots current coords stored in it.
+     * @return The y velocity the robot should go.
+     */
     public double calculateYVel(Coordinate newCurrent)
     {
         current = newCurrent;
