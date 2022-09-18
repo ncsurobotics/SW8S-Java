@@ -1,11 +1,60 @@
 package org.aquapackrobotics.sw8s;
 
+import org.aquapackrobotics.sw8s.constants.Coordinate;
+
 public class Controller 
 {
-    public static double calculateVel(double disiredPos, double currentPos)
+
+    private Coordinate current;
+    private Coordinate goal;
+    
+    private double xMaxVel;
+    private double yMaxVel;
+
+    private double xOffset() { return goal.getXCoord() - current.getXCoord(); }
+    private double yOffset() { return goal.getYCoord() - current.getYCoord(); }
+
+    public Controller(Coordinate newCurrent, Coordinate newGoal)
     {
-        double difference = disiredPos - currentPos;
-        return Math.min(1, Math.max(-1, difference/2));
+
+        current = newCurrent;
+        goal = newGoal;
+
+        //Find the abs of each offset to compare them
+        double xAbsOffset = Math.abs(xOffset());
+        double yAbsOffset = Math.abs(yOffset());
+
+        //Calculate the max x and y velocities
+        if(xAbsOffset > yAbsOffset)
+        {
+            xMaxVel = 1;
+            yMaxVel = xOffset()/yOffset();
+        }
+        else if(yAbsOffset > xAbsOffset)
+        {
+            xMaxVel = xOffset()/yOffset();
+            yMaxVel = 1;
+        }
+        else
+        {
+            xMaxVel = 1;
+            yMaxVel = 1;
+        }
+    }
+
+
+    //Calculate x velocity based on current coordinate
+    public double calculateXVel(Coordinate newCurrent)
+    {
+        current = newCurrent;
+        return Math.min(xMaxVel, Math.max(-xMaxVel, xOffset()/2));
+    }
+
+    //Calculate y velocity based on current coordinate
+    public double calculateYVel(Coordinate newCurrent)
+    {
+        current = newCurrent;
+        return Math.min(yMaxVel, Math.max(-yMaxVel, yOffset()/2));
     }
 
 }
