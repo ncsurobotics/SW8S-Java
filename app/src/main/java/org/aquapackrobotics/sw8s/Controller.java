@@ -28,11 +28,11 @@ public class Controller
         if(xAbsOffset > yAbsOffset)
         {
             xMaxVel = 1;
-            yMaxVel = xOffset()/yOffset();
+            yMaxVel = Math.abs(xOffset()/yOffset());
         }
         else if(yAbsOffset > xAbsOffset)
         {
-            xMaxVel = xOffset()/yOffset();
+            xMaxVel = Math.abs(xOffset()/yOffset());
             yMaxVel = 1;
         }
         else
