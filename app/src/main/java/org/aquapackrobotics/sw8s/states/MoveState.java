@@ -4,7 +4,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.constants.Coordinate;
 import org.aquapackrobotics.sw8s.constants.GShapeConstants;
-import org.aquapackrobotics.sw8s.Controller;
+import org.aquapackrobotics.sw8s.controllers.Controller;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
 public class MoveState extends SimState {

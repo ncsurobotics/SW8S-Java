@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s;
+package org.aquapackrobotics.sw8s.controllers;
 
 import org.aquapackrobotics.sw8s.constants.Coordinate;
 
