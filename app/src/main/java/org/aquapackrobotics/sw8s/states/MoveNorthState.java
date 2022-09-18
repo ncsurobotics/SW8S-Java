@@ -9,21 +9,22 @@ public class MoveNorthState extends SimState {
         super(pool, window);
     }
 
-    public int getOrder() {
-        return 1;
-    }
-
     // TODO: implement
     public void onEnter() {
+        window.setRobotSpeed(0, -5, 0);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
-        return false;
+        if (window.getYPos() == 400) {
+            return false;
+        }
+        return true;
     }
 
     // TODO: implement
     public void onExit() {
+        window.setRobotSpeed(0, 0, 0);
     }
 
     // TODO: implement
