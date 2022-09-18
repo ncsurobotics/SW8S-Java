@@ -2,9 +2,9 @@ package org.aquapackrobotics.sw8s.states;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-public class InitState extends State {
-    public InitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+public class MoveEastState extends SimState {
+    public MoveEastState(ScheduledThreadPoolExecutor pool, SimWindow window) {
+        super(pool, window);
     }
 
     // TODO: implement
