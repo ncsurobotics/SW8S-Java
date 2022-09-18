@@ -11,12 +11,12 @@ public class MoveSouthState extends SimState {
 
     // TODO: implement
     public void onEnter() {
-        window.setRobotSpeed(0, 5, 0);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
-        if (window.getYPos() == 550) {
+        window.setRobotSpeed(0, 5, 0);
+        if (window.getYPos() >= 550) {
             return false;
         }
         return true;

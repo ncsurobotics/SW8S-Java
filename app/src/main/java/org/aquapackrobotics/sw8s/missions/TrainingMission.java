@@ -29,6 +29,7 @@ public class TrainingMission extends Mission {
         state.onEnter();
         while (state.onPeriodic()) {}
         state.onExit();
+        return;
     }
 
     // TODO: implement
