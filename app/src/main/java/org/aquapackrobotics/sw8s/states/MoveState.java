@@ -43,13 +43,18 @@ public class MoveState extends SimState {
     {
         //Get the current coord index and check if there are more coords
         int currentCoordIndex = GShapeConstants.indexOf(currentCoordinate());
-        if(currentCoordIndex - 1 == GShapeConstants.coords.length)
+
+        if(currentCoordIndex + 1 < GShapeConstants.coords.length)
         {
-            return null;
+            return new RotateState(
+                pool, 
+                this.window, 
+                currentCoordinate().getAngle(GShapeConstants.coords[currentCoordIndex + 1])
+            );
         }
         else
         {
-            return new MoveState(pool, this.window, GShapeConstants.coords[currentCoordIndex + 1]);
+            return null;
         }
     }
 
