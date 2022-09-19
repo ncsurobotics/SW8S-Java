@@ -26,9 +26,6 @@ public class stateTwo extends State{
   }
 
   public void onEnter() {
-    //xVel = 1.0;
-    //yVel = -1.0;
-    //yawVel = 0.05;
   }
 
 
