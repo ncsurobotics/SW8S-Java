@@ -55,4 +55,10 @@ public abstract class State {
      * @return an instance for the next state
      */
     abstract public State nextState();
+
+    abstract public double getX();
+
+    abstract public double getY();
+
+    abstract public double getYaw();
 }
