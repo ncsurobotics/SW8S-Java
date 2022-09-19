@@ -47,4 +47,9 @@ public class stateTwo extends State{
     yawVel = 0.0;
     System.out.println("StateTwo onExit");
   }
+
+  public State nextState() {
+    finalState fs = new finalState(pool); 
+    return fs;
+}
 }
