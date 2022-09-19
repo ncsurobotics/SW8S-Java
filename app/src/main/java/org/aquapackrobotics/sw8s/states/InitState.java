@@ -7,6 +7,25 @@ public class InitState extends State {
         super(pool);
     }
 
+
+    //x and y velocities for Initial State
+    private double xVel = 0;
+    private double yVel = 0;
+    private double yawVel = 0;
+
+
+    public double getX(){
+        return xVel;
+    } 
+
+    public double getY(){
+        return yVel;
+    }
+
+    public double getYaw(){
+        return yawVel;
+    }
+
     // TODO: implement
     public void onEnter() {
     }
