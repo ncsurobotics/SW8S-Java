@@ -28,6 +28,9 @@ public class InitState extends State {
 
     // TODO: implement
     public void onEnter() {
+        xVel = 0.0;
+        yVel = -1;
+        System.out.println("State init OnEnter");
     }
 
     // TODO: implement
