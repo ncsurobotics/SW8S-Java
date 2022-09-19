@@ -10,7 +10,6 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 public class MoveState extends SimState {
     
     private Controller controller;
-    private Coordinate goal;
 
     //Get the current robot coordinate
     private Coordinate currentCoordinate() { return new Coordinate(this.window.getXPos(), this.window.getYPos()); }
@@ -18,7 +17,6 @@ public class MoveState extends SimState {
     public MoveState(ScheduledThreadPoolExecutor pool, SimWindow sim, Coordinate newGoal)
     {
         super(pool, sim);
-        this.goal = newGoal;
         this.controller = new Controller(currentCoordinate(), newGoal);
     }
 
@@ -34,7 +32,7 @@ public class MoveState extends SimState {
         );
 
         //Return true when we reach goal
-        return !currentCoordinate().equals(this.goal);
+        return !controller.goalMet();
     }
 
     public void onExit() { this.window.setRobotSpeed(0, 0, 0); }

@@ -65,4 +65,9 @@ public class Controller
         return Math.min(yMaxVel, Math.max(-yMaxVel, yOffset()/2));
     }
 
+    public boolean goalMet()
+    {
+        return xOffset() == 0 && yOffset() == 0;
+    }
+
 }
