@@ -30,7 +30,6 @@ public class InitState extends State {
     public void onEnter() {
         xVel = 0.0;
         yVel = -1;
-        System.out.println("State init OnEnter");
     }
 
     // TODO: implement
@@ -44,7 +43,6 @@ public class InitState extends State {
     public void onExit() {
         xVel = 0.0;
         yVel = 0.0;
-        System.out.println("State init onExit");
     }
 
     // TODO: implement

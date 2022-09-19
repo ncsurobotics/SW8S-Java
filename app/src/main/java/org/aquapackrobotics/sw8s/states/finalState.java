@@ -25,7 +25,6 @@ public class finalState extends State{
   public void onEnter() {
     xVel = -1.0;
     yVel = 0.0;
-    System.out.println("FinalState onEnter");
   }
 
 
@@ -37,7 +36,6 @@ public class finalState extends State{
     xVel = 0.0;
     yVel = 0.0;
     yawVel = 0.0;
-    System.out.println("FinalState onExit");
   }
 
   public State nextState() {

@@ -20,7 +20,6 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        System.out.println("In Initial State");
         try{
             is.onEnter();
             sim.setRobotSpeed(is.getX(), is.getY(), 0);

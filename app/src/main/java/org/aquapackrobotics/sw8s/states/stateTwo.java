@@ -29,7 +29,6 @@ public class stateTwo extends State{
     //xVel = 1.0;
     //yVel = -1.0;
     //yawVel = 0.05;
-    System.out.println("StateTwo onEnter");
   }
 
 
@@ -45,7 +44,6 @@ public class stateTwo extends State{
     xVel = 0.0;
     yVel = 0.0;
     yawVel = 0.0;
-    System.out.println("StateTwo onExit");
   }
 
   public State nextState() {
