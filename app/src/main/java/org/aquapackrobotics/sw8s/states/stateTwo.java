@@ -24,4 +24,27 @@ public class stateTwo extends State{
   public double getYaw(){
     return yawVel;
   }
+
+  public void onEnter() {
+    //xVel = 1.0;
+    //yVel = -1.0;
+    //yawVel = 0.05;
+    System.out.println("StateTwo onEnter");
+  }
+
+
+
+  public boolean onPeriodic() {
+    count++;
+    if(count == 62) return false;
+    return true;
+  }
+
+
+  public void onExit() {
+    xVel = 0.0;
+    yVel = 0.0;
+    yawVel = 0.0;
+    System.out.println("StateTwo onExit");
+  }
 }
