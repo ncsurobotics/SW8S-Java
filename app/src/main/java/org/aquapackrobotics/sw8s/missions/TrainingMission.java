@@ -41,6 +41,43 @@ public class TrainingMission extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state) {
+        try{
+            if(state.onPeriodic()) {
+                state.onEnter();
+                sim.setRobotSpeed(state.getX(), state.getY(), state.getYaw());
+                Thread.sleep(1500);
+                double c = 0.1;
+                double r = 1;
+                double t  = 0.0;
+                double xVel = -0.1;
+                double yVel = -0.1;
+                while(state.onPeriodic()){
+                    xVel = -r*Math.sin(c*t);
+                    yVel = -r*Math.cos(c*t);
+                    t++;
+                    sim.setRobotSpeed(xVel, yVel, state.getYaw());
+                    Thread.sleep(200);
+                    }
+                state.onExit();
+                sim.setRobotSpeed(state.getX(), state.getY(), state.getYaw());
+                }
+            else{
+                    try{
+                        state.onEnter();
+                        sim.setRobotSpeed(state.getX(), state.getY(), 0);
+                        Thread.sleep(100);
+                        sim.setRobotSpeed(state.getX(), state.getY(), 0);
+                        Thread.sleep(1000);
+                        state.onExit();
+                        sim.setRobotSpeed(0, 0, 0);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: implement
