@@ -49,6 +49,7 @@ public class InitState extends State {
 
     // TODO: implement
     public State nextState() {
-        return null;
+        stateTwo s2 = new stateTwo(pool); 
+        return s2;
     }
 }
