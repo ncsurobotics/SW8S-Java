@@ -35,6 +35,8 @@ public class InitState extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
+        xVel = 1.0;
+        yVel = 0.0;
         return false;
     }
 
