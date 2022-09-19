@@ -37,11 +37,16 @@ public abstract class Mission {
      * Proceeds through all states in graph.
      */
     public void run() {
+        System.out.println(("In Run"));
         State currentState = initialState();
+        System.out.println("Current state val: "+ currentState);
+ 
         while (currentState != null) {
+            System.out.println(("In While"));
             executeState(currentState);
             currentState = nextState(currentState);
         }
+        System.out.println(("Exited while"));
     }
 
     /**
