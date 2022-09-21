@@ -2,20 +2,20 @@
 import cv2
 import numpy as np
 
-from time import time
-total_time_func = 0
-PRINT_TIME = False
-def time_func(func):
-    def wrapper(*args, **kwargs):
-        start_time = time()
-        result = func(*args, **kwargs)
-        end_time = time()
-        global total_time_func 
-        total_time_func += end_time-start_time
-        if (PRINT_TIME):
-            print(f"Time taken for {func.__name__}: {end_time-start_time}")
-        return result
-    return wrapper
+#from time import time
+#total_time_func = 0
+#PRINT_TIME = False
+#def time_func(func):
+#    def wrapper(*args, **kwargs):
+#        start_time = time()
+#        result = func(*args, **kwargs)
+#        end_time = time()
+#        global total_time_func 
+#        total_time_func += end_time-start_time
+#        if (PRINT_TIME):
+#            print(f"Time taken for {func.__name__}: {end_time-start_time}")
+#        return result
+#    return wrapper
 
 class ImagePrep:
     KMEANSFILTER = [3,  # num of clusters
@@ -27,7 +27,6 @@ class ImagePrep:
         self.slice_size = slice_size
         self.k, self.iter_num, self.criteria, self.flag = kmeans_filter
 
-    @time_func
     def slice(self, image):
         arr_size = tuple(int(element / self.slice_size) for element in image.shape)
         col_array = np.array_split(image, arr_size[0], axis=0)
@@ -36,21 +35,18 @@ class ImagePrep:
             img_array.append(np.array_split(col,arr_size[1],axis=1))
         return img_array
 
-    @time_func
     def combineRow(self, imgs):
         combined_img = imgs[0]
         for img in imgs[1:]:
             combined_img = np.concatenate((combined_img,img),axis=1)
         return combined_img
 
-    @time_func
     def combineCol(self, imgs):
         combined_img = imgs[0]
         for img in imgs[1:]:
             combined_img = np.concatenate((combined_img,img),axis=0)
         return combined_img
 
-    @time_func
     def reduce_image_color(self, image, ncluster = None):
         img_kmean = image.reshape(-1,3)
         img_kmean = np.float32(img_kmean)
@@ -63,43 +59,6 @@ class ImagePrep:
         res2 = res.reshape((image.shape))
         return res2, center
 
-class Path_Properties:
-    #PATH_PROPERTY_THRESHOLDS = np.array([10, 20, np.pi/6, 0.02, 10, 10, 10, 10, 10, 10]) # difference in [path_color, background_color, path_theta, size, location_x_bot, location_y_bot, location_x,top, location_y_top]
-    PATH_PROPERTY_THRESHOLDS = np.array([100, 200, 100, 2, 1000, 1000, 1000, 1000, 1000, 1000]) # no threshold
-    PROPERTY_TAGS = ["path_color", "background_color", "bot2top_theta", "path_size", "path_x", "path_y", "x_bot", "y_bot", "x_top", "y_top"]
-    def __init__(self, path_properties = None):
-        self.confidence = 0.5
-
-        if path_properties is not None:
-            self.properties = path_properties
-            return
-            
-        self.path_color, self.background_color = None, None
-        self.path_theta, self.size = None, None
-        self.x, self.y, self.x_bot, self.y_bot, self.x_top, self.y_top = None, None, None, None, None, None
-
-        self.properties = np.array([self.path_color, self.background_color, self.path_theta, self.size, self.x, self.y, self.x_bot, self.y_bot, self.x_top, self.y_top])
-
-    # pass in a numpy array of properties
-    def compareAndUpdate(self, path_properties):
-        # within threshold
-        if None in self.properties:
-            self.properties = path_properties
-            return True
-        if self.withinThreshold(path_properties, self.properties, self.PATH_PROPERTY_THRESHOLDS):
-            self.properties = path_properties
-            if self.confidence < 1: 
-                self.confidence += 0.01
-            return True
-        # outside of threshold
-        if self.confidence > 0: 
-            self.confidence -= 0.01
-        return False
-
-    def withinThreshold(self, val1, val2, thres):
-        #print(abs(np.subtract(val1, val2)))
-        return (abs(np.subtract(val1, val2)) < thres).all() # return True only when all properties are under the threshold
-
 SCALING_FACTOR = 0.5
 
 NOISE_PROPORTION = 0.01 # threshold % of the image as path (less means it is noise)
@@ -107,7 +66,7 @@ FORWARD_DEFAULT = [0,-1] # image up is forward
 
 # thresholds
 PATH_COLOR_LOW_THRES, PATH_COLOR_UP_THRES = 60, 85
-PATH_WIDTH_LOW_THRES, PATH_WIDTH_UP_THRES = 70, 400      # between means it is path
+PATH_WIDTH_LOW_THRES, PATH_WIDTH_UP_THRES = 60, 400      # between means it is path
 NUM_OF_COLORS = 4   # depends on the situation (4 or higher if there are random stuff and opposite colors of tiles)
 
 WAIT_KEY = 0 # 0 to wait key press
@@ -117,7 +76,6 @@ WAIT_KEY = 0 # 0 to wait key press
 # input: binary image
 # output: mean: center of the coordinates, 
 #         pca_vector: [[PC2_x, PC1_x], [PC2_y, PC1_y]]
-@time_func
 def Path_PCA(image):                       # definition method
     pca_vector = []
     #image = cv2.resize(image,IMAGE_SIZE)
@@ -129,7 +87,6 @@ def Path_PCA(image):                       # definition method
 
 # changes the value above the line in an image
 # input: image_mask, initial_coord[x,y], slope[x,y], value= 0,1 (for binary masking)
-@time_func
 def set_mask(image_mask, initial_coord, slope, value):
     # line_y = mx+b
     # b = line_y - mx
@@ -152,12 +109,11 @@ def compute_location(pca_cent, pca_dir, scale = 10):
 
 # compute angle between two vectors
 # arccos((unit_a dot unit_b))
-@time_func
 def compute_angle(v_1, v_2):
     unit_v_1 = v_1 / np.linalg.norm(v_1)
     unit_v_2 = v_2 / np.linalg.norm(v_2)
     return np.arccos(np.dot(unit_v_1,unit_v_2))
-@time_func
+
 def compute_slope(p_1, p_2):
     return (p_2[0] - p_1[0]), (p_2[1] - p_1[1])
 
@@ -177,8 +133,7 @@ if __name__ == '__main__':
     path_file_select = 10
     
     test_prep = ImagePrep(slice_size = 25)
-    path_object = Path_Properties()
-    out_video = cv2.VideoWriter("path_output.avi",cv2.VideoWriter_fourcc('M','J','P','G'), 10, (320,240))
+    #path_object = Path_Properties()
 
     cap = cv2.VideoCapture(path_dirs[path_file_select])
     ####
@@ -320,14 +275,14 @@ if __name__ == '__main__':
         
 
         #    [path_color, background_color, theta, size, path_location, bot_location, top_location]
-        current_path_properties = [path_color, background_color, path_angle, path_size/img_size, path_hori_cent, path_vert_cent, bot_hori_cent, bot_vert_cent, top_hori_cent, top_vert_cent]
+        #current_path_properties = [path_color, background_color, path_angle, path_size/img_size, path_hori_cent, path_vert_cent, bot_hori_cent, bot_vert_cent, top_hori_cent, top_vert_cent]
         #print(current_path_properties)
-        path_update = path_object.compareAndUpdate(current_path_properties)
-        print(list(zip(path_object.PROPERTY_TAGS, path_object.properties)))
+        #path_update = path_object.compareAndUpdate(current_path_properties)
+        #print(list(zip(path_object.PROPERTY_TAGS, path_object.properties)))
 
         # information on display
         pca_variance_thres = np.min(pca_val)
-        if pca_variance_thres < PATH_COLOR_LOW_THRES or pca_variance_thres > PATH_WIDTH_UP_THRES or path_color < PATH_COLOR_LOW_THRES or path_color > PATH_COLOR_UP_THRES:
+        if pca_variance_thres < PATH_WIDTH_LOW_THRES or pca_variance_thres > PATH_WIDTH_UP_THRES or path_color < PATH_COLOR_LOW_THRES or path_color > PATH_COLOR_UP_THRES:
             cv2.putText(frame, "no path", (0,20), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0,0,255))
             cv2.putText(frame, "color: {diff}    width: {var:.2f}".format(diff = path_color, var = pca_variance_thres), (0,40), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0,0,255))
         else:
@@ -337,33 +292,32 @@ if __name__ == '__main__':
                         color=(255,255,255),thickness=2,tipLength=0.2)
 
         # track bottom x
-        if (path_object.properties[path_object.PROPERTY_TAGS.index("path_x")] < width/2):
+        if (path_hori_cent < width/2):
             print("move left")
-            cv2.putText(frame, "move left (x offset): {loc}".format(loc = path_object.properties[path_object.PROPERTY_TAGS.index("path_x")] - width/2),
+            cv2.putText(frame, "move left (x offset): {loc}".format(loc = path_hori_cent - width/2),
                         (0,60), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255,255,255))
         else:
             print("move right")
-            cv2.putText(frame, "move right(x offset): {loc}".format(loc = path_object.properties[path_object.PROPERTY_TAGS.index("path_x")] - width/2),
+            cv2.putText(frame, "move right(x offset): {loc}".format(loc = path_hori_cent - width/2),
                         (0,60), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255,255,255))
 
         # top x - bottom x
-        turn_direction = path_object.properties[path_object.PROPERTY_TAGS.index("x_top")] - path_object.properties[path_object.PROPERTY_TAGS.index("x_bot")]
+        turn_direction = top_hori_cent - bot_hori_cent
 
         if (turn_direction > 0):
             print("rotate right")
-            cv2.putText(frame, "rotate right(turn rad): {theta:.2f}".format(theta = path_object.properties[path_object.PROPERTY_TAGS.index("bot2top_theta")]),
+            cv2.putText(frame, "rotate right(turn rad): {theta:.2f}".format(theta = path_angle),
                         (0,80), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255,255,255))
         else:
             print("rotate left")
-            cv2.putText(frame, "rotate left(turn rad): {theta:.2f}".format(theta = -path_object.properties[path_object.PROPERTY_TAGS.index("bot2top_theta")]),
+            cv2.putText(frame, "rotate left(turn rad): {theta:.2f}".format(theta = -path_angle),
                         (0,80), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255,255,255))
         
         cv2.putText(frame, "frame: {cur_frame}".format(cur_frame = current_frame), (0,100), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(255,255,255))
         display_image_right = test_prep.combineCol([cv2.cvtColor(overall_path, cv2.COLOR_GRAY2BGR), frame])
         display_image_overall = test_prep.combineRow([display_image_left, display_image_middle, display_image_right])
         cv2.imshow('final', display_image_overall)
-        out_video.write(frame)
+
     cap.release()
-    out_video.release()
     cv2.destroyAllWindows()
     cv2.waitKey(1)
