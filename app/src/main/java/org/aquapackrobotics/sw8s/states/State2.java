@@ -3,9 +3,10 @@ package org.aquapackrobotics.sw8s.states;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
-public class InitState extends SimState {
-    public InitState(ScheduledThreadPoolExecutor pool, SimWindow window) {
+public class State2 extends SimState {
+    public State2(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
+        //TODO Auto-generated constructor stub
     }
 
     // TODO: implement
@@ -23,6 +24,6 @@ public class InitState extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return new State2(pool, window);
+        return null;
     }
 }
