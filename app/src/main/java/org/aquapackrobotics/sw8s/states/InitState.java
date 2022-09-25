@@ -2,26 +2,29 @@ package org.aquapackrobotics.sw8s.states;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-public class InitState extends State {
-    public InitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
+import org.aquapackrobotics.sw8s.constants.Coordinate;
+import org.aquapackrobotics.sw8s.constants.GShapeConstants;
+
+public class InitState extends SimState {
+    public InitState(ScheduledThreadPoolExecutor pool, SimWindow sim) {
+        super(pool, sim);
     }
 
-    // TODO: implement
-    public void onEnter() {
-    }
+    private Coordinate currentCoordinate() { return new Coordinate(this.window.getXPos(), this.window.getYPos()); }
 
-    // TODO: implement
-    public boolean onPeriodic() {
-        return false;
-    }
+    public void onEnter() { }
 
-    // TODO: implement
-    public void onExit() {
-    }
+    public boolean onPeriodic() { return false; }
 
-    // TODO: implement
-    public State nextState() {
-        return null;
+    public void onExit() { }
+
+    public State nextState()
+     {
+        return new RotateState(
+            pool, 
+            this.window, 
+            currentCoordinate().getAngle(GShapeConstants.coords[0])
+        );
     }
 }

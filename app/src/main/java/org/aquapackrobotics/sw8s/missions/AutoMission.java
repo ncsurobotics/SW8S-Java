@@ -13,18 +13,15 @@ public class AutoMission extends Mission {
         super(pool);
     }
 
-    // TODO: implement
     @Override
     protected State initialState() {
         return null;
     }
 
-    // TODO: implement
     @Override
     protected void executeState(State state) {
     }
 
-    // TODO: implement
     @Override
     protected State nextState(State state) {
         return null;
