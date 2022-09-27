@@ -16,8 +16,8 @@ public class State4 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(-1, .7, -.2);
-        if (window.getYPos() > 179){
+        window.setRobotSpeed(.2, .7, -.2);
+        if (window.getYPos() > 500){
             return true;
         }
         return false;
@@ -31,6 +31,6 @@ public class State4 extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new State5(pool, window);
     }
 }
