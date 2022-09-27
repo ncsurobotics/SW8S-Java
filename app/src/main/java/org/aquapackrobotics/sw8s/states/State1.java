@@ -16,7 +16,7 @@ public class State1 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(0, 0, -.25);
+        window.setRobotSpeed(0, 0, -1);
         if (window.getRobotAngle() < 1){
             return true;
         }
