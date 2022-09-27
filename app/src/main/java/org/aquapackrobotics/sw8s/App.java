@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.Mission;
 import org.aquapackrobotics.sw8s.missions.AutoMission;
+import org.aquapackrobotics.sw8s.missions.TrainingMission;
 
 public class App {
 
@@ -18,7 +19,7 @@ public class App {
 
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        Mission mission = (Mission) new AutoMission(pool);
+        Mission mission = (Mission) new TrainingMission(pool);
 
         mission.run();
     }
