@@ -10,28 +10,30 @@ import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
  * Competition mission, fully autonomous.
  */
 public class TrainingMission extends Mission {
-     SimWindow sim;
+     SimWindow window;
 
     public TrainingMission(ScheduledThreadPoolExecutor pool) {
         super(pool);
-        sim = new SimWindow();
+        window = new SimWindow();
     }
 
     // TODO: implement
     @Override
     protected State initialState() {
-        return new InitState(pool, sim);
+        return new InitState(pool, window);
     }
 
     // TODO: implement
     @Override
     protected void executeState(State state) {
-        
+        state.onEnter();
+        while (!state.onPeriodic()){}
+        state.onExit();
     }
 
     // TODO: implement
     @Override
     protected State nextState(State state) {
-        return null;
+        return state.nextState();
     }
 }
