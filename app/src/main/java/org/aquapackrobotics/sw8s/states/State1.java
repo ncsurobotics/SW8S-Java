@@ -3,8 +3,8 @@ package org.aquapackrobotics.sw8s.states;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
-public class State3 extends SimState {
-    public State3(ScheduledThreadPoolExecutor pool, SimWindow window) {
+public class State1 extends SimState {
+    public State1(ScheduledThreadPoolExecutor pool, SimWindow window) {
         super(pool, window);
         //TODO Auto-generated constructor stub
     }
@@ -16,8 +16,9 @@ public class State3 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(0, -1, 0);
-        if (window.getXPos() > 521 && window.getYPos() < 180){
+        window.setRobotSpeed(.7, -.7, 0);
+        if (window.getXPos() > 520 && window.getYPos() < 337){
+            System.out.println(window.getYawVel());
             return true;
         }
         return false;
@@ -30,6 +31,6 @@ public class State3 extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new State2(pool, window);
     }
 }
