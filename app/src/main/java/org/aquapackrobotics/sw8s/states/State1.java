@@ -16,9 +16,8 @@ public class State1 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(.7, -.7, 0);
-        if (window.getXPos() > 520 && window.getYPos() < 337){
-            System.out.println(window.getYawVel());
+        window.setRobotSpeed(0, 0, -.25);
+        if (window.getRobotAngle() < 1){
             return true;
         }
         return false;

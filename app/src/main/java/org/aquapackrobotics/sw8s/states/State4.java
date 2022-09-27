@@ -16,7 +16,7 @@ public class State4 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(-1, .7, 0);
+        window.setRobotSpeed(-1, .7, -.2);
         if (window.getYPos() > 179){
             return true;
         }

@@ -16,16 +16,12 @@ public class State3 extends SimState {
 
     // TODO: implement
     public boolean onPeriodic() {
-        window.setRobotSpeed(0, 0, -1);
-        if (window.getRobotAngle() < -15){
-            window.setRobotSpeed(-1, -.7, .2);
-            if (window.getYPos() < 75){
-                return true;
-            }
+        window.setRobotSpeed(-1, .7, -.4);
+        if (window.getYPos() > 200){
+            return true;
         }
         return false;
     }
-    
 
     // TODO: implement
     public void onExit() {
@@ -34,6 +30,6 @@ public class State3 extends SimState {
 
     // TODO: implement
     public State nextState() {
-        return State4(pool, window);
+        return new State4(pool, window);
     }
 }
