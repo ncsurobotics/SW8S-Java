@@ -10,15 +10,20 @@ public class InitState extends SimState {
 
     // TODO: implement
     public void onEnter() {
+        window.setRobotSpeed(1, 1, 0);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
+        if (window.getXPos() == 4 && window.getYPos() == 5) {
+            return true;
+        }
         return false;
     }
 
     // TODO: implement
     public void onExit() {
+        window.setRobotSpeed(1, 1, 1);
     }
 
     // TODO: implement

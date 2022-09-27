@@ -11,19 +11,25 @@ public class State2 extends SimState {
 
     // TODO: implement
     public void onEnter() {
+        window.setRobotSpeed(0, 0, 0);
     }
 
     // TODO: implement
     public boolean onPeriodic() {
+        window.setRobotSpeed(0, -1, 0);
+        if (window.getXPos() > 521 && window.getYPos() < 180){
+            return true;
+        }
         return false;
     }
 
     // TODO: implement
     public void onExit() {
+        window.setRobotSpeed(0, 0, 0);
     }
 
     // TODO: implement
     public State nextState() {
-        return null;
+        return new State3(pool, window);
     }
 }
