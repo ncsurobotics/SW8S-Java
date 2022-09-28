@@ -4,12 +4,17 @@ import com.fazecast.jSerialComm.*;
 
 public class ControlBoardCommunication {
 
+    private SerialPort controlBoardPort;
+	
+	private static int START_BYTE;
+	private static int END_BYTE;
+
     public enum ControlBoardMode { RAW, LOCAL };
 
     //Constructor
     public ControlBoardCommunication() {
 
-        // TODO: Impliment
+        controlBoardPort = SerialPort.getCommPorts()[0];
 
     }
 
@@ -62,6 +67,12 @@ public class ControlBoardCommunication {
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
 
         // TODO: Immpliment
+
+    }
+
+    private void writeBytesToBoard(byte[] byteArray) {
+
+        // TODO: Impliment
 
     }
 
