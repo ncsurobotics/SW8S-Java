@@ -5,13 +5,16 @@ import com.fazecast.jSerialComm.*;
 public class ControlBoardCommunication {
 
     private SerialPort controlBoardPort;
-	
-	private static int START_BYTE;
-	private static int END_BYTE;
 
     public enum ControlBoardMode { RAW, LOCAL };
 
     //Constructor
+	private static final byte START_BYTE = (byte) 253;
+	private static final byte END_BYTE = (byte) 254;
+	private static final byte ESCAPE_BYTE = (byte) 255;
+	
+    // Look in "Communication Protocol" under SW8E Control Board to find the spec
+
     public ControlBoardCommunication() {
 
         controlBoardPort = SerialPort.getCommPorts()[0];
@@ -69,11 +72,16 @@ public class ControlBoardCommunication {
         // TODO: Immpliment
 
     }
-
-    private void writeBytesToBoard(byte[] byteArray) {
-
-        // TODO: Impliment
-
+    
+    /**
+     * Sends given payload to board. Handles addition of START_BYTE, END_BYTE, ESCAPE_BYTE
+     * @param byteArray the payload to be sent to the Control Board
+     * @param payLoadLength the length of the payload
+     */
+    private void writeBytesToBoard(byte[] byteArray, long payLoadLength) {
+    	
+    	
+    	controlBoardPort.writeBytes(byteArray, payLoadLength);
     }
 
 }
