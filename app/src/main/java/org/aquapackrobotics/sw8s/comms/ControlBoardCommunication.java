@@ -6,16 +6,23 @@ public class ControlBoardCommunication {
 
     private SerialPort controlBoardPort;
 	
-	private static int START_BYTE;
-	private static int END_BYTE;
+	private static byte START_BYTE = (byte) 253;
+	private static byte END_BYTE = (byte) 254;
+    private static byte ESCAPE_BYTE = (byte) 255;
 
     public enum ControlBoardMode { RAW, LOCAL };
 
-    //Constructor
     public ControlBoardCommunication() {
-
         controlBoardPort = SerialPort.getCommPorts()[0];
+        controlBoardPort.openPort();
+        controlBoardPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
+    }
 
+    /**
+     * Call this at the end of the lifetime to free the serial ports.
+     */
+    public void dispose() {
+        controlBoardPort.closePort();
     }
 
     /**
@@ -41,7 +48,7 @@ public class ControlBoardCommunication {
 
     /**
      * Sets the thruster inversions individually.
-     * @param invertThrusters Array of 8 booleans, each representing an individual thruster.
+     * True is inverted, false is not inverted.
      */
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
 
@@ -62,11 +69,14 @@ public class ControlBoardCommunication {
 
     /**
      * Directly sets the speeds of the thrusters.
-     * @param speeds Array of 8 doubles that should range from -1 to 1, each representing an individual thruster.
+     * Each double should be from -1 to 1.
      */
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
 
         // TODO: Immpliment
+    }
+
+    private void dispatchToReader() {
 
     }
 
@@ -75,5 +85,4 @@ public class ControlBoardCommunication {
         // TODO: Impliment
 
     }
-
 }
