@@ -2,14 +2,13 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.fazecast.jSerialComm.*;
 
-public class ControlBoardCommunication {
+/**
+ *
+ */
+class ControlBoardCommunication {
     private SerialPort controlBoardPort;
 
     public enum ControlBoardMode { RAW, LOCAL };
-
-	private static final byte START_BYTE = (byte) 253;
-	private static final byte END_BYTE = (byte) 254;
-	private static final byte ESCAPE_BYTE = (byte) 255;
 
     public ControlBoardCommunication() {
         controlBoardPort = SerialPort.getCommPorts()[0];
