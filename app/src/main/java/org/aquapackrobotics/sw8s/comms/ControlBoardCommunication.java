@@ -3,14 +3,13 @@ package org.aquapackrobotics.sw8s.comms;
 import com.fazecast.jSerialComm.*;
 
 public class ControlBoardCommunication {
-
     private SerialPort controlBoardPort;
-	
-	private static byte START_BYTE = (byte) 253;
-	private static byte END_BYTE = (byte) 254;
-    private static byte ESCAPE_BYTE = (byte) 255;
 
     public enum ControlBoardMode { RAW, LOCAL };
+
+	private static final byte START_BYTE = (byte) 253;
+	private static final byte END_BYTE = (byte) 254;
+	private static final byte ESCAPE_BYTE = (byte) 255;
 
     public ControlBoardCommunication() {
         controlBoardPort = SerialPort.getCommPorts()[0];
@@ -79,10 +78,15 @@ public class ControlBoardCommunication {
     private void dispatchToReader() {
 
     }
-
-    private void writeBytesToBoard(byte[] byteArray) {
-
-        // TODO: Impliment
-
+    
+    /**
+     * Sends given payload to board. Handles addition of START_BYTE, END_BYTE, ESCAPE_BYTE
+     * @param byteArray the payload to be sent to the Control Board
+     * @param payLoadLength the length of the payload
+     */
+    private void writeBytesToBoard(byte[] byteArray, long payLoadLength) {
+    	
+    	
+    	controlBoardPort.writeBytes(byteArray, payLoadLength);
     }
 }
