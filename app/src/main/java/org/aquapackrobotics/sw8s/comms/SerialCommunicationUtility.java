@@ -1,5 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import java.util.Arrays;
+
 /**
  * Provides helpers for creating and parsing messages
  * that the SW8 control board could use.
@@ -36,15 +38,63 @@ public class SerialCommunicationUtility {
 
         return formattedMessage.toString().getBytes();
     }
+
     /**
      * Takes in an encoded message received from a SW8 control board and converts it into a usable format.
-     * @param message An encoded message from a control board
+     * @param message An encoded message from a control board. Should not include the start and end bytes.
      * @return The raw message extracted from the encoded message
      */
-    public static byte[] destructMessage(byte[] message) {
-        StringBuilder deformattedMessage = new StringBuilder();
+    public static byte[] destructMessage(byte[] message) throws IllegalArgumentException {
+        // Verify there is enough length to hold at least 1 byte of message and 2 bytes of CRC16
+        if (message == null) {
+            throw new IllegalArgumentException("Message argument was null");
+        } else if (message.length < 3) {
+            throw new IllegalArgumentException("Message argument was too short to hold a message and a CRC16");
+        }
 
-        return deformattedMessage.toString().getBytes();
+        byte[] strippedMessage = Arrays.copyOfRange(message, 0, message.length - 2);
+
+        // Verify CRC
+
+        byte lowByte = message[message.length - 1];
+        byte highByte = message[message.length - 2];
+        short retrievedCRC16 = (short) ((highByte << 8) + lowByte);
+
+        long calculatedCRC = CRC.calculateCRC(CRC.Parameters.CRC16, strippedMessage);
+        short calculatedCRC16 = (short) calculatedCRC;
+
+        if (retrievedCRC16 != calculatedCRC16) {
+            throw new IllegalArgumentException("Calculated CRC16 of message is not equal to the attached CRC16");
+        }
+
+        // Verification completed, extract the message
+        StringBuilder deFormattedMessage = new StringBuilder();
+
+        // Strip escape bytes
+        for (byte msgByte : strippedMessage) {
+            if (msgByte != ESCAPE_BYTE)
+                deFormattedMessage.append(msgByte);
+        }
+
+        return deFormattedMessage.toString().getBytes();
+    }
+
+    /**
+     * Checks if a byte is the start of a message.
+     * @param byteMessage The byte to check
+     * @return Returns true if the byte is the start of a message
+     */
+    public static boolean isStartOfMessage(byte byteMessage) {
+        return byteMessage == START_BYTE;
+    }
+
+    /**
+     *Checks if a byte is the end of a message.
+     * @param byteMessage The byte to check
+     * @return Returns true if the byte is the end of a message
+     */
+    public static boolean isEndOfMessage(byte byteMessage) {
+        return byteMessage == END_BYTE;
     }
 
     private static void addEscapedByteToBuilder(StringBuilder builder, byte msgByte) {
