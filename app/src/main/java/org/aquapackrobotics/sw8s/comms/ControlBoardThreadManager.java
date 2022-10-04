@@ -73,14 +73,14 @@ public class ControlBoardThreadManager {
     }
 
     public ScheduledFuture<boolean[]> getThrusterInversions() throws ExecutionException, InterruptedException {
-        Callable<boolean[]> inverisonsGetter = new Callable<boolean[]>() {
+        Callable<boolean[]> inversionsGetter = new Callable<boolean[]>() {
             @Override
             public boolean[] call() throws Exception {
                 return controlBoardCommunication.getThrusterInversions();
             }
         };
 
-        return scheduleTask(inverisonsGetter);
+        return scheduleTask(inversionsGetter);
     }
     public ScheduledFuture<Void> setMotorSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) throws ExecutionException, InterruptedException {
         Callable<Void> speedsCallable = new Callable<Void>() {
