@@ -13,6 +13,8 @@ import com.fazecast.jSerialComm.SerialPortMessageListener;
  *
  */
 public class ControlBoardListener implements SerialPortMessageListener {
+	
+	private static final byte[] START_BYTE = {(byte) 253};
 
 	public ControlBoardListener() {
 		// TODO Auto-generated constructor stub
@@ -50,7 +52,7 @@ public class ControlBoardListener implements SerialPortMessageListener {
 	@Override
 	public byte[] getMessageDelimiter() {
 		// TODO Auto-generated method stub
-		return null;
+		return START_BYTE;
 	}
 
 }
