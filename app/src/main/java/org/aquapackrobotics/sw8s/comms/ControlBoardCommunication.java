@@ -7,7 +7,11 @@ import com.fazecast.jSerialComm.*;
  */
 class ControlBoardCommunication {
     private SerialPort controlBoardPort;
-
+    
+    private static final String MODE_STRING = "MODE";
+    private static final byte RAW_BYTE = (byte) 'R';
+    private static final byte LOCAL_BYTE = (byte) 'L';
+    
     public enum ControlBoardMode { RAW, LOCAL };
 
     public ControlBoardCommunication() {
@@ -28,9 +32,18 @@ class ControlBoardCommunication {
      * @param mode ControlBoardMode enum that is either RAW or LOCAL.
      */
     public void setMode(ControlBoardMode mode) {
-
-        // TODO: Impliment
-
+    	StringBuilder modeMessage = new StringBuilder();
+    	modeMessage.append(MODE_STRING);
+    	if (mode == ControlBoardMode.RAW) {
+    		modeMessage.append(RAW_BYTE);
+    	}
+    	else if (mode == ControlBoardMode.LOCAL){
+    		modeMessage.append(LOCAL_BYTE);
+    	}
+    	
+    	byte[] modeMessageBytes = SerialCommunicationUtility.constructMessage(modeMessage.toString().getBytes());
+    	
+    	controlBoardPort.writeBytes(modeMessageBytes, modeMessageBytes.length);
     }
 
     /**
@@ -39,7 +52,7 @@ class ControlBoardCommunication {
      */
     public ControlBoardMode getMode() {
 
-        // TODO: Impliment
+    	
 
         return null;
     }
