@@ -11,12 +11,31 @@ import org.aquapackrobotics.sw8s.missions.AutoMission;
 public class App {
 
     static final int POOLSIZE = 1;
-
+    
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
+        for (String str: args) {
+            switch (str) {
+                case "test":
+                    System.out.println("Yay! it worked!");
+                    break;
+                case "-h":
+                    for(int i = 0; i < helpFlag.length; i++){
+                        System.out.println(helpFlag[i]);
+                    }
+                    break;
+                case "-s":
+                    Mission mission = (Mission) new StateMission(pool);
+                    break;
+                default:
+                    Mission mission = (Mission) new AutoMission(pool);
+                    break;
+
+            }
+        }
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         Mission mission = (Mission) new AutoMission(pool);
 
