@@ -23,8 +23,7 @@ public class ControlBoardListener implements SerialPortMessageListener {
 	 */
 	@Override
 	public int getListeningEvents() {
-		// TODO Auto-generated method stub
-		return 0;
+		return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
 	}
 	
 	/**
