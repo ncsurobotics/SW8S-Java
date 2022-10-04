@@ -11,8 +11,6 @@ class ControlBoardCommunication {
     private static final String MODE_STRING = "MODE";
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
-    
-    public enum ControlBoardMode { RAW, LOCAL };
 
     public ControlBoardCommunication() {
         controlBoardPort = SerialPort.getCommPorts()[0];
