@@ -11,11 +11,15 @@ class ControlBoardCommunication {
     private static final String MODE_STRING = "MODE";
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
+    
+    //SerialPortDataListener listener = new SerialPortDataListener();
 
-    public ControlBoardCommunication() {
-        controlBoardPort = SerialPort.getCommPorts()[0];
+    public ControlBoardCommunication(SerialPort port) {
+        controlBoardPort = port;
         controlBoardPort.openPort();
         controlBoardPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
+        
+        controlBoardPort.addDataListener(new ControlBoardListener());
     }
 
     /**
@@ -49,7 +53,9 @@ class ControlBoardCommunication {
      * @return ControlBoardMode enum that is either RAW or LOCAL.
      */
     public ControlBoardMode getMode() {
-
+    	byte[] readBytes = new byte[1];
+    	controlBoardPort.readBytes(readBytes, 1L);
+    	
     	
 
         return null;
