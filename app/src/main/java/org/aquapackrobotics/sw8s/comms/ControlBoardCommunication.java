@@ -54,7 +54,7 @@ class ControlBoardCommunication {
     }
 
     /**
-     * Returns the mode the control board is in.
+     * Prompts the control board for the current mode
      */
     public void getMode() {
     	StringBuilder message = new StringBuilder();
@@ -126,6 +126,18 @@ class ControlBoardCommunication {
 
         controlBoardPort.writeBytes(speeds, 8);
 
+    }
+    
+    /**
+     * Feeds motor watchdog
+     */
+    public void feedWatchdogMotor() {
+    	byte[] message = new byte[4];
+    	message = WATCHDOG_FEED_STRING.getBytes();
+    	
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toString().getBytes());
+        
+    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
 
     
