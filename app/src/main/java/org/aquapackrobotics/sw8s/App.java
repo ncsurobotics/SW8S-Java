@@ -18,8 +18,8 @@ public class App {
 
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        String helpFlag[] = {"Hey", 
-        "\ntest -- The Command Flag used in Testing"};
+        String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
+        System.out.println("Basic Format: gradle run --args '_'");
         for (String str: args) {
             switch (str) {
                 case "test":
@@ -29,11 +29,20 @@ public class App {
                     for(int i = 0; i < helpFlag.length; i++){
                         System.out.println(helpFlag[i]);
                     }
+                case "help":
+                    for(int i = 0; i < helpFlag.length; i++){
+                        System.out.println(helpFlag[i]);
+                    }
                     break;
-                /*case "-s":
-                    Mission mission1 = (Mission) new StateMission(pool);
-                    mission1.run();
-                    break;*/
+                // case "-s1":
+                //     executeState(State1);
+                //     break;
+                // case "-s2":
+                //     executeState(State2);
+                //     break;
+                // case "-s3":
+                //     executeState(State3);
+                //     break;
                 default:
                     Mission missionAuto = (Mission) new AutoMission(pool);
                     missionAuto.run();
