@@ -1,5 +1,6 @@
 package org.aquapackrobotics.sw8s.comms;
 
+
 import com.fazecast.jSerialComm.*;
 
 /**
@@ -84,9 +85,9 @@ class ControlBoardCommunication {
         is_inv[6] = (byte)(invert7 ? 1:0);
         is_inv[7] = (byte)(invert8 ? 1:0);
 
-       /* is_inv = SerialCommunicationUtility.constructMessage(is_inv.toString().getBytes());
+        is_inv = SerialCommunicationUtility.constructMessage(is_inv.toString().getBytes());
 
-        controlBoardPort.writeBytes(is_inv, 8);*/
+        controlBoardPort.writeBytes(is_inv, 8);
         
     }
 
@@ -94,13 +95,14 @@ class ControlBoardCommunication {
      * Gets the current thruster inversions.
      * @return Array of 8 booleans, each representing an individual thruster.
      */
-    public boolean[] getThrusterInversions() {
+    public void getThrusterInversions() {
 
         // TODO: Impliment
-
+        byte [] get_inversion = new byte[4];
+        get_inversion = SerialCommunicationUtility.constructMessage(INVERT_STRING.getBytes());
         
-
-        return null;
+        controlBoardPort.writeBytes(get_inversion, 4);
+       // return null;
     }
 
     /**
@@ -110,6 +112,20 @@ class ControlBoardCommunication {
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
     	
         // TODO: Immpliment
+        byte [] speeds = new byte[8];
+        speeds[0] = (byte)speed1;
+        speeds[1] = (byte)speed2;
+        speeds[2] = (byte)speed3;
+        speeds[3] = (byte)speed4;
+        speeds[4] = (byte)speed5;
+        speeds[5] = (byte)speed6;
+        speeds[6] = (byte)speed7;
+        speeds[7] = (byte)speed8;
+
+        speeds = SerialCommunicationUtility.constructMessage(speeds.toString().getBytes());
+
+        controlBoardPort.writeBytes(speeds, 8);
+
     }
 
     
