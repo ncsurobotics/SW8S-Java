@@ -62,6 +62,22 @@ class ControlBoardCommunication {
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
 
         // TODO: Impliment
+        byte[8] is_inv;
+
+        is_inv[0] = invert1;
+        is_inv[1] = invert2;
+        is_inv[2] = invert3;
+        is_inv[3] = invert4;
+        is_inv[4] = invert5;
+        is_inv[5] = invert6;
+        is_inv[6] = invert7;
+        is_inv[7] = invert8;
+
+        is_inv = SerialCommunicationUtility.constructMessage(is_inv.toString().getBytes());
+
+        controlBoardPort.writeBytes(is_inv, 8);
+        
+
 
     }
 
@@ -72,6 +88,8 @@ class ControlBoardCommunication {
     public boolean[] getThrusterInversions() {
 
         // TODO: Impliment
+
+        
 
         return null;
     }
