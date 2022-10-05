@@ -9,6 +9,7 @@ class ControlBoardCommunication {
     private SerialPort controlBoardPort;
     
     private static final String MODE_STRING = "MODE";
+    
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
     
@@ -53,8 +54,6 @@ class ControlBoardCommunication {
      * @return ControlBoardMode enum that is either RAW or LOCAL.
      */
     public ControlBoardMode getMode() {
-    	byte[] readBytes = new byte[1];
-    	controlBoardPort.readBytes(readBytes, 1L);
     	
     	
 
@@ -66,7 +65,7 @@ class ControlBoardCommunication {
      * True is inverted, false is not inverted.
      */
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
-
+    	
         // TODO: Impliment
 
     }
@@ -87,22 +86,9 @@ class ControlBoardCommunication {
      * Each double should be from -1 to 1.
      */
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
-
+    	
         // TODO: Immpliment
     }
 
-    private void dispatchToReader() {
-
-    }
     
-    /**
-     * Sends given payload to board. Handles addition of START_BYTE, END_BYTE, ESCAPE_BYTE
-     * @param byteArray the payload to be sent to the Control Board
-     * @param payLoadLength the length of the payload
-     */
-    private void writeBytesToBoard(byte[] byteArray, long payLoadLength) {
-    	
-    	
-    	controlBoardPort.writeBytes(byteArray, payLoadLength);
-    }
 }
