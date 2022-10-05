@@ -9,7 +9,10 @@ class ControlBoardCommunication {
     private SerialPort controlBoardPort;
     
     private static final String MODE_STRING = "MODE";
-    
+    private static final String INVERT_STRING = "TINV";
+    private static final String GET_STRING = "?";
+    private static final String RAW_STRING = "RAW";
+    private static final String WATCHDOG_FEED_STRING = "WDGF";
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
     
@@ -51,13 +54,16 @@ class ControlBoardCommunication {
 
     /**
      * Returns the mode the control board is in.
-     * @return ControlBoardMode enum that is either RAW or LOCAL.
      */
-    public ControlBoardMode getMode() {
+    public void getMode() {
+    	StringBuilder message = new StringBuilder();
     	
+    	message.append(GET_STRING);
+    	message.append(MODE_STRING);
     	
-
-        return null;
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toString().getBytes());
+        
+    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
 
     /**
