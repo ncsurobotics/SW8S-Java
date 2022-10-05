@@ -3,22 +3,21 @@
  */
 package org.aquapackrobotics.sw8s.comms;
 
+import java.util.Arrays;
+
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-import com.fazecast.jSerialComm.SerialPortMessageListener;
 
 /**
  * The ControlBoardListener class implements SerialPortMessageListener to listen for messages starting with the START_BYTE.
  * ControlBoardListener listens for messages from the Control Board
  *
  */
-public class ControlBoardListener implements SerialPortMessageListener {
-	
-	private static final byte[] START_BYTE = {(byte) 253};
+public class ControlBoardListener implements SerialPortDataListener {
 
-	public ControlBoardListener() {
-		// TODO Auto-generated constructor stub
-	}
+	private static final byte START_BYTE = (byte) 253;
+	private static final byte END_BYTE = (byte) 254;
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -33,26 +32,26 @@ public class ControlBoardListener implements SerialPortMessageListener {
 	 */
 	@Override
 	public void serialEvent(SerialPortEvent event) {
-		// TODO Auto-generated method stub
-
+		int size = event.getSerialPort().bytesAvailable();
+		byte[] message = new byte[size];
+		event.getSerialPort().readBytes(message, size);
+		
+		try {
+			//If message does not start with start byte or end with end byte, it is ignored
+			if (message[0] != START_BYTE || message[size - 1] != END_BYTE)
+				throw new IllegalArgumentException();
+			
+			//Remove start and end bytes
+			byte[] strippedMessage = Arrays.copyOfRange(message, 1, size - 1);
+			//Will throw IllegalArgumentException if garbage/corrupted
+			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
+		}
+		catch (IllegalArgumentException e) {
+			//Do nothing
+		}
+		
+		//TODO: Implement
 	}
 	
-	/**
-	 * Returns a boolean indicating whether the message delimiter indicates the end or the beginning of a message.
-	 * @return true if delimiter indicates end of message, false if delimiter indicates beginning
-	 */
-	@Override
-	public boolean delimiterIndicatesEndOfMessage() {
-		return false;
-	}
-	
-	/**
-	 * The delimiter that the listener will detect messages with
-	 */
-	@Override
-	public byte[] getMessageDelimiter() {
-		// TODO Auto-generated method stub
-		return START_BYTE;
-	}
 
 }
