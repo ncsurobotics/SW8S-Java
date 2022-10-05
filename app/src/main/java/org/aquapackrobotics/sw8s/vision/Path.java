@@ -15,20 +15,24 @@ import org.opencv.imgproc.Imgproc;
 //import wolf_vision.VisionMath;
 
 public class Path extends ImagePrep {
+	// parameters (color, width) to tune, see isPath()
 	private final int PATH_COLOR_LOW = 60;
 	private final int PATH_COLOR_HIGH = 85;
 	private final int PATH_WIDTH_LOW = 60;
 	private final int PATH_WIDTH_HIGH = 400;
+	
+	// vector pointing up is forward
 	private final double[] FORWARD = {0,-1};
 	
 	private int path_width_idx = 0;
 	private int path_length_idx = 0;
-	private int path_color = 0;
 	
+	// PCA outputs
 	public double[] mean = new double[2]; // [x,y]
 	public double[] vectors = new double[4];
 	public double[] values = new double[2];
 	
+	// Path outputs
 	public ArrayList<double[]> results_prop = new ArrayList<double[]>(); //array with each element containing [color, width, angle, vert_offset, hori_offset]
 	public ArrayList<Boolean> result = new ArrayList<Boolean>(); // array containing boolean values where true = path, false = not path
 	
@@ -41,6 +45,7 @@ public class Path extends ImagePrep {
 		Imgproc.cvtColor(colored_image, gray_image, Imgproc.COLOR_BGR2GRAY);
 		// obtain all unique colors
 		List<Integer> all_colors = uniqueColor(gray_image);
+		// clear path outputs
 		this.results_prop.clear();
 		this.result.clear();
 		// for each color
@@ -121,14 +126,17 @@ public class Path extends ImagePrep {
 		Mat output = input_image.clone();
 		Point center = new Point(this.mean[0],this.mean[1]);
 		if (is_path) {
-			Imgproc.circle(output, center, 5, new Scalar(0,255,0));
+			Imgproc.circle(output, center, 5, new Scalar(0,255,0));	// green 
 		} else {
-			Imgproc.circle(output, center, 5, new Scalar(0,0,255));
+			Imgproc.circle(output, center, 5, new Scalar(0,0,255)); // red
 		}
+		// length
 		Point p1 = new Point(center.x + 0.02 * this.vectors[this.path_length_idx]* this.values[this.path_length_idx],
 				center.y + 0.02 * this.vectors[this.path_length_idx+1]* this.values[this.path_length_idx]);
+		// width
 		Point p2 = new Point(center.x + 0.02 * this.vectors[this.path_width_idx*2]* this.values[this.path_width_idx],
 				center.y + 0.02 * this.vectors[2*this.path_width_idx+1]* this.values[this.path_width_idx]);
+		// draw the vectors
 		Imgproc.arrowedLine(output, center, p1, new Scalar(255,255,255));
 		//Imgproc.arrowedLine(output, center, p2, new Scalar(0,255,0));
 		return output;
@@ -187,14 +195,20 @@ public class Path extends ImagePrep {
 	
 	/**
 	 * output results for movements
-	 * @return
+	 * @return path angle with respect to FORWARD vector
 	 */
 	public double computeAngle() {
 		double[] path_direction= {this.vectors[this.path_length_idx],this.vectors[this.path_length_idx+1]};
 		double ret = VisionMath.computeAngle(path_direction, this.FORWARD);
+		// negative angle if pointing left
 		if (path_direction[0] < 0) {ret = -ret;}
 		return ret;
 	}
+	/**
+	 * 
+	 * @param img_center
+	 * @return offset to the center of the image, +x right, +y down
+	 */
 	public double[] computeOffset(double[] img_center) {
 		double[] offset = {this.mean[0] - img_center[0], this.mean[1] - img_center[1]};
 		return offset;
