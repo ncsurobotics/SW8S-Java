@@ -17,28 +17,33 @@ public class App {
     }
 
     public static void main(String[] args) {
+        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        String helpFlag[] = {"Hey", 
+        "\ntest -- The Command Flag used in Testing"};
         for (String str: args) {
             switch (str) {
                 case "test":
                     System.out.println("Yay! it worked!");
                     break;
-                case "-h":
+                case "h":
                     for(int i = 0; i < helpFlag.length; i++){
                         System.out.println(helpFlag[i]);
                     }
                     break;
-                case "-s":
-                    Mission mission = (Mission) new StateMission(pool);
-                    break;
+                /*case "-s":
+                    Mission mission1 = (Mission) new StateMission(pool);
+                    mission1.run();
+                    break;*/
                 default:
-                    Mission mission = (Mission) new AutoMission(pool);
+                    Mission missionAuto = (Mission) new AutoMission(pool);
+                    missionAuto.run();
                     break;
 
             }
         }
-        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        
         Mission mission = (Mission) new AutoMission(pool);
 
-        mission.run();
+        
     }
 }
