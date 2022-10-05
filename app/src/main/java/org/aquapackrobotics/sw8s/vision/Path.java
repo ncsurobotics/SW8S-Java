@@ -1,5 +1,6 @@
 package org.aquapackrobotics.sw8s.vision;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,40 +29,62 @@ public class Path extends ImagePrep {
 	public double[] vectors = new double[4];
 	public double[] values = new double[2];
 	
-	public double[][] results = new double[5][4]; //[color, angle, vert_offset, hori_offset]
+	public ArrayList<double[]> results_prop = new ArrayList<double[]>(); //array with each element containing [color, width, angle, vert_offset, hori_offset]
+	public ArrayList<Boolean> result = new ArrayList<Boolean>(); // array containing boolean values where true = path, false = not path
 	
+	/**
+	 * finds the vectors of each color in the image (converted to gray scale), output are stored in results_prop and results
+	 * @param colored_image input colored image
+	 */
 	public void iteratePathBinaryPCA(Mat colored_image) {
 		Mat gray_image = new Mat();
 		Imgproc.cvtColor(colored_image, gray_image, Imgproc.COLOR_BGR2GRAY);
+		// obtain all unique colors
 		List<Integer> all_colors = uniqueColor(gray_image);
-		
+		this.results_prop.clear();
+		this.result.clear();
+		// for each color
 		for (int color = 0; color < all_colors.size(); color++) {
 			Mat current_bin_image = new Mat();
+			// threshold this image
 			Core.inRange(gray_image, new Scalar(all_colors.get(color)), new Scalar(all_colors.get(color)), current_bin_image);;
+			// find the coordinates where the threshold is high
 			MatOfPoint on_points = cvtBinaryToPoints(current_bin_image);
-			System.out.println(on_points.toArray().length);
+			//System.out.println(on_points.toArray().length);
+			// compute the PCA vectors and stuff
 			List<Mat> PCA_output = binaryPCA(on_points);
+			// convert Mat to double[]
 			PCA_output.get(0).get(0,0, this.mean);
 			PCA_output.get(1).get(0,0, this.vectors);
 			PCA_output.get(2).get(0,0, this.values);
-			correctDirection();
-			System.out.println(PCA_output.get(1).dump());
-			System.out.println(Arrays.toString(this.vectors));
+			// filter for the true path
+			boolean is_path = pathFilter(all_colors.get(color));
+			this.result.add(is_path);
+			
+			//System.out.println(PCA_output.get(1).dump());
+			//System.out.println(Arrays.toString(this.vectors));
 			//System.out.println(PCA_output.get(1).dump());
 			//System.out.println(PCA_output.get(2).dump());
-			if (this.values[1] > this.values[0]) {
-				this.path_length_idx = 1;
-			} else {this.path_length_idx = 0;}
 			
-			
+			// compute & store results
+			double[] img_center = {colored_image.rows()/2.,colored_image.cols()/2.};
+			double[] offset = computeOffset(img_center);
+			double[] properties = {all_colors.get(color), computeAngle(), offset[0], offset[1]};
+			this.results_prop.add(properties);	
 		}
 	}
+	/**
+	 * Same as iteratePathBinaryPCA(), but also returns image with vectors drawn, see drawPCA()
+	 * @param colored_image
+	 * @return images of vectors drawn
+	 */
 	public Mat iteratePathBinaryPCAAndDraw(Mat colored_image) {
 		Mat draw = colored_image.clone();
 		Mat gray_image = new Mat();
 		Imgproc.cvtColor(colored_image, gray_image, Imgproc.COLOR_BGR2GRAY);
 		List<Integer> all_colors = uniqueColor(gray_image);
-		
+		this.results_prop.clear();
+		this.result.clear();
 		for (int color = 0; color < all_colors.size(); color++) {
 			Mat current_bin_image = new Mat();
 			Core.inRange(gray_image, new Scalar(all_colors.get(color)), new Scalar(all_colors.get(color)), current_bin_image);;
@@ -76,19 +99,24 @@ public class Path extends ImagePrep {
 			//System.out.println(PCA_output.get(2).dump());
 			draw = drawPCA(draw, is_path);
 			
-			this.results[color][0] = all_colors.get(color);
-			this.results[color][1] = computeAngle();
 			double[] img_center = {colored_image.rows()/2.,colored_image.cols()/2.};
 			double[] offset = computeOffset(img_center);
-			this.results[color][2] = offset[0];
-			this.results[color][3] = offset[1];
-			System.out.println(is_path);
-			System.out.println(Arrays.toString(this.results[color]));
+			double[] properties = {all_colors.get(color), this.values[this.path_width_idx],computeAngle(), offset[0], offset[1]};
+			this.results_prop.add(properties);
+			this.result.add(is_path);
+			System.out.println(Arrays.toString(this.results_prop.get(color)));
 		}
-		
+		System.out.println(Collections.frequency(this.result, true));
+		System.out.println(this.result.indexOf(true));
 		return draw;
 	}
 	
+	/**
+	 * draw PCA vectors
+	 * @param input_image
+	 * @param is_path different color for the vector
+	 * @return drawn image
+	 */
 	public Mat drawPCA(Mat input_image, boolean is_path) {
 		Mat output = input_image.clone();
 		Point center = new Point(this.mean[0],this.mean[1]);
@@ -105,11 +133,19 @@ public class Path extends ImagePrep {
 		//Imgproc.arrowedLine(output, center, p2, new Scalar(0,255,0));
 		return output;
 	}
+	/**
+	 * process the path properties and filter for the correct one
+	 * @param color
+	 * @return
+	 */
 	private boolean pathFilter(int color) {
 		correctDirection();
 		decideLenWidth();
 		return isPath(color);
 	}
+	/**
+	 * make all vectors point upwards
+	 */
 	private void correctDirection() {
 		if (this.vectors[1] > 0) {
 			this.vectors[0] = -this.vectors[0];
@@ -120,6 +156,9 @@ public class Path extends ImagePrep {
 			this.vectors[3] = -this.vectors[3];
 		}
 	}
+	/**
+	 * decide which vectors is the length and which is the width
+	 */
 	private void decideLenWidth() {
 		if (this.values[1] > this.values[0]) {
 			this.path_length_idx = 1;
@@ -129,7 +168,11 @@ public class Path extends ImagePrep {
 			this.path_width_idx = 1;
 		}
 	}
-	
+	/**
+	 * filter with some thresholds
+	 * @param color
+	 * @return
+	 */
 	private boolean isPath(int color) {
 		//System.out.println(color);
 		if (color > this.PATH_COLOR_HIGH || color < this.PATH_COLOR_LOW) {
@@ -142,6 +185,10 @@ public class Path extends ImagePrep {
 		return true;
 	}
 	
+	/**
+	 * output results for movements
+	 * @return
+	 */
 	public double computeAngle() {
 		double[] path_direction= {this.vectors[this.path_length_idx],this.vectors[this.path_length_idx+1]};
 		double ret = VisionMath.computeAngle(path_direction, this.FORWARD);
