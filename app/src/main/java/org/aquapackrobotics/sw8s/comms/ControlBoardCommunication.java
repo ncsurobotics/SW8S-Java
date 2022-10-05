@@ -54,13 +54,16 @@ class ControlBoardCommunication {
 
     /**
      * Returns the mode the control board is in.
-     * @return ControlBoardMode enum that is either RAW or LOCAL.
      */
-    public ControlBoardMode getMode() {
+    public void getMode() {
+    	StringBuilder message = new StringBuilder();
     	
+    	message.append(GET_STRING);
+    	message.append(MODE_STRING);
     	
-
-        return null;
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toString().getBytes());
+        
+    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
 
     /**
@@ -70,7 +73,7 @@ class ControlBoardCommunication {
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
     	
         // TODO: Impliment
-        byte[8] is_inv;
+        byte[] is_inv = new byte[8];
 
         is_inv[0] = invert1;
         is_inv[1] = invert2;
