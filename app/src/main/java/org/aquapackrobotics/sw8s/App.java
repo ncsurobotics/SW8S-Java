@@ -7,7 +7,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.Mission;
 import org.aquapackrobotics.sw8s.missions.AutoMission;
-
+import org.aquapackrobotics.sw8s.missions.ManualMission;
 public class App {
 
     static final int POOLSIZE = 1;
@@ -43,6 +43,10 @@ public class App {
                 // case "-s3":
                 //     executeState(State3);
                 //     break;
+                case "manual":
+                    Mission missionManual = (Mission) new ManualMission(pool);
+                    missionManual.run();
+                    break;
                 default:
                     Mission missionAuto = (Mission) new AutoMission(pool);
                     missionAuto.run();
