@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import com.fazecast.jSerialComm.*;
 
@@ -115,19 +116,44 @@ class ControlBoardCommunication {
     	ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
     	rawSpeed.writeBytes(RAW_STRING.getBytes());
     	
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed1).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed2).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed3).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed4).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed5).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed6).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed7).array());
-    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed8).array());
+    	ByteBuffer speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed1);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed2);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed3);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed4);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed5);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(6);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed7);
+    	rawSpeed.writeBytes(speedBuffer.array());
+    	
+    	speedBuffer = ByteBuffer.allocate(4);
+    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    	speedBuffer.putFloat((float)speed8);
+    	rawSpeed.writeBytes(speedBuffer.array());
 
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
 
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
-
     }
     
     /**
