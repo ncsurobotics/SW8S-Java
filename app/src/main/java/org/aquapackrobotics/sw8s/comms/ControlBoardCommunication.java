@@ -112,7 +112,22 @@ class ControlBoardCommunication {
      * Each double should be from -1 to 1.
      */
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
+    	ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
+    	rawSpeed.writeBytes(RAW_STRING.getBytes());
     	
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed1).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed2).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed3).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed4).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed5).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed6).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed7).array());
+    	rawSpeed.writeBytes(ByteBuffer.allocate(4).putFloat((float)speed8).array());
+
+        byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
+
+        controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
+
     }
     
     /**
