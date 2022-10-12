@@ -43,18 +43,27 @@ public class SerialCommunicationUtilityTest {
 
     @Test
     public void testConstructModel() {
+        TEMPprintArray(appendStartEndMarkers(encodedMessage_Zeros),
+                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
+        
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_MODEL),
                 SerialCommunicationUtility.constructMessage(rawMessage_MODEL));
     }
 
     @Test
     public void testConstructTINV() {
+        TEMPprintArray(appendStartEndMarkers(encodedMessage_TINV),
+                SerialCommunicationUtility.constructMessage(rawMessage_TINV));
+
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_TINV),
                 SerialCommunicationUtility.constructMessage(rawMessage_TINV));
     }
 
     @Test
     public void testConstructZeros() {
+        TEMPprintArray(appendStartEndMarkers(encodedMessage_Zeros),
+                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
+
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
                 SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
     }
@@ -84,5 +93,19 @@ public class SerialCommunicationUtilityTest {
         wrappedOriginal[wrappedOriginal.length - 1] = END_BYTE;
 
         return wrappedOriginal;
+    }
+
+    private void TEMPprintArray(byte[] one, byte[] two) {
+        for (byte b : one) {
+            System.out.print((int) b);
+            System.out.print(" ");
+        }
+
+        System.out.print("\n");
+
+        for (byte b : one) {
+            System.out.print((int) b);
+            System.out.print(" ");
+        }
     }
 }
