@@ -22,17 +22,25 @@ public class App {
         System.out.println("Basic Format: gradle run --args '_'");
         for (String str: args) {
             switch (str) {
-                case "test":
+                case "--test":
                     System.out.println("Yay! it worked!");
                     break;
-                case "h":
+                case "-h":
                     for(int i = 0; i < helpFlag.length; i++){
                         System.out.println(helpFlag[i]);
                     }
-                case "help":
+                case "--help":
                     for(int i = 0; i < helpFlag.length; i++){
                         System.out.println(helpFlag[i]);
                     }
+                    break;
+                case "--raw_test":
+                    Mission missionRaw_Test = (Mission) new Raw_TestMission(pool);
+                    missionRaw_Test.run();
+                    break;
+                case "--local_test":
+                    Mission missionLocal_Test = (Mission) new Local_TestMission(pool);
+                    missionLocal_Test.run();
                     break;
                 // case "-s1":
                 //     executeState(State1);
