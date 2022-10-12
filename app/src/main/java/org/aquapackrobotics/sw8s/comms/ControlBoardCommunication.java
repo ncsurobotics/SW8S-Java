@@ -1,6 +1,9 @@
 package org.aquapackrobotics.sw8s.comms;
 
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+
 import com.fazecast.jSerialComm.*;
 
 /**
@@ -39,16 +42,16 @@ class ControlBoardCommunication {
      * @param mode ControlBoardMode enum that is either RAW or LOCAL.
      */
     public void setMode(ControlBoardMode mode) {
-    	StringBuilder modeMessage = new StringBuilder();
-    	modeMessage.append(MODE_STRING);
+    	ByteArrayOutputStream modeMessage = new ByteArrayOutputStream();
+    	modeMessage.writeBytes(MODE_STRING.getBytes());
     	if (mode == ControlBoardMode.RAW) {
-    		modeMessage.append(RAW_BYTE);
+    		modeMessage.write(RAW_BYTE);
     	}
     	else if (mode == ControlBoardMode.LOCAL){
-    		modeMessage.append(LOCAL_BYTE);
+    		modeMessage.write(LOCAL_BYTE);
     	}
     	
-    	byte[] modeMessageBytes = SerialCommunicationUtility.constructMessage(modeMessage.toString().getBytes());
+    	byte[] modeMessageBytes = SerialCommunicationUtility.constructMessage(modeMessage.toByteArray());
     	
     	controlBoardPort.writeBytes(modeMessageBytes, modeMessageBytes.length);
     }
@@ -57,12 +60,12 @@ class ControlBoardCommunication {
      * Prompts the control board for the current mode
      */
     public void getMode() {
-    	StringBuilder message = new StringBuilder();
+    	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
-    	message.append(GET_STRING);
-    	message.append(MODE_STRING);
+    	message.writeBytes(GET_STRING.getBytes());
+    	message.writeBytes(MODE_STRING.getBytes());
     	
-    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toString().getBytes());
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
@@ -72,8 +75,6 @@ class ControlBoardCommunication {
      * True is inverted, false is not inverted.
      */
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
-    	
-        // TODO: Impliment
         byte[] is_inv = new byte[8];
 
         is_inv[0] = (byte)(invert1 ? 1:0);
@@ -85,7 +86,7 @@ class ControlBoardCommunication {
         is_inv[6] = (byte)(invert7 ? 1:0);
         is_inv[7] = (byte)(invert8 ? 1:0);
 
-        is_inv = SerialCommunicationUtility.constructMessage(is_inv.toString().getBytes());
+        is_inv = SerialCommunicationUtility.constructMessage(is_inv);
 
         controlBoardPort.writeBytes(is_inv, 8);
         
@@ -96,13 +97,14 @@ class ControlBoardCommunication {
      * @return Array of 8 booleans, each representing an individual thruster.
      */
     public void getThrusterInversions() {
-
-        // TODO: Impliment
-        byte [] get_inversion = new byte[4];
-        get_inversion = SerialCommunicationUtility.constructMessage(INVERT_STRING.getBytes());
+    	ByteArrayOutputStream message = new ByteArrayOutputStream();
+    	
+    	message.writeBytes(GET_STRING.getBytes());
+    	message.writeBytes(INVERT_STRING.getBytes());
+    	
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
-        controlBoardPort.writeBytes(get_inversion, 4);
-       // return null;
+    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
 
     /**
@@ -111,21 +113,6 @@ class ControlBoardCommunication {
      */
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
     	
-        // TODO: Immpliment
-        byte [] speeds = new byte[8];
-        speeds[0] = (byte)speed1;
-        speeds[1] = (byte)speed2;
-        speeds[2] = (byte)speed3;
-        speeds[3] = (byte)speed4;
-        speeds[4] = (byte)speed5;
-        speeds[5] = (byte)speed6;
-        speeds[6] = (byte)speed7;
-        speeds[7] = (byte)speed8;
-
-        speeds = SerialCommunicationUtility.constructMessage(speeds.toString().getBytes());
-
-        controlBoardPort.writeBytes(speeds, 8);
-
     }
     
     /**
