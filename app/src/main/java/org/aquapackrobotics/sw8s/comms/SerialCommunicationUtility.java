@@ -1,6 +1,6 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Provides helpers for creating and parsing messages
@@ -17,26 +17,25 @@ public class SerialCommunicationUtility {
      * @return The message encoded in the format the SW8 control board uses
      */
     public static byte[] constructMessage(byte[] message) {
-        StringBuilder formattedMessage = new StringBuilder();
+        ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
 
-        formattedMessage.append(START_BYTE);
+        formattedMessage.write(START_BYTE);
 
         // Add escaped message to formatted message
         for (byte msgByte : message) {
-            addEscapedByteToBuilder(formattedMessage, msgByte);
+            addEscapedByteToStream(formattedMessage, msgByte);
         }
 
         // Add CRC to formatted message
-        long crc = CRC.calculateCRC(CRC.Parameters.CRC16, message);
-        short crc16 = (short) crc;
+        short crc16 = CRC.CITT16_False(message, message.length);
         byte lowByte = (byte) (crc16 & 0x00FF);
         byte highByte = (byte) ((crc16 & 0xFF00) >> 8);
-        addEscapedByteToBuilder(formattedMessage, highByte);
-        addEscapedByteToBuilder(formattedMessage, lowByte);
+        addEscapedByteToStream(formattedMessage, highByte);
+        addEscapedByteToStream(formattedMessage, lowByte);
 
-        formattedMessage.append(END_BYTE);
+        formattedMessage.write(END_BYTE);
 
-        return formattedMessage.toString().getBytes();
+        return formattedMessage.toByteArray();
     }
 
     /**
@@ -52,31 +51,30 @@ public class SerialCommunicationUtility {
             throw new IllegalArgumentException("Message argument was too short to hold a message and a CRC16");
         }
 
-        byte[] strippedMessage = Arrays.copyOfRange(message, 0, message.length - 2);
-
         // Verify CRC
 
         byte lowByte = message[message.length - 1];
         byte highByte = message[message.length - 2];
-        short retrievedCRC16 = (short) ((highByte << 8) + lowByte);
+        short retrievedCRC16 = (short) ((short) (highByte << 8) + lowByte);
 
-        long calculatedCRC = CRC.calculateCRC(CRC.Parameters.CRC16, strippedMessage);
-        short calculatedCRC16 = (short) calculatedCRC;
+        short calculatedCRC16 = CRC.CITT16_False(message, message.length - 2);
 
         if (retrievedCRC16 != calculatedCRC16) {
             throw new IllegalArgumentException("Calculated CRC16 of message is not equal to the attached CRC16");
         }
 
         // Verification completed, extract the message
-        StringBuilder deFormattedMessage = new StringBuilder();
+        ByteArrayOutputStream deFormattedMessage = new ByteArrayOutputStream();
 
         // Strip escape bytes
-        for (byte msgByte : strippedMessage) {
+        for (int msgIndex = 0; msgIndex < message.length - 2; msgIndex++) {
+            byte msgByte = message[msgIndex];
+
             if (msgByte != ESCAPE_BYTE)
-                deFormattedMessage.append(msgByte);
+                deFormattedMessage.write(msgByte);
         }
 
-        return deFormattedMessage.toString().getBytes();
+        return deFormattedMessage.toByteArray();
     }
 
     /**
@@ -97,11 +95,11 @@ public class SerialCommunicationUtility {
         return byteMessage == END_BYTE;
     }
 
-    private static void addEscapedByteToBuilder(StringBuilder builder, byte msgByte) {
+    private static void addEscapedByteToStream(ByteArrayOutputStream stream, byte msgByte) {
         if (msgByte == END_BYTE || msgByte == START_BYTE || msgByte == ESCAPE_BYTE) {
-            builder.append(msgByte);
+            stream.write(msgByte);
         }
 
-        builder.append(msgByte);
+        stream.write(msgByte);
     }
 }
