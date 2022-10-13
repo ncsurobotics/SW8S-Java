@@ -49,9 +49,18 @@ public class ControlBoardListener implements SerialPortDataListener {
 		catch (IllegalArgumentException e) {
 			//Do nothing
 		}
-		
-		//TODO: Implement
+	}
+
+	void getMode( byte [] message){ // takes in destructed message
+			String m = message.toString(); // message payload converted into string
+			String mode; // R is raw = and L is local
+			if(m == "MODER"){
+				mode = "R";
+			}
+			if(m == "MODEL"){	
+				mode = "L";
+			}
+				
 	}
 	
-
 }

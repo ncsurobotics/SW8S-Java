@@ -76,21 +76,29 @@ class ControlBoardCommunication {
      * True is inverted, false is not inverted.
      */
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
-        byte[] is_inv = new byte[8];
-
-        is_inv[0] = (byte)(invert1 ? 1:0);
-        is_inv[1] = (byte)(invert2 ? 1:0);
-        is_inv[2] = (byte)(invert3 ? 1:0);
-        is_inv[3] = (byte)(invert4 ? 1:0);
-        is_inv[4] = (byte)(invert5 ? 1:0);
-        is_inv[5] = (byte)(invert6 ? 1:0);
-        is_inv[6] = (byte)(invert7 ? 1:0);
-        is_inv[7] = (byte)(invert8 ? 1:0);
-
-        is_inv = SerialCommunicationUtility.constructMessage(is_inv);
-
-        controlBoardPort.writeBytes(is_inv, 8);
         
+        ByteArrayOutputStream message = new ByteArrayOutputStream();
+
+        message.writeBytes(INVERT_STRING.getBytes());
+        append(message , invert1);
+        append(message , invert2);
+        append(message , invert3);
+        append(message , invert4);
+        append(message , invert5);
+        append(message , invert6);
+        append(message , invert7);
+        append(message , invert8);
+
+        byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
+        
+    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
+        
+        
+    }
+    void append(ByteArrayOutputStream stream , boolean b){
+        
+        byte value = b ? (byte) 1 : (byte) 0; 
+        stream.write(value);
     }
 
     /**
