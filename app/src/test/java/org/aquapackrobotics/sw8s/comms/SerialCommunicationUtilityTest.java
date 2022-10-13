@@ -122,7 +122,7 @@ public class SerialCommunicationUtilityTest {
 
         System.out.print("\n");
 
-        for (byte b : one) {
+        for (byte b : two) {
             System.out.print((int) b);
             System.out.print(" ");
         }
