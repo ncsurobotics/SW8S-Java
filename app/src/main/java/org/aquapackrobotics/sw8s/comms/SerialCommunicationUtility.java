@@ -35,7 +35,7 @@ public class SerialCommunicationUtility {
 
         formattedMessage.write(END_BYTE);
 
-        return formattedMessage.toString().getBytes();
+        return formattedMessage.toByteArray();
     }
 
     /**

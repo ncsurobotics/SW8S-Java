@@ -45,46 +45,20 @@ public class SerialCommunicationUtilityTest {
 
     @Test
     public void testConstructModel() {
-        TEMPprintArray(appendStartEndMarkers(encodedMessage_Zeros),
-                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
-        
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_MODEL),
                 SerialCommunicationUtility.constructMessage(rawMessage_MODEL));
     }
 
     @Test
     public void testConstructTINV() {
-        TEMPprintArray(appendStartEndMarkers(encodedMessage_TINV),
-                SerialCommunicationUtility.constructMessage(rawMessage_TINV));
-
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_TINV),
                 SerialCommunicationUtility.constructMessage(rawMessage_TINV));
     }
 
     @Test
     public void testConstructZeros() {
-        TEMPprintArray(appendStartEndMarkers(encodedMessage_Zeros),
-                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
-
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
                 SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
-    }
-
-    /**
-     * Written to rule out differences between test failures on different
-     * platforms
-     */
-    @Test
-    public void testByteOutputStreamBehavior() {
-        ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
-
-        formattedMessage.write(77);
-        formattedMessage.write(79);
-        formattedMessage.write(68);
-        formattedMessage.write(69);
-        formattedMessage.write(76);
-
-        Assert.assertArrayEquals(rawMessage_MODEL, formattedMessage.toByteArray());
     }
 
     @Test
@@ -112,19 +86,5 @@ public class SerialCommunicationUtilityTest {
         wrappedOriginal[wrappedOriginal.length - 1] = END_BYTE;
 
         return wrappedOriginal;
-    }
-
-    private void TEMPprintArray(byte[] one, byte[] two) {
-        for (byte b : one) {
-            System.out.print((int) b);
-            System.out.print(" ");
-        }
-
-        System.out.print("\n");
-
-        for (byte b : two) {
-            System.out.print((int) b);
-            System.out.print(" ");
-        }
     }
 }
