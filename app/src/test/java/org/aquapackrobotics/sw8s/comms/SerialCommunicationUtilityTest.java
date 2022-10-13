@@ -70,7 +70,6 @@ public class SerialCommunicationUtilityTest {
         ByteArrayOutputStream testStream = new ByteArrayOutputStream();
         SerialCommunicationUtility.writeEncodedFloat(testStream, rawFloat);
 
-        printArrays(encodedFloat, testStream.toByteArray());
         Assert.assertArrayEquals(encodedFloat, testStream.toByteArray());
     }
 
