@@ -3,6 +3,8 @@ package org.aquapackrobotics.sw8s.comms;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Tests the SerialCommunicationUtility static class
  */
@@ -66,6 +68,23 @@ public class SerialCommunicationUtilityTest {
 
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
                 SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
+    }
+
+    /**
+     * Written to rule out differences between test failures on different
+     * platforms
+     */
+    @Test
+    public void testByteOutputStreamBehavior() {
+        ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
+
+        formattedMessage.write(77);
+        formattedMessage.write(79);
+        formattedMessage.write(68);
+        formattedMessage.write(69);
+        formattedMessage.write(76);
+
+        Assert.assertArrayEquals(rawMessage_MODEL, formattedMessage.toByteArray());
     }
 
     @Test
