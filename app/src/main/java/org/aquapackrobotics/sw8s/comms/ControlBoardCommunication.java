@@ -120,44 +120,17 @@ class ControlBoardCommunication {
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
     	ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
     	rawSpeed.writeBytes(RAW_STRING);
-    	
-    	ByteBuffer speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed1);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed2);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed3);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed4);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed5);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(6);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed7);
-    	rawSpeed.writeBytes(speedBuffer.array());
-    	
-    	speedBuffer = ByteBuffer.allocate(4);
-    	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    	speedBuffer.putFloat((float)speed8);
-    	rawSpeed.writeBytes(speedBuffer.array());
+
+		SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed1);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed2);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed3);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed4);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed5);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed6);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed7);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed8);
 
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
-
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
     }
     
