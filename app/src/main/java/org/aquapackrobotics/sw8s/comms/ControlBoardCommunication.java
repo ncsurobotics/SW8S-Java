@@ -8,21 +8,23 @@ import java.nio.ByteOrder;
 import com.fazecast.jSerialComm.*;
 
 /**
- *
+ * Synchronous SW8 control board communication handler
  */
 class ControlBoardCommunication {
     private SerialPort controlBoardPort;
     
-    private static final String MODE_STRING = "MODE";
-    private static final String INVERT_STRING = "TINV";
-    private static final String GET_STRING = "?";
-    private static final String RAW_STRING = "RAW";
-    private static final String WATCHDOG_FEED_STRING = "WDGF";
+    private static final byte[] MODE_STRING = "MODE".getBytes();
+    private static final byte[] INVERT_STRING = "TINV".getBytes();
+    private static final byte[] GET_STRING = "?".getBytes();
+    private static final byte[] RAW_STRING = "RAW".getBytes();
+    private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
-    
-    //SerialPortDataListener listener = new SerialPortDataListener();
 
+	/**
+	 * Construct a new ControlBoardCommunication listening and writing on the given port
+	 * @param port The port to listen on
+	 */
     public ControlBoardCommunication(SerialPort port) {
         controlBoardPort = port;
         controlBoardPort.openPort();
@@ -44,11 +46,10 @@ class ControlBoardCommunication {
      */
     public void setMode(ControlBoardMode mode) {
     	ByteArrayOutputStream modeMessage = new ByteArrayOutputStream();
-    	modeMessage.writeBytes(MODE_STRING.getBytes());
+    	modeMessage.writeBytes(MODE_STRING);
     	if (mode == ControlBoardMode.RAW) {
     		modeMessage.write(RAW_BYTE);
-    	}
-    	else if (mode == ControlBoardMode.LOCAL){
+    	} else if (mode == ControlBoardMode.LOCAL){
     		modeMessage.write(LOCAL_BYTE);
     	}
     	
@@ -63,8 +64,8 @@ class ControlBoardCommunication {
     public void getMode() {
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
-    	message.writeBytes(GET_STRING.getBytes());
-    	message.writeBytes(MODE_STRING.getBytes());
+    	message.writeBytes(GET_STRING);
+    	message.writeBytes(MODE_STRING);
     	
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
@@ -76,27 +77,23 @@ class ControlBoardCommunication {
      * True is inverted, false is not inverted.
      */
     public void setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) {
-        
         ByteArrayOutputStream message = new ByteArrayOutputStream();
 
-        message.writeBytes(INVERT_STRING.getBytes());
-        append(message , invert1);
-        append(message , invert2);
-        append(message , invert3);
-        append(message , invert4);
-        append(message , invert5);
-        append(message , invert6);
-        append(message , invert7);
-        append(message , invert8);
+        message.writeBytes(INVERT_STRING);
+        appendInversion(message , invert1);
+        appendInversion(message , invert2);
+        appendInversion(message , invert3);
+        appendInversion(message , invert4);
+        appendInversion(message , invert5);
+        appendInversion(message , invert6);
+        appendInversion(message , invert7);
+        appendInversion(message , invert8);
 
         byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
-        
-        
     }
-    void append(ByteArrayOutputStream stream , boolean b){
-        
+    void appendInversion(ByteArrayOutputStream stream , boolean b){
         byte value = b ? (byte) 1 : (byte) 0; 
         stream.write(value);
     }
@@ -108,8 +105,8 @@ class ControlBoardCommunication {
     public void getThrusterInversions() {
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
-    	message.writeBytes(GET_STRING.getBytes());
-    	message.writeBytes(INVERT_STRING.getBytes());
+    	message.writeBytes(GET_STRING);
+    	message.writeBytes(INVERT_STRING);
     	
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
@@ -122,7 +119,7 @@ class ControlBoardCommunication {
      */
     public void setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
     	ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
-    	rawSpeed.writeBytes(RAW_STRING.getBytes());
+    	rawSpeed.writeBytes(RAW_STRING);
     	
     	ByteBuffer speedBuffer = ByteBuffer.allocate(4);
     	speedBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -168,13 +165,8 @@ class ControlBoardCommunication {
      * Feeds motor watchdog
      */
     public void feedWatchdogMotor() {
-    	byte[] message = new byte[4];
-    	message = WATCHDOG_FEED_STRING.getBytes();
-    	
-    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toString().getBytes());
-        
+    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(WATCHDOG_FEED_STRING);
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
-
     
 }
