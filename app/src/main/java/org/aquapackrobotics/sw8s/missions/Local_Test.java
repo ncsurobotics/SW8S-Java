@@ -3,7 +3,6 @@ package org.aquapackrobotics.sw8s.missions;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.trainingsim.SimWindow;
 
 import java.util.Scanner;
 
@@ -17,14 +16,14 @@ public class Local_Test extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return null;
+        return new InitState(pool);
     }
 
     // TODO: implement
     @Override
     protected void executeState(State state) {
-        boolean continue = true;
-        while (continue) {
+        boolean cont = true;
+        while (cont) {
             System.out.print("Direction, Power, Seconds (i.e. Right 0.5 3): ");
             String nextLine = scnr.nextLine();
             if (nextLine.equals("")) {

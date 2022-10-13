@@ -5,9 +5,8 @@ package org.aquapackrobotics.sw8s;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.aquapackrobotics.sw8s.missions.Mission;
-import org.aquapackrobotics.sw8s.missions.AutoMission;
-import org.aquapackrobotics.sw8s.missions.ManualMission;
+import org.aquapackrobotics.sw8s.missions.*;
+
 public class App {
 
     static final int POOLSIZE = 1;
@@ -35,11 +34,11 @@ public class App {
                     }
                     break;
                 case "--raw_test":
-                    Mission missionRaw_Test = (Mission) new Raw_TestMission(pool);
+                    Mission missionRaw_Test = (Mission) new Raw_Test(pool);
                     missionRaw_Test.run();
                     break;
                 case "--local_test":
-                    Mission missionLocal_Test = (Mission) new Local_TestMission(pool);
+                    Mission missionLocal_Test = (Mission) new Local_Test(pool);
                     missionLocal_Test.run();
                     break;
                 // case "-s1":
