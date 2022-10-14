@@ -18,6 +18,7 @@ public class ControlBoardListener implements SerialPortDataListener {
 
 	private static final byte START_BYTE = (byte) 253;
 	private static final byte END_BYTE = (byte) 254;
+	private static final int THRUSTER_COUNT = 8;
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -63,9 +64,20 @@ public class ControlBoardListener implements SerialPortDataListener {
 				ControlBoardCommunication.setCurrentMode(ControlBoardMode.RAW);
 			}
 			if(m == "MODEL"){	
-				ControlBoardCommunication.setCurrentMode(ControlBoardMode.RAW);
+				ControlBoardCommunication.setCurrentMode(ControlBoardMode.LOCAL);
 			}
 				
+	}
+
+	private void getThrusterInversions(byte [] message){ // byte is a basically int8_t
+		String m = message.toString();
+		String command = m.substring(0,3);
+		boolean [] inversions = new boolean[8];
+		if(command == "TINV"){
+			for(int i = 4; i<THRUSTER_COUNT; i++){
+				inversions[i] = message[i] == 1 ? true : false;
+			}
+		}
 	}
 	
 }
