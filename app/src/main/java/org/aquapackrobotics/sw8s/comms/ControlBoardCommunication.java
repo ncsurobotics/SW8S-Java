@@ -157,6 +157,8 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) yaw);
 
         byte[] localSpeedMessage = SerialCommunicationUtility.constructMessage(localSpeed.toByteArray());
+
+        System.out.println(Arrays.toString(localSpeedMessage));
         
         controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
     }

@@ -35,7 +35,7 @@ public class Local_Test extends Mission {
 
         boolean cont = true;
         while (cont) {
-            System.out.println("Direction, Power, Seconds (i.e. Right 0.5 3): ");
+            System.out.println("Direction, Power (i.e. Right 0.5 3): ");
             String nextLine;
             if (scnr.hasNextLine()) {
                 nextLine = scnr.nextLine();
@@ -48,27 +48,35 @@ public class Local_Test extends Mission {
                 
                 String direction = lineParts[0];
                 double power = Double.valueOf(lineParts[1]);
-                double seconds = Double.valueOf(lineParts[2]);
 
                 switch (direction.toLowerCase()) {
                     case "left": 
                         manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
+                        break;
                     case "right":
                         manager.setLocalSpeeds(power, 0, 0, 0, 0, 0);
+                        break;
                     case "forward":
                         manager.setLocalSpeeds(0, power, 0, 0, 0, 0);
+                        break;
                     case "backward":
                         manager.setLocalSpeeds(0, -power, 0, 0, 0, 0);
+                        break;
                     case "up":
                         manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
+                        break;
                     case "down":
                         manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
+                        break;
                     case "pitch":
                         manager.setLocalSpeeds(0, 0, 0, power, 0, 0);
+                        break;
                     case "roll":
                         manager.setLocalSpeeds(0, 0, 0, 0, power, 0);
+                        break;
                     case "yaw":
                         manager.setLocalSpeeds(0, 0, 0, 0, 0, power);
+                        break;
                 }
             }
         }
