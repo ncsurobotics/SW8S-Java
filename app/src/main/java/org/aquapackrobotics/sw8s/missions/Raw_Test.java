@@ -27,12 +27,19 @@ public class Raw_Test extends Mission {
             System.out.print("Motor Number, Speed (i.e. 1 0.5): ");
             String nextLine = scnr.nextLine();
             if (nextLine.equals("")) {
+                //set all motor speeds to 0
+                //setRobotSpeed(0, 0, 0);
+                System.out.println("All motors set to 0.");
                 return;
             }
             String[] lineParts = nextLine.split(" ");
             
             int motorNumber = Integer.valueOf(lineParts[0]);
             double speed = Double.valueOf(lineParts[1]);
+
+            //set motor speed to inputted values
+            //setMotorSpeed(motorNumber, speed);
+            System.out.println("Motor: " + motorNumber + " // Speed: " + speed);
         }
     }
 
