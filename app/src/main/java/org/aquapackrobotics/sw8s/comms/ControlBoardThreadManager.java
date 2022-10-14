@@ -1,6 +1,6 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import org.checkerframework.checker.units.qual.C;
+import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.concurrent.*;
 
@@ -9,27 +9,25 @@ public class ControlBoardThreadManager {
     //Instance variables
     private ScheduledThreadPoolExecutor pool;
     private ControlBoardCommunication controlBoardCommunication;
-
-    //will represent serial comms later
     Runnable watchDog = new Runnable() {
         @Override
         public void run() {
-            //TODO: Implement watchdog serial comms
+            controlBoardCommunication.feedWatchdogMotor();
         }
     };
 
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
+        controlBoardCommunication = new ControlBoardCommunication(SerialPort.getCommPorts()[0]);
         startWatchDog();
-        controlBoardCommunication = new ControlBoardCommunication();
     }
 
     /**
      * Schedules the watch dog thread runnable.
      */
     private void startWatchDog() {
-        pool.scheduleAtFixedRate(watchDog, 0, 500, TimeUnit.MILLISECONDS);
+        pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -69,11 +67,13 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<ControlBoardMode> getMode() throws ExecutionException, InterruptedException {
-        Callable<ControlBoardMode> modeCallable = new Callable<ControlBoardMode>() {
+    public ScheduledFuture<Void> getMode() throws ExecutionException, InterruptedException {
+        //REVERT TO CONTROLMODE RETURN AFTER TEST
+        Callable<Void> modeCallable = new Callable<>() {
             @Override
-            public ControlBoardMode call() {
-                return controlBoardCommunication.getMode();
+            public Void call() {
+//                return controlBoardCommunication.getMode();
+                return null;
             }
         };
 
@@ -102,6 +102,7 @@ public class ControlBoardThreadManager {
                 return null;
             }
         };
+
        return scheduleTask(inversionCallable);
     }
 
@@ -111,11 +112,13 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<boolean[]> getThrusterInversions() throws ExecutionException, InterruptedException {
-        Callable<boolean[]> inversionsGetter = new Callable<boolean[]>() {
+    public ScheduledFuture<Void> getThrusterInversions() throws ExecutionException, InterruptedException {
+        //REVERT TO boolean[] RETURN AFTER TEST
+        Callable<Void> inversionsGetter = new Callable<>() {
             @Override
-            public boolean[] call() throws Exception {
-                return controlBoardCommunication.getThrusterInversions();
+            public Void call() throws Exception {
+//                return controlBoardCommunication.getThrusterInversions();
+                return null;
             }
         };
 
@@ -144,6 +147,7 @@ public class ControlBoardThreadManager {
                 return null;
             }
         };
+
        return scheduleTask(speedsCallable);
     }
 
