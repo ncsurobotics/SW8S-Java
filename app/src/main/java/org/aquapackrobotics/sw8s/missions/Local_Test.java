@@ -63,6 +63,12 @@ public class Local_Test extends Mission {
                         manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
                     case "down":
                         manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
+                    case "pitch":
+                        manager.setLocalSpeeds(0, 0, 0, power, 0, 0);
+                    case "roll":
+                        manager.setLocalSpeeds(0, 0, 0, 0, power, 0);
+                    case "yaw":
+                        manager.setLocalSpeeds(0, 0, 0, 0, 0, power);
                 }
             }
         }
