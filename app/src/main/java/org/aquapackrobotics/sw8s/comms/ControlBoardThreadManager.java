@@ -9,8 +9,6 @@ public class ControlBoardThreadManager {
     //Instance variables
     private ScheduledThreadPoolExecutor pool;
     private ControlBoardCommunication controlBoardCommunication;
-
-    //will represent serial comms later
     Runnable watchDog = new Runnable() {
         @Override
         public void run() {
@@ -21,8 +19,8 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        startWatchDog();
         controlBoardCommunication = new ControlBoardCommunication(SerialPort.getCommPorts()[0]);
+        startWatchDog();
     }
 
     /**
