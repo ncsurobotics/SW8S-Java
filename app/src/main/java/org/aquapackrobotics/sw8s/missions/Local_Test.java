@@ -7,10 +7,12 @@ import org.aquapackrobotics.sw8s.states.*;
 import java.util.Scanner;
 
 public class Local_Test extends Mission {
-    Scanner scnr = new Scanner(System.in);
-
     public Local_Test(ScheduledThreadPoolExecutor pool) {
         super(pool);
+    }
+
+    public void stopMotors() {
+        //set all motors to 0
     }
 
     // TODO: implement
@@ -23,14 +25,21 @@ public class Local_Test extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state) {
+        Scanner scnr = new Scanner(System.in);
         System.out.println("executeState reached");
+
+
         boolean cont = true;
         while (cont) {
             System.out.println("Direction, Power, Seconds (i.e. Right 0.5 3): ");
             String nextLine = scnr.nextLine();
-            if (nextLine.equals("")) {
+            if (scnr.hasNextLine() != true) {
                 return;
+            } else {
+                nextLine = scnr.nextLine();
             }
+
+            
 
             String[] lineParts = nextLine.split(" ");
             
@@ -41,14 +50,12 @@ public class Local_Test extends Mission {
             /* 
             switch (direction.toLowerCase()) {
                 case "left": 
-                    //setMotorSpeed
+                    //setMotorSpeed for seconds seconds
                 case "right":
-                    //setMotorSpeed to cause right velocity
-
+                    //setMotorSpeed to cause right velocity for seconds seconds
             }*/
         }
     }
-
     // TODO: implement
     @Override
     protected State nextState(State state) {
