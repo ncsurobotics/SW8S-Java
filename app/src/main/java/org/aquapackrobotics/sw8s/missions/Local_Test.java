@@ -40,7 +40,7 @@ public class Local_Test extends Mission {
             if (scnr.hasNextLine()) {
                 nextLine = scnr.nextLine();
                 if (nextLine.equals("")) {
-                    //set all motor speeds to 0
+                    manager.setLocalSpeeds(0,0,0,0,0,0);
                     System.out.println("All motors set to 0.");
                     return;
                 }
@@ -50,13 +50,20 @@ public class Local_Test extends Mission {
                 double power = Double.valueOf(lineParts[1]);
                 double seconds = Double.valueOf(lineParts[2]);
 
-                /* 
                 switch (direction.toLowerCase()) {
                     case "left": 
-                        //setMotorSpeed for seconds seconds
+                        manager.setLocalSpeeds(-1, 0, 0, 0, 0, 0);
                     case "right":
-                        //setMotorSpeed to cause right velocity for seconds seconds
-                }*/
+                        manager.setLocalSpeeds(1, 0, 0, 0, 0, 0);
+                    case "forward":
+                        manager.setLocalSpeeds(0, 1, 0, 0, 0, 0);
+                    case "backward":
+                        manager.setLocalSpeeds(0, -1, 0, 0, 0, 0);
+                    case "up":
+                        manager.setLocalSpeeds(0, 0, 1, 0, 0, 0);
+                    case "down":
+                        manager.setLocalSpeeds(0, 0, -1, 0, 0, 0);
+                }
             }
         }
     }
