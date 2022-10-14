@@ -45,20 +45,23 @@ public class ControlBoardListener implements SerialPortDataListener {
 			byte[] strippedMessage = Arrays.copyOfRange(message, 1, size - 1);
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
+			if (decodedMessage.toString().startsWith("MODE")) {
+				M
+			}
+		
 		}
 		catch (IllegalArgumentException e) {
 			//Do nothing
 		}
 	}
 
-	void getMode( byte [] message){ // takes in destructed message
+	private void setMode(byte [] message){ // takes in destructed message
 			String m = message.toString(); // message payload converted into string
-			String mode; // R is raw = and L is local
 			if(m == "MODER"){
-				mode = "R";
+				ControlBoardCommunication.setCurrentMode(ControlBoardMode.RAW);
 			}
 			if(m == "MODEL"){	
-				mode = "L";
+				ControlBoardCommunication.setCurrentMode(ControlBoardMode.RAW);
 			}
 				
 	}
