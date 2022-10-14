@@ -46,15 +46,17 @@ public class ControlBoardListener implements SerialPortDataListener {
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
 			if (decodedMessage.toString().startsWith("MODE")) {
-				M
+				setMode(decodedMessage);
 			}
-		
+			else if(decodedMessage.toString().startsWith("TINV")) {
+				//TODO: Implement
+			}
 		}
 		catch (IllegalArgumentException e) {
 			//Do nothing
 		}
 	}
-
+	
 	private void setMode(byte [] message){ // takes in destructed message
 			String m = message.toString(); // message payload converted into string
 			if(m == "MODER"){
