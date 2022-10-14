@@ -4,6 +4,7 @@ package org.aquapackrobotics.sw8s.comms;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import com.fazecast.jSerialComm.*;
 
@@ -93,6 +94,7 @@ class ControlBoardCommunication {
 
         byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
+        System.out.println(Arrays.toString(messageBytes));
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
     void appendInversion(ByteArrayOutputStream stream , boolean b){
@@ -133,6 +135,7 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed8);
 
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
+        System.out.println(Arrays.toString(rawSpeedMessage));
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
     }
     

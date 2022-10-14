@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.missions;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.*;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.Scanner;
 
@@ -28,6 +29,9 @@ public class Local_Test extends Mission {
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
         Scanner scnr = new Scanner(System.in);
 
+        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
+        manager.setMode(ControlBoardMode.LOCAL);
+        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
 
         boolean cont = true;
         while (cont) {
