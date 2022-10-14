@@ -18,7 +18,6 @@ public class Local_Test extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        System.out.println("initState reached");
         return new InitState(pool);
     }
 
@@ -26,7 +25,6 @@ public class Local_Test extends Mission {
     @Override
     protected void executeState(State state) {
         Scanner scnr = new Scanner(System.in);
-        System.out.println("executeState reached");
 
 
         boolean cont = true;
