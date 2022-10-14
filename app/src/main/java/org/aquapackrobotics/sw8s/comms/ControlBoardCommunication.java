@@ -18,6 +18,7 @@ class ControlBoardCommunication {
     private static final byte[] INVERT_STRING = "TINV".getBytes();
     private static final byte[] GET_STRING = "?".getBytes();
     private static final byte[] RAW_STRING = "RAW".getBytes();
+    private static final byte[] LOCAL_STRING = "LOCAL".getBytes();
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
@@ -137,6 +138,27 @@ class ControlBoardCommunication {
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
         System.out.println(Arrays.toString(rawSpeedMessage));
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
+    }
+    
+
+    /**
+     * Sets x, y, z, pitch, roll, and yaw in local mode
+     * Each double should be from -1 to 1.
+     */
+    public void setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
+    	ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
+    	localSpeed.writeBytes(LOCAL_STRING);
+
+		SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) z);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) pitch);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) roll);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) yaw);
+
+        byte[] localSpeedMessage = SerialCommunicationUtility.constructMessage(localSpeed.toByteArray());
+        
+        controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
     }
     
     /**
