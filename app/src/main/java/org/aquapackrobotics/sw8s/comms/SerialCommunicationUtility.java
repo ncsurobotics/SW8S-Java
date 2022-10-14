@@ -78,6 +78,22 @@ public class SerialCommunicationUtility {
     }
 
     /**
+     * Write a float in little-endian form to a byte stream
+     * @param stream The target stream to write to
+     * @param value The float value that will be converted to the SW8 control board format
+     */
+    public static void writeEncodedFloat(ByteArrayOutputStream stream, float value) {
+        int speedAsInt = Float.floatToRawIntBits(value);
+
+        // In testing, speedAsInt turns out to be 64-bits
+        byte lowByte = (byte) (speedAsInt & 0x0000FFFF);
+        byte highByte = (byte) ((speedAsInt & 0xFFFF0000) >> 16);
+
+        stream.write(highByte);
+        stream.write(lowByte);
+    }
+
+    /**
      * Checks if a byte is the start of a message.
      * @param byteMessage The byte to check
      * @return Returns true if the byte is the start of a message

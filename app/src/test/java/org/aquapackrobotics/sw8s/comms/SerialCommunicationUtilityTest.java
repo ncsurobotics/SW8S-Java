@@ -25,6 +25,10 @@ public class SerialCommunicationUtilityTest {
     public static final byte[] encodedMessage_Zeros = new byte[] {82,65,87,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,96,57};
     public static final byte[] rawMessage_Zeros = new byte[] {82,65,87,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+    // Raw float 10f (and little-endian conversion)
+    private static final float rawFloat = 10f;
+    private static final byte[] encodedFloat = new byte[] { (byte) 0x4120, 0 };
+
     @Test
     public void testDestructModel() {
         Assert.assertArrayEquals(rawMessage_MODEL,
@@ -59,6 +63,14 @@ public class SerialCommunicationUtilityTest {
     public void testConstructZeros() {
         Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
                 SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
+    }
+
+    @Test
+    public void testEncodingFloats() {
+        ByteArrayOutputStream testStream = new ByteArrayOutputStream();
+        SerialCommunicationUtility.writeEncodedFloat(testStream, rawFloat);
+
+        Assert.assertArrayEquals(encodedFloat, testStream.toByteArray());
     }
 
     @Test
