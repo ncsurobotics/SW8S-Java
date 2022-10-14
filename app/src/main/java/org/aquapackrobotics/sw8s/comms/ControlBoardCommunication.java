@@ -144,10 +144,18 @@ class ControlBoardCommunication {
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
     
+    /**
+     * Sets the current mode
+     * @param mode the mode to set (enum: ControlBoardMode)
+     */
     public static void setCurrentMode(ControlBoardMode mode) {
     	currentMode = mode;
     }
     
+    /**
+     * Gets the current mode
+     * @return the current mode as a ControlBoardMode enum
+     */
     public static ControlBoardMode getCurrentMode() {
     	return currentMode;
     }

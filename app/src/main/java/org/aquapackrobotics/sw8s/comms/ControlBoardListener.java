@@ -58,6 +58,10 @@ public class ControlBoardListener implements SerialPortDataListener {
 		}
 	}
 	
+	/**
+	 * Sets the current mode in ControlBoardCommunication based on the passed message
+	 * @param message the destructed message
+	 */
 	private void setMode(byte [] message){ // takes in destructed message
 			String m = message.toString(); // message payload converted into string
 			if(m == "MODER"){
