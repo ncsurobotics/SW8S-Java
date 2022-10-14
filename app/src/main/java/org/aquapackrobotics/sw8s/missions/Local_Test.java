@@ -32,28 +32,23 @@ public class Local_Test extends Mission {
         boolean cont = true;
         while (cont) {
             System.out.println("Direction, Power, Seconds (i.e. Right 0.5 3): ");
-            String nextLine = scnr.nextLine();
-            if (scnr.hasNextLine() != true) {
-                return;
-            } else {
+            String nextLine;
+            while (!scnr.hasNextLine());
+            System.out.println("GOT IT");
                 nextLine = scnr.nextLine();
-            }
+                String[] lineParts = nextLine.split(" ");
+                
+                String direction = lineParts[0];
+                double power = Double.valueOf(lineParts[1]);
+                double seconds = Double.valueOf(lineParts[2]);
 
-            
-
-            String[] lineParts = nextLine.split(" ");
-            
-            String direction = lineParts[0];
-            double power = Double.valueOf(lineParts[1]);
-            double seconds = Double.valueOf(lineParts[2]);
-
-            /* 
-            switch (direction.toLowerCase()) {
-                case "left": 
-                    //setMotorSpeed for seconds seconds
-                case "right":
-                    //setMotorSpeed to cause right velocity for seconds seconds
-            }*/
+                /* 
+                switch (direction.toLowerCase()) {
+                    case "left": 
+                        //setMotorSpeed for seconds seconds
+                    case "right":
+                        //setMotorSpeed to cause right velocity for seconds seconds
+                }*/
         }
     }
     // TODO: implement
