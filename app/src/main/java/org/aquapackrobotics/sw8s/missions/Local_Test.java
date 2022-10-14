@@ -6,6 +6,8 @@ import org.aquapackrobotics.sw8s.states.*;
 
 import java.util.Scanner;
 
+import java.util.concurrent.*;
+
 public class Local_Test extends Mission {
     public Local_Test(ScheduledThreadPoolExecutor pool) {
         super(pool);
@@ -23,7 +25,7 @@ public class Local_Test extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) {
+    protected void executeState(State state) throws ExecutionException, InterruptedException  {
         Scanner scnr = new Scanner(System.in);
 
 

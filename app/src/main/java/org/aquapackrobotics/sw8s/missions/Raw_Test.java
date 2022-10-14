@@ -3,8 +3,11 @@ package org.aquapackrobotics.sw8s.missions;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.*;
+import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
 
 import java.util.Scanner;
+
+import java.util.concurrent.*;
 
 public class Raw_Test extends Mission {
     Scanner scnr = new Scanner(System.in);
@@ -21,7 +24,8 @@ public class Raw_Test extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) {
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
+        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
         boolean cont = true;
         while (cont) {
             System.out.print("Motor Number, Speed (i.e. 1 0.5): ");
@@ -30,7 +34,7 @@ public class Raw_Test extends Mission {
                 nextLine = scnr.nextLine();
                 if (nextLine.equals("")) {
                     //set all motor speeds to 0
-                    //setRobotSpeed(0, 0, 0);
+                    manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
                     System.out.println("All motors set to 0.");
                     return;
                 }
@@ -38,6 +42,13 @@ public class Raw_Test extends Mission {
                 
                 int motorNumber = Integer.valueOf(lineParts[0]);
                 double speed = Double.valueOf(lineParts[1]);
+                double motor_vals[] = new double[8];
+                for (int i = 0; i < motor_vals.length; ++i) {
+                    motor_vals[i] = 0;
+                }
+                motor_vals[motorNumber] = speed;
+                ScheduledFuture result = manager.setMotorSpeeds(motor_vals[0],motor_vals[1],motor_vals[2],motor_vals[3],motor_vals[4],motor_vals[5],motor_vals[6],motor_vals[7]);
+                result.get();
 
                 //set motor speed to inputted values
                 //setMotorSpeed(motorNumber, speed);

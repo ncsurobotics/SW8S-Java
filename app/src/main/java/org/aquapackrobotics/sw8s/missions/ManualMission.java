@@ -4,6 +4,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.State;
 
+import java.util.concurrent.*;
+
 /**
  * Competition mission, fully autonomous.
  */
@@ -21,7 +23,7 @@ public class ManualMission extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) {
+    protected void executeState(State state)  throws ExecutionException, InterruptedException  {
     }
 
     // TODO: implement

@@ -11,6 +11,8 @@ plugins {
     id 'application'
 }
 
+mainClassName = "org.aquapackrobotics.sw8s.App"
+
 java {
     // Set Java version to 11
     // https://docs.gradle.org/current/userguide/toolchains.html
@@ -21,6 +23,27 @@ java {
 
 run {
     standardInput = System.in
+}
+
+jar {
+	manifest {
+		attributes(
+			'Main-Class': "$mainClassName"
+		)
+	}
+}
+
+task fatJar(type: Jar) {
+  manifest.from jar.manifest
+  classifier = 'all'
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+  with jar
 }
 
 repositories {
@@ -39,5 +62,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.aquapackrobotics.sw8s.App'
+    mainClass = mainClassName
 }
