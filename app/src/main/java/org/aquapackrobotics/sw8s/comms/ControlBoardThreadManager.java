@@ -19,7 +19,7 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        controlBoardCommunication = new ControlBoardCommunication(SerialPort.getCommPorts()[0]);
+        controlBoardCommunication = new ControlBoardCommunication(SerialPort.getCommPort("/dev/ttyACM0"));
         startWatchDog();
     }
 
