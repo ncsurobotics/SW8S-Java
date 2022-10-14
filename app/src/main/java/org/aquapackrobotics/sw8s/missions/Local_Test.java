@@ -33,9 +33,13 @@ public class Local_Test extends Mission {
         while (cont) {
             System.out.println("Direction, Power, Seconds (i.e. Right 0.5 3): ");
             String nextLine;
-            while (!scnr.hasNextLine());
-            System.out.println("GOT IT");
+            if (scnr.hasNextLine()) {
                 nextLine = scnr.nextLine();
+                if (nextLine.equals("")) {
+                    //set all motor speeds to 0
+                    System.out.println("All motors set to 0.");
+                    return;
+                }
                 String[] lineParts = nextLine.split(" ");
                 
                 String direction = lineParts[0];
@@ -49,6 +53,7 @@ public class Local_Test extends Mission {
                     case "right":
                         //setMotorSpeed to cause right velocity for seconds seconds
                 }*/
+            }
         }
     }
     // TODO: implement
