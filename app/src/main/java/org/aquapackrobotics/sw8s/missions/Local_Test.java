@@ -52,17 +52,17 @@ public class Local_Test extends Mission {
 
                 switch (direction.toLowerCase()) {
                     case "left": 
-                        manager.setLocalSpeeds(-1, 0, 0, 0, 0, 0);
+                        manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
                     case "right":
-                        manager.setLocalSpeeds(1, 0, 0, 0, 0, 0);
+                        manager.setLocalSpeeds(power, 0, 0, 0, 0, 0);
                     case "forward":
-                        manager.setLocalSpeeds(0, 1, 0, 0, 0, 0);
+                        manager.setLocalSpeeds(0, power, 0, 0, 0, 0);
                     case "backward":
-                        manager.setLocalSpeeds(0, -1, 0, 0, 0, 0);
+                        manager.setLocalSpeeds(0, -power, 0, 0, 0, 0);
                     case "up":
-                        manager.setLocalSpeeds(0, 0, 1, 0, 0, 0);
+                        manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
                     case "down":
-                        manager.setLocalSpeeds(0, 0, -1, 0, 0, 0);
+                        manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
                 }
             }
         }
