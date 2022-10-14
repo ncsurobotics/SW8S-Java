@@ -20,6 +20,8 @@ class ControlBoardCommunication {
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
+    
+    private static ControlBoardMode currentMode = ControlBoardMode.UNKNOWN;
 
 	/**
 	 * Construct a new ControlBoardCommunication listening and writing on the given port
@@ -142,4 +144,11 @@ class ControlBoardCommunication {
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
     
+    public static void setCurrentMode(ControlBoardMode mode) {
+    	currentMode = mode;
+    }
+    
+    public static ControlBoardMode getCurrentMode() {
+    	return currentMode;
+    }
 }
