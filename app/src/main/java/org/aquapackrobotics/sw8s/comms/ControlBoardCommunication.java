@@ -12,9 +12,7 @@ import com.fazecast.jSerialComm.*;
  * Synchronous SW8 control board communication handler
  */
 class ControlBoardCommunication {
-    private SerialPort controlBoardPort;
-    
-    private static final byte[] MODE_STRING = "MODE".getBytes();
+    private SerialPort controlBoardPort; private static final byte[] MODE_STRING = "MODE".getBytes();
     private static final byte[] INVERT_STRING = "TINV".getBytes();
     private static final byte[] GET_STRING = "?".getBytes();
     private static final byte[] RAW_STRING = "RAW".getBytes();
@@ -95,7 +93,6 @@ class ControlBoardCommunication {
 
         byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
-        System.out.println(Arrays.toString(messageBytes));
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
     void appendInversion(ByteArrayOutputStream stream , boolean b){
@@ -136,7 +133,6 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed8);
 
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
-        System.out.println(Arrays.toString(rawSpeedMessage));
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
     }
     
@@ -158,7 +154,6 @@ class ControlBoardCommunication {
 
         byte[] localSpeedMessage = SerialCommunicationUtility.constructMessage(localSpeed.toByteArray());
 
-        System.out.println(Arrays.toString(localSpeedMessage));
         
         controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
     }
