@@ -9,9 +9,9 @@ import java.util.concurrent.*;
 /**
  * Competition mission, fully autonomous.
  */
-public class AutoMission extends Mission {
+public class ManualMission extends Mission {
 
-    public AutoMission(ScheduledThreadPoolExecutor pool) {
+    public ManualMission(ScheduledThreadPoolExecutor pool) {
         super(pool);
     }
 
@@ -23,7 +23,7 @@ public class AutoMission extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) throws ExecutionException, InterruptedException  {
+    protected void executeState(State state)  throws ExecutionException, InterruptedException  {
     }
 
     // TODO: implement
