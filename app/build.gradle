@@ -9,6 +9,8 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+	// Support for generating project metadata
+	id 'eclipse'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
