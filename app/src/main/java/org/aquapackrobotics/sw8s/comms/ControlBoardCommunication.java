@@ -12,7 +12,8 @@ import com.fazecast.jSerialComm.*;
  * Synchronous SW8 control board communication handler
  */
 class ControlBoardCommunication {
-    private SerialPort controlBoardPort; private static final byte[] MODE_STRING = "MODE".getBytes();
+    private SerialPort controlBoardPort;
+    private static final byte[] MODE_STRING = "MODE".getBytes();
     private static final byte[] INVERT_STRING = "TINV".getBytes();
     private static final byte[] GET_STRING = "?".getBytes();
     private static final byte[] RAW_STRING = "RAW".getBytes();

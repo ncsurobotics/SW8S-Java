@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 /**
  * Tests the SerialCommunicationUtility static class
@@ -27,7 +28,7 @@ public class SerialCommunicationUtilityTest {
 
     // Raw float 10f (and little-endian conversion)
     private static final float rawFloat = 10f;
-    private static final byte[] encodedFloat = new byte[] { (byte) 0x4120, 0 };
+    private static final byte[] encodedFloat = new byte[] { 0, 0, 32, 65 };
 
     @Test
     public void testDestructModel() {
