@@ -4,8 +4,11 @@ import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class MotorTestState8 extends State {
-    public MotorTestState8(ScheduledThreadPoolExecutor pool, ControlBoardThreadManager manager) {
-        super(pool, manager);
+    public MotorTestState8(ScheduledThreadPoolExecutor pool) {
+        super(pool);
+        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
+        manager.setMode(ControlBoardMode.RAW);
+        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         long startTime;
         long endTime;
     }
