@@ -18,7 +18,13 @@ public class App {
 
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
+        String helpFlag[] = {
+            "\nBasic Utility:", 
+            "\n'--test' -- The Command Flag used in Testing", 
+            "\n'--help' or '-h' -- displays list of command flags",
+            "\nMissions:", 
+            "\n'--raw_test' runs the Raw Test mission",
+            "\n '--local_test' runs the Local Test mission"};
         System.out.println("Basic Format: gradle run --args '_'");
         for (String str: args) {
             switch (str) {
