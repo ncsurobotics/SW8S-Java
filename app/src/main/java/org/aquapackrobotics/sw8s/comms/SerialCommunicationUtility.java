@@ -2,6 +2,11 @@ package org.aquapackrobotics.sw8s.comms;
 
 import java.io.ByteArrayOutputStream;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+import java.io.IOException;
+
 /**
  * Provides helpers for creating and parsing messages
  * that the SW8 control board could use.
@@ -83,14 +88,19 @@ public class SerialCommunicationUtility {
      * @param value The float value that will be converted to the SW8 control board format
      */
     public static void writeEncodedFloat(ByteArrayOutputStream stream, float value) {
-        int speedAsInt = Float.floatToRawIntBits(value);
+        //int speedAsInt = Float.floatToRawIntBits(value);
 
-        // In testing, speedAsInt turns out to be 64-bits
-        byte lowByte = (byte) (speedAsInt & 0x0000FFFF);
-        byte highByte = (byte) ((speedAsInt & 0xFFFF0000) >> 16);
+        //stream.write((speedAsInt & 0xFF000000) >> 24);
+        //stream.write((speedAsInt & 0x00FF0000) >> 16);
+        //stream.write((speedAsInt & 0x0000FF00) >> 8);
+        //stream.write(speedAsInt & 0x000000FF);
 
-        stream.write(highByte);
-        stream.write(lowByte);
+        try {
+            ByteBuffer bb = ByteBuffer.allocate(4);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+            bb.putFloat(value);
+            stream.write(bb.array());
+        } catch(IOException e) {}
     }
 
     /**

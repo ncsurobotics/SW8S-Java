@@ -19,7 +19,9 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        controlBoardCommunication = new ControlBoardCommunication(SerialPort.getCommPorts()[0]);
+        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM0");
+        controlBoardCommunication = new ControlBoardCommunication(robotPort);
+        System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
     }
 
@@ -149,6 +151,24 @@ public class ControlBoardThreadManager {
         };
 
        return scheduleTask(speedsCallable);
+    }
+
+    /**
+     * Sets the motor speeds individually and directly.
+     * @return ScheduledFuture that will return void.
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public ScheduledFuture<Void> setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+        Callable<Void> speedsCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                controlBoardCommunication.setLocalSpeeds(x, y, z, pitch, roll, yaw);
+                return null;
+            }
+        };
+
+        return scheduleTask(speedsCallable);
     }
 
     //Closes controlBoardCommunication.
