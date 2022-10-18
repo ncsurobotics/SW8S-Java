@@ -9,8 +9,8 @@ public class MotorTestState8 extends State {
         ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
         manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        long startTime;
-        long endTime;
+        long startTime = 0;
+        long endTime = 0;
     }
 
     // TODO: implement
