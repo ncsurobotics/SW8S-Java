@@ -133,7 +133,7 @@ public class SerialCommunicationUtility {
 
     private static void addEscapedByteToStream(ByteArrayOutputStream stream, byte msgByte) {
         if (msgByte == END_BYTE || msgByte == START_BYTE || msgByte == ESCAPE_BYTE) {
-            stream.write(msgByte);
+            stream.write(ESCAPE_BYTE);
         }
 
         stream.write(msgByte);

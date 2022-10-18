@@ -30,6 +30,10 @@ public class SerialCommunicationUtilityTest {
     private static final float rawFloat = 10f;
     private static final byte[] encodedFloat = new byte[] { 0, 0, 32, 65 };
 
+    // Watchdog message
+    private static final byte[] rawMessage_Watchdog = new byte[] {87,68,70,71};
+    private static final byte[] encodedMessage_Watchdog = new byte[] {87,68,70,71,ESCAPE_BYTE,END_BYTE,(byte)242};
+
     @Test
     public void testDestructModel() {
         Assert.assertArrayEquals(rawMessage_MODEL,
@@ -67,15 +71,29 @@ public class SerialCommunicationUtilityTest {
     }
 
     @Test
+    public void testWatchdog() {
+        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Watchdog),
+                SerialCommunicationUtility.constructMessage(rawMessage_Watchdog));
+
+
+    }
+
+    @Test
     public void testConstructDestructPassThrough() {
         final String watchdog = "WDGF";
 
         var encodedModel = SerialCommunicationUtility.constructMessage(watchdog.getBytes());
         encodedModel = Arrays.copyOfRange(encodedModel, 1, encodedModel.length - 1); // Strip start & end bytes
+
+        for (var b : encodedModel) {
+            System.out.print(b);
+            System.out.print(" ");
+        }
+        System.out.println();
+
         var decodedModel = SerialCommunicationUtility.destructMessage(encodedModel);
 
         Assert.assertArrayEquals(watchdog.getBytes(), decodedModel);
-
     }
 
     @Test
