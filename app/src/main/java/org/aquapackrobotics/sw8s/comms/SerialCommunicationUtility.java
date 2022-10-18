@@ -65,7 +65,10 @@ public class SerialCommunicationUtility {
         short calculatedCRC16 = CRC.CITT16_False(message, message.length - 2);
 
         if (retrievedCRC16 != calculatedCRC16) {
-            throw new IllegalArgumentException("Calculated CRC16 of message is not equal to the attached CRC16");
+            throw new IllegalArgumentException("Calculated CRC16 of message " +
+                    ((calculatedCRC16 & 0xFF00) >> 8) + " " + (calculatedCRC16 & 0x00FF) +
+                    " is not equal to the attached CRC16 " +
+                    ((retrievedCRC16 & 0xFF00) >> 8) + " " + (retrievedCRC16 & 0x00FF));
         }
 
         // Verification completed, extract the message
@@ -120,6 +123,13 @@ public class SerialCommunicationUtility {
     public static boolean isEndOfMessage(byte byteMessage) {
         return byteMessage == END_BYTE;
     }
+
+    /**
+     * Checks if a byte is the escape character
+     * @param byteMessage The byte to check
+     * @return Returns true if the byte is an escape character
+     */
+    public static boolean isEscape(byte byteMessage) { return byteMessage == ESCAPE_BYTE; }
 
     private static void addEscapedByteToStream(ByteArrayOutputStream stream, byte msgByte) {
         if (msgByte == END_BYTE || msgByte == START_BYTE || msgByte == ESCAPE_BYTE) {

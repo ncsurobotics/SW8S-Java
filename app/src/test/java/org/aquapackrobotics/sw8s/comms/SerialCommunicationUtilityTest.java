@@ -67,6 +67,18 @@ public class SerialCommunicationUtilityTest {
     }
 
     @Test
+    public void testConstructDestructPassThrough() {
+        final String watchdog = "WDGF";
+
+        var encodedModel = SerialCommunicationUtility.constructMessage(watchdog.getBytes());
+        encodedModel = Arrays.copyOfRange(encodedModel, 1, encodedModel.length - 1); // Strip start & end bytes
+        var decodedModel = SerialCommunicationUtility.destructMessage(encodedModel);
+
+        Assert.assertArrayEquals(watchdog.getBytes(), decodedModel);
+
+    }
+
+    @Test
     public void testEncodingFloats() {
         ByteArrayOutputStream testStream = new ByteArrayOutputStream();
         SerialCommunicationUtility.writeEncodedFloat(testStream, rawFloat);
