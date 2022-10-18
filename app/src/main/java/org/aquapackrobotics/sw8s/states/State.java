@@ -1,5 +1,6 @@
 package org.aquapackrobotics.sw8s.states;
 
+import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
@@ -10,7 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 public abstract class State {
     protected ScheduledThreadPoolExecutor pool;
-
+    protected ControlBoardThreadManager manager;
     /**
      * Creates a state instance.
      * <p>
@@ -18,8 +19,9 @@ public abstract class State {
      *
      * @param pool the Missions' pool for task submission
      */
-    public State(ScheduledThreadPoolExecutor pool) {
+    public State(ScheduledThreadPoolExecutor pool, ControlBoardThreadManager manager) {
         this.pool = pool;
+        this.manager = manager;
     }
 
     /**
