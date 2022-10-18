@@ -14,7 +14,7 @@ import com.fazecast.jSerialComm.SerialPortEvent;
  * ControlBoardListener listens for messages from the Control Board
  *
  */
-public class ControlBoardListener implements SerialPortDataListener {
+public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
 	private static final byte START_BYTE = (byte) 253;
 	private static final byte END_BYTE = (byte) 254;

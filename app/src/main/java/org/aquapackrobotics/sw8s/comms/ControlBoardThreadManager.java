@@ -20,7 +20,7 @@ public class ControlBoardThreadManager {
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
         SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM0");
-        controlBoardCommunication = new ControlBoardCommunication(robotPort);
+        controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
     }

@@ -1,15 +1,15 @@
 package org.aquapackrobotics.sw8s.comms;
 
 
-import java.io.ByteArrayOutputStream;
+import com.fazecast.jSerialComm.SerialPort;
 
-import com.fazecast.jSerialComm.*;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Synchronous SW8 control board communication handler
  */
 class ControlBoardCommunication {
-    private SerialPort controlBoardPort;
+    private ICommPort controlBoardPort;
     private static final byte[] MODE_STRING = "MODE".getBytes();
     private static final byte[] INVERT_STRING = "TINV".getBytes();
     private static final byte[] GET_STRING = "?".getBytes();
@@ -25,12 +25,9 @@ class ControlBoardCommunication {
 	 * Construct a new ControlBoardCommunication listening and writing on the given port
 	 * @param port The port to listen on
 	 */
-    public ControlBoardCommunication(SerialPort port) {
+    public ControlBoardCommunication(ICommPort port) {
         controlBoardPort = port;
-        controlBoardPort.openPort();
-        controlBoardPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
-        
-        controlBoardPort.addDataListener(new ControlBoardListener());
+        controlBoardPort.openPort(new ControlBoardListener());
     }
 
     /**
