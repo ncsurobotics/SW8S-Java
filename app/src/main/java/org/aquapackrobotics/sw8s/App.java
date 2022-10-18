@@ -18,10 +18,14 @@ public class App {
 
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        String currentMission = "N/A";
         String helpFlag[] = {
             "\nBasic Utility:", 
-            "\n'--test' -- The Command Flag used in Testing", 
             "\n'--help' or '-h' -- displays list of command flags",
+            "\n'--currentMission' -- prints the current mission",
+            "\nTesting:",
+            "\n'--test' -- The Command Flag used in Testing", 
+            "\n'--testmission' -- sets mission to be the string 'test' for testing purposes",
             "\nMissions:", 
             "\n'--raw_test' runs the Raw Test mission",
             "\n '--local_test' runs the Local Test mission"};
@@ -30,6 +34,12 @@ public class App {
             switch (str) {
                 case "--test":
                     System.out.println("Yay! it worked!");
+                    break;
+                case "--testmission":
+                    currentMission = "test";
+                    break;
+                case "--currentMission":
+                    System.out.println(currentMission);
                     break;
                 case "-h":
                 case "--help":
