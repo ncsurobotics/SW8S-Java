@@ -2,9 +2,6 @@ package org.aquapackrobotics.sw8s.comms;
 
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Arrays;
 
 import com.fazecast.jSerialComm.*;
 
