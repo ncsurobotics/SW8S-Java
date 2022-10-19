@@ -14,13 +14,12 @@ public class MotorTestInitState extends State {
         manager = new ControlBoardThreadManager(pool);
     }
 
-    // TODO: implement
     public void onEnter() throws ExecutionException, InterruptedException {
         manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
     }
 
-    // TODO: implement
+
     public boolean onPeriodic() {
         return false;
     }
