@@ -1,18 +1,23 @@
 package org.aquapackrobotics.sw8s.states;
 
 import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.*;
 
 public class MotorTestInitState extends State {
+
+    ControlBoardThreadManager manager;
+
     public MotorTestInitState(ScheduledThreadPoolExecutor pool) {
         super(pool);
-        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
-        manager.setMode(ControlBoardMode.RAW);
-        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
+        manager = new ControlBoardThreadManager(pool);
     }
 
     // TODO: implement
-    public void onEnter() {
+    public void onEnter() throws ExecutionException, InterruptedException {
+        manager.setMode(ControlBoardMode.RAW);
+        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
     }
 
     // TODO: implement
@@ -21,12 +26,12 @@ public class MotorTestInitState extends State {
     }
 
     // TODO: implement
-    public void onExit() {
+    public void onExit() throws ExecutionException, InterruptedException{
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
     }
 
     // TODO: implement
     public State nextState() {
-        return new MotorTestState1(pool, manager);
+        return new MotorTestState1(pool);
     }
 }
