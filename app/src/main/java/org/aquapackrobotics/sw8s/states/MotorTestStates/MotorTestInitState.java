@@ -24,12 +24,10 @@ public class MotorTestInitState extends State {
         return false;
     }
 
-    // TODO: implement
     public void onExit() throws ExecutionException, InterruptedException{
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
     }
 
-    // TODO: implement
     public State nextState() {
         return new MotorTestState1(pool);
     }
