@@ -1,5 +1,4 @@
-//package org.aquapackrobotics.sw8s.states;
-package main.java.org.aquapackrobotics.sw8s.states.MotorTestStates;
+package org.aquapackrobotics.sw8s.states.MotorTestStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import java.util.concurrent.*;

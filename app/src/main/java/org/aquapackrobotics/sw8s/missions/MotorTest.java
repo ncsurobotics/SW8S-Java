@@ -1,13 +1,11 @@
 //to build gradle do: .\gradlew.bat build
 //to run grade do: .\gradlew.bat run
-package main.java.org.aquapackrobotics.sw8s.missions;
+package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import org.aquapackrobotics.sw8s.missions.*;
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-
-import main.java.org.aquapackrobotics.sw8s.states.MotorTestStates.MotorTestInitState;
+import org.aquapackrobotics.sw8s.states.MotorTestStates.*;
 
 import java.util.concurrent.*;
 /**

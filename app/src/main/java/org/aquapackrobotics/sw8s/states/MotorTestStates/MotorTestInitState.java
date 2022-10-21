@@ -1,4 +1,4 @@
-package main.java.org.aquapackrobotics.sw8s.states.MotorTestStates;
+package org.aquapackrobotics.sw8s.states.MotorTestStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
@@ -17,6 +17,7 @@ public class MotorTestInitState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
+        manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
     }
 
 
@@ -25,7 +26,6 @@ public class MotorTestInitState extends State {
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
-        manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
     }
 
     public State nextState() {
