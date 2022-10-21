@@ -8,7 +8,7 @@ import org.aquapackrobotics.sw8s.states.SubmergeTestStates.*;
 
 import java.util.concurrent.*;
 /**
- * State machine for testing motors
+ * State machine for testing submerging
  */
 public class SubmergeTest extends Mission {
 
