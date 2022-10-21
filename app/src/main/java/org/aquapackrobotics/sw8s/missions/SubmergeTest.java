@@ -3,8 +3,6 @@
 package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import org.aquapackrobotics.sw8s.missions.*;
-import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.states.SubmergeTestStates.*;
 
