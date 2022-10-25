@@ -51,6 +51,8 @@ public class ControlBoardListener implements SerialPortDataListener {
 			}
 			else if(decodedMessage.toString().startsWith("TINV")) {
 				//TODO: Implement
+			} else if (decodedMessage.toString().startsWith("WDGK")) {
+				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
 		}
 		catch (IllegalArgumentException e) {
