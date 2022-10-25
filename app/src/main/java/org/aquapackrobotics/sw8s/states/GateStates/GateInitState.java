@@ -29,6 +29,6 @@ public class GateInitState extends State {
     }
 
     public State nextState() {
-        return new GateForwardState(pool);
+        return new GateSubmergeState(pool);
     }
 }
