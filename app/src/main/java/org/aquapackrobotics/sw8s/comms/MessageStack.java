@@ -14,7 +14,7 @@ public class MessageStack {
         messages = new AtomicReference<Stack<String>>();
     }
 
-    public MessageStack getInstance() {
+    public static MessageStack getInstance() {
         if (ms == null) {
             ms = new MessageStack();
         }
@@ -25,22 +25,19 @@ public class MessageStack {
     	Stack<String> stack = new Stack<String>();
     	stack.push(message);
     	
+    	//This operator pushes the top element of the second stack onto the first and returns it
     	BinaryOperator<Stack<String>> combine = (stack1, stack2) -> {
     		stack1.push(stack2.pop());
     		return stack1;
     	};
     	
+    	//This pushes the message onto the message stack
     	messages.accumulateAndGet(stack, combine);
     }
     
     public String pop() {
-    	UnaryOperator<Stack<String>> pop = (stack1) -> {
-    		stack1.pop();
-    		return stack1;
-    	};
-    	
-    	Stack<String> stack = messages.getAndUpdate(pop);
-    	return stack.pop();
+    	//Should probably rewrite to use an atomic function to update the message stack
+    	return messages.get().pop();
     }
     
 }
