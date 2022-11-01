@@ -60,7 +60,7 @@ public class SerialCommunicationUtility {
 
         byte lowByte = message[message.length - 1];
         byte highByte = message[message.length - 2];
-        short retrievedCRC16 = (short) ((short) (highByte << 8) + lowByte);
+        short retrievedCRC16 = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
 
         short calculatedCRC16 = CRC.CITT16_False(message, message.length - 2);
 

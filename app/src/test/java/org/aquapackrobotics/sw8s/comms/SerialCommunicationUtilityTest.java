@@ -82,16 +82,10 @@ public class SerialCommunicationUtilityTest {
     public void testConstructDestructPassThrough() {
         final String watchdog = "WDGF";
 
-        var encodedModel = SerialCommunicationUtility.constructMessage(watchdog.getBytes());
+        byte[] encodedModel = SerialCommunicationUtility.constructMessage(watchdog.getBytes());
         encodedModel = Arrays.copyOfRange(encodedModel, 1, encodedModel.length - 1); // Strip start & end bytes
 
-        for (var b : encodedModel) {
-            System.out.print(b);
-            System.out.print(" ");
-        }
-        System.out.println();
-
-        var decodedModel = SerialCommunicationUtility.destructMessage(encodedModel);
+        byte[] decodedModel = SerialCommunicationUtility.destructMessage(encodedModel);
 
         Assert.assertArrayEquals(watchdog.getBytes(), decodedModel);
     }
