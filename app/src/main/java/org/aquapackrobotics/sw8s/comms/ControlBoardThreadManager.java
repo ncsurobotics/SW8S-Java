@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import javax.naming.ldap.Control;
 import java.util.concurrent.*;
 
 public class ControlBoardThreadManager {
@@ -69,13 +70,29 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<Void> getMode() throws ExecutionException, InterruptedException {
-        //REVERT TO CONTROLMODE RETURN AFTER TEST
-        Callable<Void> modeCallable = new Callable<>() {
+    public ScheduledFuture<ControlBoardMode> getMode() throws ExecutionException, InterruptedException {
+
+        Callable<ControlBoardMode> modeCallable = new Callable<>() {
             @Override
-            public Void call() {
-//                return controlBoardCommunication.getMode();
-                return null;
+            public ControlBoardMode call() throws InterruptedException {
+                controlBoardCommunication.getMode();
+                ControlBoardMode controlBoardMode;
+                String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
+                String mode = msg.startsWith("MODE") ? msg.substring(3) : null;
+
+                switch (mode) {
+                    case "R":
+                        controlBoardMode = ControlBoardMode.RAW;
+                        break;
+                    case "L":
+                        controlBoardMode = ControlBoardMode.LOCAL;
+                        break;
+                    default:
+                        controlBoardMode = ControlBoardMode.UNKNOWN;
+
+                }
+
+                return controlBoardMode;
             }
         };
 
