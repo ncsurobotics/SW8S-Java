@@ -7,9 +7,8 @@ import java.awt.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import org.aquapackrobotics.sw8s.missions.Mission;
-import org.aquapackrobotics.sw8s.missions.AutoMission;
-import org.aquapackrobotics.sw8s.missions.ManualMission;
+import java.awt.event.KeyEvent;
+import java.net.ServerSocket;
 public class App {
 
     static final int POOLSIZE = 1;
@@ -17,7 +16,13 @@ public class App {
     public String getGreeting() {
         return "Hello World!";
     }
+//Test Line
+public void event()
+{
+    System.out.println("Hey");
+}
 
+    //THIS IS HOW YOU RUN IT ON WINDOWS: gradle run --args='command_flag'
     public static void main(String[] args) {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         String currentMission = "N/A";
@@ -70,17 +75,6 @@ public class App {
                 // case "-s3":
                 //     executeState(State3);
                 //     break;
-                case "manual":
-                    currentMission = "Manual";
-                    Mission missionManual = (Mission) new ManualMission(pool);
-                    missionManual.run();
-                    break;
-                default:
-                    currentMission = "Auto";
-                    Mission missionAuto = (Mission) new AutoMission(pool);
-                    missionAuto.run();
-                    break;
-
             }
         }
 
@@ -95,7 +89,7 @@ public class App {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
        
-        //Low Panel and Content
+        //Low Panel and ESTOP
         JPanel lowPanel = new JPanel(); // the panel is not visible in output
         lowPanel.setBackground(darkGrey);
         JButton eStop = new JButton("STOP");
@@ -103,15 +97,22 @@ public class App {
         eStop.setBackground(red);
         eStop.setForeground(white);
         eStop.setFont(new Font(Font.DIALOG, Font.BOLD, 50));
-        eStop.addActionListener(new ActionListener() {
-
+        //eStop.addKeyListener(KeyEvent.VK_ESCAPE);
+        eStop.addActionListener(new ActionListener() 
+        {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TO IMPLEMENT: ALL ZEROES, MAKE ROBOT NOT GO **BEFORE** SYSTEM.EXIT
+                //currentMission = "stopped";
                 System.exit(0);
             }
         });
+        //eStop.setMnemonic(KeyEvent.VK_ESCAPE);
         lowPanel.add(eStop);
+        
+        //WASD
+            //W -
+        
 
         //High Panel and Content
         JPanel highPanel = new JPanel();
@@ -119,12 +120,11 @@ public class App {
         JLabel label = new JLabel("Enter Text");
         label.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
         label.setForeground(white);
-        JTextField tf = new JTextField(50); // accepts upto 100 characters
+        JTextField tf = new JTextField(50); // accepts upto 50 characters
         JButton sendButton = new JButton("Send");
         highPanel.add(label);
         highPanel.add(tf);
         highPanel.add(sendButton);
-        
 
         // Text Area at the Center
         JTextArea ta = new JTextArea();
