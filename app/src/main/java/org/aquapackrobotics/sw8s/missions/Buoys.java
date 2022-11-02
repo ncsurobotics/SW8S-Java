@@ -6,8 +6,8 @@ import org.aquapackrobotics.sw8s.states.State;
 
 import java.util.concurrent.*;
 
-public class Gate extends Mission {
-    public Gate (ScheduledThreadPoolExecutor pool) {
+public class Buoys extends Mission {
+    public Buoys (ScheduledThreadPoolExecutor pool) {
        super(pool); 
     }
 
@@ -18,11 +18,11 @@ public class Gate extends Mission {
 
     @Override
     protected void executeState(State state)  throws ExecutionException, InterruptedException  {
-        while (onPeriodic()) {}
+        while (state.onPeriodic()) {}
     }
 
     @Override
     protected State nextState(State state) {
-        return State.nextState();
+        return state.nextState();
     }
 }
