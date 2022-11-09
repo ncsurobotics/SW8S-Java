@@ -10,6 +10,10 @@ public class MotorTestState2 extends State {
     private long endTime;
     ControlBoardThreadManager manager;
 
+    // Time in milliseconds
+    private static long MOTOR_RUN_TIME = 1000;
+    private static long DELAY = 2000;
+
     public MotorTestState2(ScheduledThreadPoolExecutor pool) {
         super(pool);
         manager = new ControlBoardThreadManager(pool);
@@ -24,7 +28,7 @@ public class MotorTestState2 extends State {
 
     public boolean onPeriodic() {
         endTime = System.currentTimeMillis();
-        if (endTime - startTime >= 1000) {
+        if (endTime - startTime >= MOTOR_RUN_TIME) {
             return false;
         }
         return true;
@@ -33,6 +37,13 @@ public class MotorTestState2 extends State {
 
     public void onExit() throws ExecutionException, InterruptedException{
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+        startTime = System.currentTimeMillis();
+        do {
+            endTime = System.currentTimeMillis();
+            if (endTime - startTime >= DELAY) {
+                break;
+            }
+        } while(true);
     }
 
     public State nextState() {

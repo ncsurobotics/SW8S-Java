@@ -1,30 +1,32 @@
-package org.aquapackrobotics.sw8s.states.MotorTestStates;
+package org.aquapackrobotics.sw8s.states.DirectionalStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
-import java.util.concurrent.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.*;
 
-public class MotorTestState6 extends State {
+public class PositiveZAxisState extends State {
+
+    ControlBoardThreadManager manager;
     private long startTime;
     private long endTime;
-    ControlBoardThreadManager manager;
 
-    // Time in milliseconds
-    private static long MOTOR_RUN_TIME = 1000;
-    private static long DELAY = 2000;
-    
-    public MotorTestState6(ScheduledThreadPoolExecutor pool) {
+    private static final long MOTOR_RUN_TIME = 2000;
+    private static final long DELAY = 2000;
+
+    public PositiveZAxisState(ScheduledThreadPoolExecutor pool) {
         super(pool);
         manager = new ControlBoardThreadManager(pool);
     }
 
-    public void onEnter() throws ExecutionException, InterruptedException{
-        manager.setMode(ControlBoardMode.RAW);
+    public void onEnter() throws ExecutionException, InterruptedException {
+        manager.setMode(ControlBoardMode.LOCAL);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        manager.setMotorSpeeds(0, 0, 0, 0, 0, 0.5, 0, 0);
+        manager.setLocalSpeeds(0, 0, 0.5, 0, 0, 0);
         startTime = System.currentTimeMillis();
     }
+
+
 
     public boolean onPeriodic() {
         endTime = System.currentTimeMillis();
@@ -35,7 +37,7 @@ public class MotorTestState6 extends State {
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
-        manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+        manager.setLocalSpeeds(0,0,0,0,0,0);
         startTime = System.currentTimeMillis();
         do {
             endTime = System.currentTimeMillis();
@@ -46,6 +48,6 @@ public class MotorTestState6 extends State {
     }
 
     public State nextState() {
-        return new MotorTestState7(pool);
+        return new NegativeZAxisState(pool);
     }
 }
