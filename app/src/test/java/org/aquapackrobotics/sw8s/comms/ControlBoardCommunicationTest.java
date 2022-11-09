@@ -27,4 +27,21 @@ public class ControlBoardCommunicationTest {
 
         Assert.assertTrue(port.getMessages().contains(TestComPort.ReceivedWatchdogMsg));
     }
+
+    @Test
+    public void testSetMode() {
+        controlBoard.setMode(ControlBoardMode.LOCAL);
+
+        Assert.assertTrue(port.getMessages().contains(TestComPort.ReceivedModeMsg));
+    }
+
+    @Test public void testGetMode() throws InterruptedException {
+
+        controlBoard.setMode(ControlBoardMode.LOCAL);
+
+        ControlBoardMode retrievedMode = controlBoard.getMode();
+
+        Assert.assertEquals(retrievedMode, ControlBoardMode.LOCAL);
+        Assert.assertTrue(port.getMessages().contains(TestComPort.RequestedModeMsg));
+    }
 }

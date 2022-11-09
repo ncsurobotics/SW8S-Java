@@ -37,18 +37,24 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 		int size = event.getSerialPort().bytesAvailable();
 		byte[] message = new byte[size];
 		event.getSerialPort().readBytes(message, size);
-		
+
+		serialEvent(message);
+	}
+
+
+	@Override
+	public void serialEvent(byte[] message) {
 		try {
 			//If message does not start with start byte or end with end byte, it is ignored
-			if (message[0] != START_BYTE || message[size - 1] != END_BYTE)
+			if (message[0] != START_BYTE || message[message.length - 1] != END_BYTE)
 				throw new IllegalArgumentException();
-			
+
 			//Remove start and end bytes
-			byte[] strippedMessage = Arrays.copyOfRange(message, 1, size - 1);
+			byte[] strippedMessage = Arrays.copyOfRange(message, 1, message.length - 1);
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
 			String decodedMessageString = new String(decodedMessage);
-			
+
 			if (decodedMessageString.startsWith(WATCHDOG_KILL)) {
 				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
@@ -60,6 +66,4 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			//Do nothing
 		}
 	}
-	
-	
 }

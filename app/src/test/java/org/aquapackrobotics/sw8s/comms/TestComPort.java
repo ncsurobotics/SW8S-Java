@@ -1,7 +1,10 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortEvent;
+
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,17 +12,24 @@ import java.util.List;
 public class TestComPort implements ICommPort {
 
     public static final String ReceivedWatchdogMsg = "Received Watchdog";
+    public static final String ReceivedModeMsg = "Received Mode";
 
-    private boolean isPortOpened;
+    public static final String RequestedModeMsg = "Requested Mode";
+
     private ICommPortListener portListener;
     private List<String> messageQueue = new ArrayList<>();
-
     private ByteArrayOutputStream received = new ByteArrayOutputStream();
-
     private boolean isStartMessage;
 
+    // Robot state
+    private boolean isPortOpened;
+    private ControlBoardMode robotMode;
+
     // SPEC
-    public static final byte[] WATCHDOG_STRING = "WDGF".getBytes();
+    public static final byte[] WATCHDOG = "WDGF".getBytes();
+    public static final String MODE_STRING = "MODE";
+    public static final byte[] MODE = MODE_STRING.getBytes();
+    public static final byte[] GET_MODE = "?MODE".getBytes();
 
     public void openPort(ICommPortListener listener) {
         isPortOpened = true;
@@ -57,18 +67,65 @@ public class TestComPort implements ICommPort {
     private void readBuffer() {
         byte[] receivedAsBytes = received.toByteArray();
 
-        for (var b : receivedAsBytes) {
+        receivedAsBytes = SerialCommunicationUtility.destructMessage(receivedAsBytes);
+
+        for (byte b : receivedAsBytes) {
             System.out.print(b);
             System.out.print(" ");
         }
-        System.out.println(" " + received);
+        System.out.println(" ");
+        for (byte b : receivedAsBytes) {
+            System.out.print((char) b);
+            System.out.print(" ");
+        }
 
+        processMessage(receivedAsBytes);
+    }
 
-        receivedAsBytes = SerialCommunicationUtility.destructMessage(receivedAsBytes);
+    private void processMessage(byte[] message) {
+        String messageAsString = new String(message, StandardCharsets.US_ASCII);
 
-        if (Arrays.equals(receivedAsBytes, WATCHDOG_STRING)) {
-            // WATCHDOG
+        // Watchdog
+        if (Arrays.equals(message, WATCHDOG)) {
+            // TODO 1000 ms WATCHDOG
             outputResult(ReceivedWatchdogMsg);
+        }
+        // Set Mode
+        else if (messageAsString.startsWith(MODE_STRING)) {
+            switch (message[MODE.length]) {
+                case 'L':
+                    robotMode = ControlBoardMode.LOCAL;
+                    break;
+                case 'R':
+                    robotMode = ControlBoardMode.RAW;
+                    break;
+                default:
+                    robotMode = ControlBoardMode.UNKNOWN;
+                    throw new RuntimeException("The mode was not supported");
+            }
+
+            outputResult(ReceivedModeMsg);
+        }
+        // Get Mode
+        else if (Arrays.equals(message, GET_MODE)) {
+            byte[] sendingMessage = Arrays.copyOf(MODE, MODE.length + 1);
+            byte appendedMode = '\0';
+            switch (robotMode) {
+                case LOCAL:
+                    appendedMode = 'L';
+                    break;
+                case RAW:
+                    appendedMode = 'R';
+                    break;
+                case UNKNOWN:
+                    appendedMode = 'U';
+                    break;
+            }
+            sendingMessage[sendingMessage.length - 1] = appendedMode;
+
+            portListener.serialEvent(SerialCommunicationUtility.constructMessage(sendingMessage));
+
+            outputResult(RequestedModeMsg);
         }
     }
 

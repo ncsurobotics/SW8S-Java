@@ -72,7 +72,7 @@ class ControlBoardCommunication {
     	
     	ControlBoardMode controlBoardMode;
         String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-        String mode = msg.startsWith("MODE") ? msg.substring(3) : null;
+        String mode = msg.startsWith("MODE") ? msg.substring(4) : null;
 
         switch (mode) {
             case "R":

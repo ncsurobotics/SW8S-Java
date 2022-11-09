@@ -1,5 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
-public interface ICommPortListener {
+import com.fazecast.jSerialComm.SerialPortEvent;
 
+public interface ICommPortListener {
+    void serialEvent(byte[] message);
 }
