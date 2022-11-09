@@ -19,6 +19,7 @@ public class ControlBoardListener implements SerialPortDataListener {
 	private static final byte START_BYTE = (byte) 253;
 	private static final byte END_BYTE = (byte) 254;
 	private static final int THRUSTER_COUNT = 8;
+	private static final String WATCHDOG_KILL = "WDGK";
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -48,7 +49,7 @@ public class ControlBoardListener implements SerialPortDataListener {
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
 			String decodedMessageString = new String(decodedMessage);
 			
-			if (decodedMessageString.startsWith("WDGK")) {
+			if (decodedMessageString.startsWith(WATCHDOG_KILL)) {
 				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
 			else {
