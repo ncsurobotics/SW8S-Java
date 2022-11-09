@@ -75,24 +75,8 @@ public class ControlBoardThreadManager {
         Callable<ControlBoardMode> modeCallable = new Callable<>() {
             @Override
             public ControlBoardMode call() throws InterruptedException {
-                controlBoardCommunication.getMode();
-                ControlBoardMode controlBoardMode;
-                String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-                String mode = msg.startsWith("MODE") ? msg.substring(3) : null;
-
-                switch (mode) {
-                    case "R":
-                        controlBoardMode = ControlBoardMode.RAW;
-                        break;
-                    case "L":
-                        controlBoardMode = ControlBoardMode.LOCAL;
-                        break;
-                    default:
-                        controlBoardMode = ControlBoardMode.UNKNOWN;
-
-                }
-
-                return controlBoardMode;
+                return controlBoardCommunication.getMode();
+                
             }
         };
 
