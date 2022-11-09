@@ -122,27 +122,26 @@ public class ControlBoardThreadManager {
             public boolean[] call() throws Exception {
                 controlBoardCommunication.getThrusterInversions();
                 String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-                String inversionsString = msg.startsWith("TINV") ? msg.substring(3) : null;
+                String inversionsString = msg.startsWith("TINV") ? msg.substring(4) : null;
                 boolean[] inversionsArray = new boolean[8];
-
+    
                 for(int i = 0; i < inversionsString.length(); i++) {
-
-                    String booleanAsString = inversionsString.substring(i,i+1);
-                    if(booleanAsString.equals("0")) {
+    
+                    if(inversionsString.charAt(i) == '0') {
                         inversionsArray[i] = false;
-                    } else if(booleanAsString.equals("1")) {
+                    } else if(inversionsString.charAt(i) == '1') {
                         inversionsArray[i] = true;
                     } else {
                         throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
                     }
                     
                 }
-
+    
                 return inversionsArray;
-
+    
             }
         };
-
+    
         return scheduleTask(inversionsGetter);
     }
 
