@@ -46,11 +46,11 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			byte[] strippedMessage = Arrays.copyOfRange(message, 1, size - 1);
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
-			if (decodedMessage.toString().startsWith("MODE")) {
-				setMode(decodedMessage);
+			if (decodedMessage.toString().startsWith("WDGK")) {
+				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
-			else if(decodedMessage.toString().startsWith("TINV")) {
-				//TODO: Implement
+			else {
+				MessageStack.getInstance().push(decodedMessage.toString());
 			}
 		}
 		catch (IllegalArgumentException e) {
@@ -58,30 +58,5 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 		}
 	}
 	
-	/**
-	 * Sets the current mode in ControlBoardCommunication based on the passed message
-	 * @param message the destructed message
-	 */
-	private void setMode(byte [] message){ // takes in destructed message
-			String m = message.toString(); // message payload converted into string
-			if(m == "MODER"){
-				ControlBoardCommunication.setCurrentMode(ControlBoardMode.RAW);
-			}
-			if(m == "MODEL"){	
-				ControlBoardCommunication.setCurrentMode(ControlBoardMode.LOCAL);
-			}
-				
-	}
-
-	private void getThrusterInversions(byte [] message){ // byte is a basically int8_t
-		String m = message.toString();
-		String command = m.substring(0,3);
-		boolean [] inversions = new boolean[8];
-		if(command == "TINV"){
-			for(int i = 4; i<THRUSTER_COUNT; i++){
-				inversions[i] = message[i] == 1 ? true : false;
-			}
-		}
-	}
 	
 }
