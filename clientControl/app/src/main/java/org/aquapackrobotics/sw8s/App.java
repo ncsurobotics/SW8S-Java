@@ -8,70 +8,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.*;
 import java.io.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class App
 {
-	// initialize socket and input output streams
-	private Socket socket		 = null;
-	private DataInputStream input = null;
-	private DataOutputStream out	 = null;
-
 	// constructor to put ip address and port
-    public App()
-    {}
+    public App(){
+        
+    }
 	public App(String address, int port)
 	{
-		// establish a connection
-		try
-		{
-			socket = new Socket(address, port);
-			System.out.println("Connected");
-
-			// takes input from terminal
-			input = new DataInputStream(System.in);
-
-			// sends output to the socket
-			out = new DataOutputStream(socket.getOutputStream());
-		}
-		catch(UnknownHostException u)
-		{
-			System.out.println(u);
-		}
-		catch(IOException i)
-		{
-			System.out.println(i);
-		}
-
-		// string to read message from input
-		String line = "";
-
-		// keep reading until "Over" is input
-		// while (!line.equals("Over"))
-		// {
-		// 	try
-		// 	{
-		// 		line = input.readLine();
-		// 		out.writeUTF(line);
-		// 	}
-		// 	catch(IOException i)
-		// 	{
-		// 		System.out.println(i);
-		// 	}
-		// }
-
-		// close the connection
-		// try
-		// {
-		// 	input.close();
-		// 	out.close();
-		// 	socket.close();
-		// }
-		// catch(IOException i)
-		// {
-		// 	System.out.println(i);
-		// }
+		
         String currentMission = "N/A";
         String currentState = "N/A";
+        
         // Variables
         Color red = new Color(255, 0, 0);
         Color darkGrey = new Color(80, 80, 80);
@@ -99,12 +50,7 @@ public class App
                 //currentMission = "stopped";
                 try
 		        {
-                    int emergencyvalue = 1;
-                    if (emergencyvalue == 1)
-                    {
-                        out.writeUTF("Over");
-                    }
-
+                    out.writeUTF("Over");
 		        	input.close();
 		        	out.close();
 		        	socket.close();
@@ -141,7 +87,8 @@ public class App
                    "");
         Font  f  = new Font(Font.DIALOG,  Font.BOLD, 50);
         ta.setFont(f);
-        
+        ta.addKeyListener(listener);
+
         //Adding Panel/Text Area to the frame.
         frame.getContentPane().add(BorderLayout.NORTH, highPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, lowPanel);
@@ -205,8 +152,5 @@ public class App
                 //     break;
             }
         }
-
-        
-        
 	}
 }
