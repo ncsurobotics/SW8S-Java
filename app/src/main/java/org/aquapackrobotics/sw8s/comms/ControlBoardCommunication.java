@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.TimeUnit;
 
 import com.fazecast.jSerialComm.*;
 
@@ -60,8 +61,9 @@ class ControlBoardCommunication {
 
     /**
      * Prompts the control board for the current mode
+     * @throws InterruptedException 
      */
-    public void getMode() {
+    public ControlBoardMode getMode() throws InterruptedException {
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
     	message.writeBytes(GET_STRING);
@@ -70,6 +72,24 @@ class ControlBoardCommunication {
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
+    	
+    	ControlBoardMode controlBoardMode;
+        String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
+        String mode = msg.startsWith("MODE") ? msg.substring(3) : null;
+
+        switch (mode) {
+            case "R":
+                controlBoardMode = ControlBoardMode.RAW;
+                break;
+            case "L":
+                controlBoardMode = ControlBoardMode.LOCAL;
+                break;
+            default:
+                controlBoardMode = ControlBoardMode.UNKNOWN;
+
+        }
+
+        return controlBoardMode;
     }
 
     /**
