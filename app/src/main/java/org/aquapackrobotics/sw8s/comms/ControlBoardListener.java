@@ -46,11 +46,13 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			byte[] strippedMessage = Arrays.copyOfRange(message, 1, size - 1);
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
-			if (decodedMessage.toString().startsWith("WDGK")) {
+			String decodedMessageString = new String(decodedMessage);
+			
+			if (decodedMessageString.startsWith("WDGK")) {
 				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
 			else {
-				MessageStack.getInstance().push(decodedMessage.toString());
+				MessageStack.getInstance().push(decodedMessageString);
 			}
 		}
 		catch (IllegalArgumentException e) {

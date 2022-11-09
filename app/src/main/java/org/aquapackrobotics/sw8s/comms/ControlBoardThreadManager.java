@@ -115,13 +115,31 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<Void> getThrusterInversions() throws ExecutionException, InterruptedException {
+    public ScheduledFuture<boolean[]> getThrusterInversions() throws ExecutionException, InterruptedException {
         //REVERT TO boolean[] RETURN AFTER TEST
-        Callable<Void> inversionsGetter = new Callable<>() {
+        Callable<boolean[]> inversionsGetter = new Callable<>() {
             @Override
-            public Void call() throws Exception {
-//                return controlBoardCommunication.getThrusterInversions();
-                return null;
+            public boolean[] call() throws Exception {
+                controlBoardCommunication.getThrusterInversions();
+                String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
+                String inversionsString = msg.startsWith("TINV") ? msg.substring(3) : null;
+                boolean[] inversionsArray = new boolean[8];
+
+                for(int i = 0; i < inversionsString.length(); i++) {
+
+                    String booleanAsString = inversionsString.substring(i,i+1);
+                    if(booleanAsString.equals("0")) {
+                        inversionsArray[i] = false;
+                    } else if(booleanAsString.equals("1")) {
+                        inversionsArray[i] = true;
+                    } else {
+                        throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
+                    }
+                    
+                }
+
+                return inversionsArray;
+
             }
         };
 

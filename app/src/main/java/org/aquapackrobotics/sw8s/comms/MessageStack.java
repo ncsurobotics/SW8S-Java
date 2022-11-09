@@ -40,4 +40,10 @@ public class MessageStack {
     	return messages.pollFirst(timeout, unit);
     }
     
+    /**
+     * Clears the MessageStack by setting the singleton to null.
+     */
+    public static void clear() {
+    	ms = null;
+    }
 }
