@@ -3,17 +3,18 @@ package org.aquapackrobotics.sw8s.missions;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.State;
-
+import org.aquapackrobotics.sw8s.states.BuoyStates.*;
 import java.util.concurrent.*;
 
 public class Buoys extends Mission {
+
     public Buoys (ScheduledThreadPoolExecutor pool) {
        super(pool); 
     }
 
     @Override
-    protected initialState() {
-        return new GateInitState(pool);
+    protected State initialState() {
+        return new BuoyInitState(pool);
     }
 
     @Override
