@@ -52,8 +52,8 @@ public class App {
                 // case "-s3":
                 //     executeState(State3);
                 //     break;
-                case "manual":
-                    Mission missionManual = (Mission) new ManualMission(pool);
+                case "--manual":
+                   Mission missionManual = (Mission) new ManualMission(pool, 5000);
                     missionManual.run();
                     break;
                 default:
