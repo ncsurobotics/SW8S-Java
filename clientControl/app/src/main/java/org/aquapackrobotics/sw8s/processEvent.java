@@ -13,39 +13,51 @@ import java.awt.event.KeyListener;
 public class processEvent implements KeyListener
 {
     // initialize socket and input output streams
-	    private Socket socket		 = null;
-	    private DataInputStream input = null;
-	    private DataOutputStream out	 = null;
+        private Socket socket        = null;
+        private DataInputStream input = null;
+        private DataOutputStream out     = null;
         
-		public void keyReleased(KeyEvent event) {};
-		public void keyTyped(KeyEvent event) {};
-		public void keyPressed(KeyEvent e)
+        public void keyReleased(KeyEvent event) {};
+        public void keyTyped(KeyEvent event) {};
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // TO IMPLEMENT: ALL ZEROES, MAKE ROBOT NOT GO **BEFORE** SYSTEM.EXIT
+            //currentMission = "stopped";
+            try
             {
-                System.out.println(e.getKeyCode());
+                out.writeUTF("Over");
+                input.close();
+                out.close();
+                socket.close();
             }
-	public processEvent(String address, int port){
+            catch(IOException i)
+            {
+                System.out.println(i);
+            }
+        }
+    public processEvent(String address, int port){
     // establish a connection
-		try
-		{
-			socket = new Socket(address, port);
-			System.out.println("Connected");
+        try
+        {
+            socket = new Socket(address, port);
+            System.out.println("Connected");
 
-			// takes input from terminal
-			input = new DataInputStream(System.in);
+            // takes input from terminal
+            input = new DataInputStream(System.in);
 
-			// sends output to the socket
-			out = new DataOutputStream(socket.getOutputStream());
-		}
-		catch(UnknownHostException u)
-		{
-			System.out.println(u);
-		}
-		catch(IOException i)
-		{
-			System.out.println(i);
-		}
+            // sends output to the socket
+            out = new DataOutputStream(socket.getOutputStream());
+        }
+        catch(UnknownHostException u)
+        {
+            System.out.println(u);
+        }
+        catch(IOException i)
+        {
+            System.out.println(i);
+        }
 
-		// string to read message from input
-		String line = "";
-	}
+        // string to read message from input
+        String line = "";
+    }
 }
