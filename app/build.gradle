@@ -9,8 +9,9 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-	// Support for generating project metadata
-	id 'eclipse'
+    // Support for generating project metadata
+    id 'eclipse'
+    id 'org.hidetake.ssh' version '2.10.1'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
@@ -28,24 +29,44 @@ run {
 }
 
 jar {
-	manifest {
-		attributes(
-			'Main-Class': "$mainClassName"
-		)
-	}
+    manifest {
+        attributes(
+            'Main-Class': "$mainClassName"
+        )
+    }
 }
 
 task fatJar(type: Jar) {
-  manifest.from jar.manifest
-  classifier = 'all'
-  from {
-    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-  } {
-    exclude "META-INF/*.SF"
-    exclude "META-INF/*.DSA"
-    exclude "META-INF/*.RSA"
-  }
-  with jar
+    dependsOn build
+    manifest.from jar.manifest
+    classifier = 'all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+remotes {
+    raspberryPi {
+        host = '192.168.2.5'
+        user = 'sw8'
+		identity = file('.sw8_ssh_identity')
+    }
+}
+
+task deploy {
+    dependsOn fatJar
+    doLast {
+        ssh.run {
+            session(remotes.raspberryPi) {
+                put from: "$buildDir/libs/app-all.jar", into: 'java'
+            }
+        }
+    }
 }
 
 repositories {
