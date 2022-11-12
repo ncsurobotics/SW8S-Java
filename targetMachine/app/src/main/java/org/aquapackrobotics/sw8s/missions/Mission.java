@@ -4,6 +4,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.State;
 
+import java.util.concurrent.*;
+
 /**
  * Robot behavior interface.
  * <p>
@@ -36,7 +38,7 @@ public abstract class Mission {
      * <p>
      * Proceeds through all states in graph.
      */
-    public void run() {
+    public void run() throws ExecutionException, InterruptedException {
         State currentState = initialState();
         while (currentState != null) {
             executeState(currentState);
@@ -56,7 +58,7 @@ public abstract class Mission {
      *
      * @param state current machine state
      */
-    protected abstract void executeState(State state);
+    protected abstract void executeState(State state) throws ExecutionException, InterruptedException  ;
 
     /**
      * Computes the next machine state.

@@ -17,3 +17,8 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 build
+/bin/
+.idea
+
+# Avoid sharing ssh key
+.sw8_ssh_identity
