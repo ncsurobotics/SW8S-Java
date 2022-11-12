@@ -5,6 +5,7 @@ import java.net.*;
 import java.io.*;
 
 import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * Competition mission, fully autonomous.
@@ -15,16 +16,25 @@ public class ManualMission extends Mission {
     private Socket       socket = null;
     private ServerSocket server = null;
     private DataInputStream in   = null;
-	int port;
+    int port;
+    ControlBoardThreadManager manager;
 
     public ManualMission(ScheduledThreadPoolExecutor pool, int port) {
         super(pool);
-		this.port = port;
+        manager = new ControlBoardThreadManager(pool);
+        this.port = port;
     }
 
     // TODO: replace this awful hack
     @Override
     protected State initialState() {
+        try {
+            manager.setMode(ControlBoardMode.LOCAL);
+            manager.setThrusterInversions(true, true, false, false, true, false, false, true);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
         // starts server and waits for a connection
         try
         {
@@ -49,9 +59,9 @@ public class ManualMission extends Mission {
                 {
                     line = in.readUTF();
                     System.out.println(line);
-
+                    processController(line);
                 }
-                catch(IOException i)
+                catch(Exception i)
                 {
                     System.out.println(i);
                 }
@@ -67,6 +77,46 @@ public class ManualMission extends Mission {
             System.out.println(i);
         }
         return null;
+    }
+
+    // TODO: fix this spaghetti
+    private static double power = 0.5;
+    private void processController(String command) throws ExecutionException, InterruptedException {
+        switch (command.toLowerCase()) {
+            case "a":  // left
+                manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
+                break;
+            case "d": // right
+                manager.setLocalSpeeds(power, 0, 0, 0, 0, 0);
+                break;
+            case "w": // forward
+                manager.setLocalSpeeds(0, power, 0, 0, 0, 0);
+                break;
+            case "s": // backward
+                manager.setLocalSpeeds(0, -power, 0, 0, 0, 0);
+                break;
+            case "up": // pitch up
+                manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
+                break;
+            case "down": // pitch down
+                manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
+                break;
+            case "q": // roll left
+                manager.setLocalSpeeds(0, 0, 0, 0, power, 0);
+                break;
+            case "e": // roll right
+                manager.setLocalSpeeds(0, 0, 0, 0, -power, 0);
+                break;
+            case "right": // yaw forward
+                manager.setLocalSpeeds(0, 0, 0, 0, 0, power);
+                break;
+            case "left": // yaw backward
+                manager.setLocalSpeeds(0, 0, 0, 0, 0, -power);
+                break;
+            default:
+                manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+                break;
+        }
     }
 
     // TODO: implement
