@@ -25,10 +25,16 @@ public class processEvent implements KeyListener
             //currentMission = "stopped";
             try
             {
-                out.writeUTF("Over");
-                input.close();
-                out.close();
-                socket.close();
+                if(e.getKeyChar() == ' ') {
+                    out.writeUTF("Over");
+                    input.close();
+                    out.close();
+                    socket.close();
+                } else {
+                    out.writeUTF(KeyEvent.getKeyText(e.getKeyCode()));
+                }
+
+                System.out.println("SEND COMMAND: " + KeyEvent.getKeyText(e.getKeyCode()));
             }
             catch(IOException i)
             {
