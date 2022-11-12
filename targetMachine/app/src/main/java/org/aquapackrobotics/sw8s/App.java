@@ -43,18 +43,17 @@ public class App {
                     Mission missionLocal_Test = (Mission) new Local_Test(pool);
                     missionLocal_Test.run();
                     break;
-                // case "-s1":
-                //     executeState(State1);
-                //     break;
-                // case "-s2":
-                //     executeState(State2);
-                //     break;
-                // case "-s3":
-                //     executeState(State3);
-                //     break;
                 case "--manual":
-                   Mission missionManual = (Mission) new ManualMission(pool, 5000);
+                    Mission missionManual = (Mission) new ManualMission(pool, 5000);
                     missionManual.run();
+                    break;
+                case "--motor_test":
+                    Mission motorMission = (Mission) new MotorTest(pool);
+                    motorMission.run();
+                    break;
+                case "--submerge_test":
+                    Mission submergeMission = (Mission) new SubmergeTest(pool);
+                    submergeMission.run();
                     break;
                 default:
                     Mission missionAuto = (Mission) new AutoMission(pool);
@@ -63,9 +62,5 @@ public class App {
 
             }
         }
-        
-        Mission mission = (Mission) new AutoMission(pool);
-
-        
     }
 }
