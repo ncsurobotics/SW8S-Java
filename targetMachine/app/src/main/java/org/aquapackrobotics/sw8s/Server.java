@@ -4,7 +4,7 @@ package org.aquapackrobotics.sw8s;
 import java.net.*;
 import java.io.*;
 
-public class App
+public class Server
 {
     //initialize socket and input stream
     private Socket       socket = null;
@@ -12,7 +12,7 @@ public class App
     private DataInputStream in   = null;
 
     // constructor with port
-    public App(int port)
+    public Server(int port)
     {
         // starts server and waits for a connection
         try
@@ -85,7 +85,7 @@ public class App
                     System.out.println(currentMission);
                     break;
                 case "--manual":
-                    App server = new App(5000);
+                    Server server = new Server(5000);
                     break;
                 case "-h":
                 case "--help":
