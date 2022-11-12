@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 public class BuoyChooseState extends State {
 
     ControlBoardThreadManager manager;
+	private long startTime;
 
     public BuoyChooseState(ScheduledThreadPoolExecutor pool) {
         super(pool);

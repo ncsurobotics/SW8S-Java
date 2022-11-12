@@ -1,15 +1,17 @@
+package org.aquapackrobotics.sw8s.states.BuoyStates;
+
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
-public class GateForwardState extends State {
+public class BuoyForwardState extends State {
 
     ControlBoardThreadManager manager;
     long startTime;
     long endTime;
 
-    public GateForwardState(ScheduledThreadPoolExecutor pool) {
+    public BuoyForwardState(ScheduledThreadPoolExecutor pool) {
         super(pool);
         manager = new ControlBoardThreadManager(pool);
     }
