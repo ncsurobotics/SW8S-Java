@@ -1,6 +1,6 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.State;
 
@@ -11,8 +11,8 @@ import java.util.concurrent.*;
  */
 public class AutoMission extends Mission {
 
-    public AutoMission(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public AutoMission(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     // TODO: implement

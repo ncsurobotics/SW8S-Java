@@ -2,16 +2,12 @@ package org.aquapackrobotics.sw8s.states.MotorTestStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
 public class MotorTestInitState extends State {
 
-    ControlBoardThreadManager manager;
-
-    public MotorTestInitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public MotorTestInitState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -22,13 +18,13 @@ public class MotorTestInitState extends State {
 
 
     public boolean onPeriodic() {
-        return false;
+        return true;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
     }
 
     public State nextState() {
-        return new MotorTestState1(pool);
+        return new MotorTestState1(manager);
     }
 }

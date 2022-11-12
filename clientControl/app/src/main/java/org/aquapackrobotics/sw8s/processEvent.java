@@ -25,7 +25,7 @@ public class processEvent implements KeyListener
             //currentMission = "stopped";
             try
             {
-                if(e.getKeyChar() == ' ') {
+                if(e.getKeyChar() == 'O' || e.getKeyChar() == 'o') {
                     out.writeUTF("Over");
                     input.close();
                     out.close();

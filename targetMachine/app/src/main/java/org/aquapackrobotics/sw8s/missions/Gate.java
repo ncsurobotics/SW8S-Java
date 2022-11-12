@@ -1,6 +1,6 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.State;
 
@@ -11,8 +11,8 @@ import java.util.concurrent.*;
  */
 public class Gate extends Mission {
 
-    public Gate(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public Gate(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     // TODO: implement

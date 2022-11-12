@@ -2,7 +2,7 @@
 //to run grade do: .\gradlew.bat run
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.states.SubmergeTestStates.*;
 
@@ -12,21 +12,23 @@ import java.util.concurrent.*;
  */
 public class SubmergeTest extends Mission {
 
-    public SubmergeTest(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public SubmergeTest(ControlBoardThreadManager manager) {
+        super(manager);
 
     }
 
     @Override
     protected State initialState(){
-        return new SubmergeTestInitState(pool);
+        return new SubmergeTestInitState(manager);
     }
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
+		state.onEnter();
         while (state.onPeriodic()) {
             
         }
+		state.onExit();
     }
 
     @Override

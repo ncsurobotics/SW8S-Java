@@ -17,11 +17,9 @@ public class ManualMission extends Mission {
     private ServerSocket server = null;
     private DataInputStream in   = null;
     int port;
-    ControlBoardThreadManager manager;
 
-    public ManualMission(ScheduledThreadPoolExecutor pool, int port) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public ManualMission(ControlBoardThreadManager manager, int port) {
+        super(manager);
         this.port = port;
     }
 
@@ -112,6 +110,9 @@ public class ManualMission extends Mission {
                 break;
             case "left": // yaw backward
                 manager.setLocalSpeeds(0, 0, 0, 0, 0, -power);
+                break;
+            case "space": // space
+                manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
                 break;
             default:
                 manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);

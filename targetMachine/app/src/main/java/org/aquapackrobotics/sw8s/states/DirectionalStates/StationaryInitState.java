@@ -1,14 +1,14 @@
 package org.aquapackrobotics.sw8s.states.DirectionalStates;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.comms.*;
 
 public class StationaryInitState extends State {
 
-	public StationaryInitState(ScheduledThreadPoolExecutor pool) {
-		super(pool);
+	public StationaryInitState(ControlBoardThreadManager manager) {
+		super(manager);
 		// TODO Auto-generated constructor stub
 	}
 

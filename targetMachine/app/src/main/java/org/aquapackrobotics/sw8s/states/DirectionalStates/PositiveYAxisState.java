@@ -2,7 +2,6 @@ package org.aquapackrobotics.sw8s.states.DirectionalStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
 public class PositiveYAxisState extends State {
@@ -14,9 +13,8 @@ public class PositiveYAxisState extends State {
     private static final long MOTOR_RUN_TIME = 2000;
     private static final long DELAY = 2000;
 
-    public PositiveYAxisState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public PositiveYAxisState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -48,6 +46,6 @@ public class PositiveYAxisState extends State {
     }
 
     public State nextState() {
-        return new NegativeYAxisState(pool);
+        return new NegativeYAxisState(manager);
     }
 }
