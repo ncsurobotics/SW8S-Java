@@ -9,6 +9,10 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+
+# Template files
+**Template.java
+
 # Cache of project
 .gradletasknamecache
 
