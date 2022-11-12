@@ -13,13 +13,13 @@ import java.awt.event.KeyListener;
 
 public class App
 {
-	// constructor to put ip address and port
+    // constructor to put ip address and port
     public App(){
         
     }
-	public App(String address, int port)
-	{
-		
+    public App(String address, int port)
+    {
+        
         String currentMission = "N/A";
         String currentState = "N/A";
         
@@ -49,16 +49,16 @@ public class App
                 // TO IMPLEMENT: ALL ZEROES, MAKE ROBOT NOT GO **BEFORE** SYSTEM.EXIT
                 //currentMission = "stopped";
                 try
-		        {
+                {
                     out.writeUTF("Over");
-		        	input.close();
-		        	out.close();
-		        	socket.close();
-		        }
-		        catch(IOException i)
-		        {
-		        	System.out.println(i);
-		        }
+                    input.close();
+                    out.close();
+                    socket.close();
+                }
+                catch(IOException i)
+                {
+                    System.out.println(i);
+                }
             }
         });
         //eStop.setMnemonic(KeyEvent.VK_ESCAPE);
@@ -95,62 +95,18 @@ public class App
         frame.getContentPane().add(BorderLayout.CENTER, ta);
         frame.setVisible(true);
 
-	}
+    }
 
-	public static void main(String args[])
-	{
-		App client = new App("127.0.0.1", 5000);
-		String currentMission = "N/A";
-        String currentState = "N/A";
-        String helpFlag[] = {
-            "\nBasic Utility:", 
-            "\n'--help' or '-h' -- displays list of command flags",
-            "\n'--currentMission' -- prints the current mission",
-            "\nTesting:",
-            "\n'--test' -- The Command Flag used in Testing", 
-            "\n'--testmission' -- sets mission to be the string 'test' for testing purposes",
-            "\nMissions:", 
-            "\n'--raw_test' runs the Raw Test mission",
-            "\n '--local_test' runs the Local Test mission"};
-        System.out.println("Basic Format: gradle run --args='_'");
+    public static void main(String args[])
+    {
+        App client = new App("192.168.2.5", 5000);
+
         for (String str: args) {
             switch (str) {
-                case "--test":
-                    currentMission = "None, running test";
-                    System.out.println("Yay! it worked!");
+                case "--local":
+                    client = new App("127.0.0.1", 5000);
                     break;
-                case "--testmission":
-                    currentMission = "Test Mission";
-                    break;
-                case "--currentMission":
-                    System.out.println(currentMission);
-                    break;
-                case "-h":
-                case "--help":
-                    for(int i = 0; i < helpFlag.length; i++){
-                        System.out.println(helpFlag[i]);
-                    }
-                    break;
-                // case "--raw_test":
-                //     currentMission = "Raw Test";
-                //     Mission missionRaw_Test = (Mission) new Raw_TestMission(pool);
-                //     missionRaw_Test.run();
-                //     break;
-                // case "--local_test":
-                //     currentMission = "Local Test";
-                //     Mission missionLocal_Test = (Mission) new Local_TestMission(pool);
-                //     missionLocal_Test.run();
-                //     break;
-                // case "-s1":
-                //     executeState(State1);
-                //     break;
-                // case "-s2":
-                //     executeState(State2);
-                //     break;
-                // case "-s3":
-                //     executeState(State3);
-                //     break;
             }
         }
-	}
+    }
 }
