@@ -2,7 +2,6 @@ package org.aquapackrobotics.sw8s.states.BuoyStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
 public class BuoyForwardState extends State {
@@ -11,9 +10,8 @@ public class BuoyForwardState extends State {
     long startTime;
     long endTime;
 
-    public BuoyForwardState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public BuoyForwardState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -37,6 +35,6 @@ public class BuoyForwardState extends State {
     }
 
     public State nextState() {
-        return new BuoyChooseState(pool);
+        return new BuoyChooseState(manager);
     }
 }

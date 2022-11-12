@@ -2,16 +2,14 @@ package org.aquapackrobotics.sw8s.states.GateStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
 public class GateInitState extends State {
 
     ControlBoardThreadManager manager;
 
-    public GateInitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public GateInitState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -29,6 +27,6 @@ public class GateInitState extends State {
     }
 
     public State nextState() {
-        return new GateSubmergeState(pool);
+        return new GateSubmergeState(manager);
     }
 }

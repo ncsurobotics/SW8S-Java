@@ -2,35 +2,36 @@
 //to run grade do: .\gradlew.bat run
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.states.MotorTestStates.*;
 
 import java.util.concurrent.*;
+import java.net.*;
+import java.io.*;
+
 /**
  * State machine for testing motors
  */
 public class MotorTest extends Mission {
 
-    public MotorTest(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public MotorTest(ControlBoardThreadManager manager) {
+        super(manager);
 
     }
 
     @Override
     protected State initialState(){
-        return new MotorTestInitState(pool);
+        return new MotorTestInitState(manager);
     }
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
-        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
-        manager.setMode(ControlBoardMode.RAW);
-        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        while (state.onPeriodic()) {
-            
-        }
+		System.out.println(state);
+		state.onEnter();
+        while (!state.onPeriodic()) {}
+		state.onExit();
     }
 
     @Override

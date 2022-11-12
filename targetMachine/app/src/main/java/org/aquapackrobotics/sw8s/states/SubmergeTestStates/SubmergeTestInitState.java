@@ -2,16 +2,14 @@ package org.aquapackrobotics.sw8s.states.SubmergeTestStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.*;
 
 public class SubmergeTestInitState extends State {
 
     ControlBoardThreadManager manager;
 
-    public SubmergeTestInitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
-        manager = new ControlBoardThreadManager(pool);
+    public SubmergeTestInitState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -29,6 +27,6 @@ public class SubmergeTestInitState extends State {
     }
 
     public State nextState() {
-        return new SubmergeTestDownState(pool);
+        return new SubmergeTestDownState(manager);
     }
 }

@@ -6,6 +6,7 @@ package org.aquapackrobotics.sw8s;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
 
@@ -19,8 +20,10 @@ public class App {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+		ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
         String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
         System.out.println("Basic Format: gradle run --args='_'");        
+
         for (String str: args) {
             switch (str) {
                 case "--test":
@@ -36,27 +39,27 @@ public class App {
                     }
                     break;
                 case "--raw_test":
-                    Mission missionRaw_Test = (Mission) new Raw_Test(pool);
+                    Mission missionRaw_Test = (Mission) new Raw_Test(manager);
                     missionRaw_Test.run();
                     break;
                 case "--local_test":
-                    Mission missionLocal_Test = (Mission) new Local_Test(pool);
+                    Mission missionLocal_Test = (Mission) new Local_Test(manager);
                     missionLocal_Test.run();
                     break;
                 case "--manual":
-                    Mission missionManual = (Mission) new ManualMission(pool, 5000);
+                    Mission missionManual = (Mission) new ManualMission(manager, 5000);
                     missionManual.run();
                     break;
                 case "--motor_test":
-                    Mission motorMission = (Mission) new MotorTest(pool);
+                    Mission motorMission = (Mission) new MotorTest(manager);
                     motorMission.run();
                     break;
                 case "--submerge_test":
-                    Mission submergeMission = (Mission) new SubmergeTest(pool);
+                    Mission submergeMission = (Mission) new SubmergeTest(manager);
                     submergeMission.run();
                     break;
                 default:
-                    Mission missionAuto = (Mission) new AutoMission(pool);
+                    Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
                     break;
 
