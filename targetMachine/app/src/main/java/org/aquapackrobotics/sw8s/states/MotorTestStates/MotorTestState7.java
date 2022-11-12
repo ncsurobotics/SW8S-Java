@@ -11,7 +11,7 @@ public class MotorTestState7 extends State {
     ControlBoardThreadManager manager;
 
     // Time in milliseconds
-    private static long MOTOR_RUN_TIME = 1000;
+    private static long MOTOR_RUN_TIME = 500;
     private static long DELAY = 2000;
     
     public MotorTestState7(ScheduledThreadPoolExecutor pool) {
