@@ -3,15 +3,22 @@ package org.aquapackrobotics.sw8s.comms;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A singleton of a stack of incoming messages.
+ * Pop to consume.
+ */
 public class MessageStack {
     private static MessageStack ms;
     private LinkedBlockingDeque<byte[]> messages;
-
 
     private MessageStack() {
         messages = new LinkedBlockingDeque<byte[]>();
     }
 
+    /**
+     * Singleton pattern.
+     * @return the global instance of this class.
+     */
     public static MessageStack getInstance() {
         if (ms == null) {
             ms = new MessageStack();

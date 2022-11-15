@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.aquapackrobotics.sw8s.comms;
 
 import java.util.Arrays;
@@ -10,15 +7,11 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
 /**
- * The ControlBoardListener class implements SerialPortMessageListener to listen for messages starting with the START_BYTE.
- * ControlBoardListener listens for messages from the Control Board
- *
+ * ControlBoardListener listens for messages from a comm port.
+ * See SerialCommunicationUtility for message implementation details.
  */
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
-	private static final byte START_BYTE = (byte) 253;
-	private static final byte END_BYTE = (byte) 254;
-	private static final int THRUSTER_COUNT = 8;
 	private static final String WATCHDOG_KILL = "WDGK";
 	
 	/**
@@ -41,12 +34,16 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 		serialEvent(message);
 	}
 
-
+	/**
+	 * Processes an incoming message
+	 * @param message The message to process
+	 */
 	@Override
 	public void serialEvent(byte[] message) {
 		try {
 			//If message does not start with start byte or end with end byte, it is ignored
-			if (message[0] != START_BYTE || message[message.length - 1] != END_BYTE)
+			if (!SerialCommunicationUtility.isStartOfMessage(message[0]) ||
+					!SerialCommunicationUtility.isEndOfMessage(message[message.length - 1]))
 				throw new IllegalArgumentException();
 
 			//Remove start and end bytes
