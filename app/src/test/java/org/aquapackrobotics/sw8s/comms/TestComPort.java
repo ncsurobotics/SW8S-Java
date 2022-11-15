@@ -1,14 +1,15 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortEvent;
-
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Mock serial port.
+ * Mimics the SW8E Control Board.
+ */
 public class TestComPort implements ICommPort {
 
     public static final String ReceivedWatchdogMsg = "Received Watchdog";
@@ -62,6 +63,19 @@ public class TestComPort implements ICommPort {
             }
         }
 
+    }
+
+    public void closePort() {
+        isPortOpened = false;
+    }
+
+    /**
+     * Messages are added to this queue in response to properly processed inputs from writeByte.
+     * Possible messages are available from this class.
+     * @return
+     */
+    public List<String> getMessages() {
+        return messageQueue;
     }
 
     private void readBuffer() {
@@ -132,14 +146,6 @@ public class TestComPort implements ICommPort {
     private void outputResult(String result) {
         messageQueue.add(result);
         System.out.println(result);
-    }
-
-    public void closePort() {
-        isPortOpened = false;
-    }
-
-    public List<String> getMessages() {
-        return messageQueue;
     }
 
     private void verifyPortOpened() {
