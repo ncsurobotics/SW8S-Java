@@ -28,10 +28,7 @@ public class MotorTest extends Mission {
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
-		System.out.println(state);
-		state.onEnter();
         while (!state.onPeriodic()) {}
-		state.onExit();
     }
 
     @Override

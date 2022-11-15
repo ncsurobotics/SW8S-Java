@@ -37,7 +37,7 @@ public abstract class State {
      *
      * @return if exit conditions are met
      */
-    abstract public boolean onPeriodic();
+    abstract public boolean onPeriodic() throws ExecutionException, InterruptedException;
 
     /**
      * Cleans up state effects and threads.

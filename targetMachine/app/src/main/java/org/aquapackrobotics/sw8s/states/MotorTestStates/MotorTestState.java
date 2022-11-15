@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 
 public class MotorTestState extends State {
 
-    private final int motorNumber = 1;
+    private int motorNumber;
 
     private long startTime;
     private long endTime;
@@ -28,7 +28,7 @@ public class MotorTestState extends State {
     }
 
 
-    public boolean onPeriodic() {
+    public boolean onPeriodic() throws ExecutionException, InterruptedException {
         switch(motorNumber) {
             case 1:
                 manager.setMotorSpeeds(0.5,0,0,0,0,0,0,0);
@@ -54,10 +54,11 @@ public class MotorTestState extends State {
             case 8:
                 manager.setMotorSpeeds(0,0,0,0.5,0,0,0,0.5);
                 break;
+            default: 
+                break;
         }
         endTime = System.currentTimeMillis();
         if (endTime - startTime >= MOTOR_RUN_TIME) {
-            motorNumber++;
             return true;
         }
         return false;
@@ -75,6 +76,9 @@ public class MotorTestState extends State {
     }
 
     public State nextState() {
-        return new MotorTestState(manager, motorNumber);
+        if (motorNumber == 8) {
+            return null;
+        }
+        return new MotorTestState(manager, motorNumber + 1);
     }
 }
