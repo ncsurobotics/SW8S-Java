@@ -41,7 +41,9 @@ public abstract class Mission {
     public void run() throws ExecutionException, InterruptedException {
         State currentState = initialState();
         while (currentState != null) {
+            currentState.onEnter();
             executeState(currentState);
+            currentState.onExit();
             currentState = nextState(currentState);
         }
     }
