@@ -5,10 +5,13 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Synchronous SW8 control board communication handler
+ * Synchronous SW8 control board communication handler.
+ * As a general rule:
+ *  Setting functions do not block
+ *  Getting functions block
  */
 class ControlBoardCommunication {
-    private ICommPort controlBoardPort;
+    private final ICommPort controlBoardPort;
     private static final byte[] MODE_STRING = "MODE".getBytes();
     private static final byte[] INVERT_STRING = "TINV".getBytes();
     private static final byte[] GET_STRING = "?".getBytes();
@@ -17,8 +20,8 @@ class ControlBoardCommunication {
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
-    
-    private static ControlBoardMode currentMode = ControlBoardMode.UNKNOWN;
+    private static final long READ_TIMEOUT_LENGTH = 1000;
+    private static final int THRUSTER_COUNT = 8;
 
 	/**
 	 * Construct a new ControlBoardCommunication listening and writing on the given port
@@ -55,8 +58,9 @@ class ControlBoardCommunication {
     }
 
     /**
-     * Prompts the control board for the current mode
-     * @throws InterruptedException 
+     * Prompts the control board for the current mode. Blocks until completion.
+     * @throws InterruptedException If message retrieval takes too long.
+     * @return The mode set in the control board.
      */
     public ControlBoardMode getMode() throws InterruptedException {
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
@@ -69,8 +73,8 @@ class ControlBoardCommunication {
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     	
     	ControlBoardMode controlBoardMode;
-        byte[] msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-        byte mode = ByteArrayUtility.startsWith(msg, MODE_STRING) ? msg[4] : null;
+        byte[] msg = MessageStack.getInstance().pop(READ_TIMEOUT_LENGTH, TimeUnit.MILLISECONDS);
+        byte mode = ByteArrayUtility.startsWith(msg, MODE_STRING) ? msg[MODE_STRING.length] : null;
 
         switch (mode) {
             case RAW_BYTE:
@@ -109,34 +113,46 @@ class ControlBoardCommunication {
         
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
-    void appendInversion(ByteArrayOutputStream stream , boolean b){
+
+    private void appendInversion(ByteArrayOutputStream stream , boolean b){
         byte value = b ? (byte) 1 : (byte) 0; 
         stream.write(value);
     }
 
     /**
-     * Gets the current thruster inversions.
+     * Gets the current thruster inversions. Blocks until completion.
+     * @throws InterruptedException If message retrieval takes too long.
      * @return Array of 8 booleans, each representing an individual thruster.
      */
-    public boolean[] getThrusterInversions() throws InterruptedException{
+    public boolean[] getThrusterInversions() throws InterruptedException {
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
     	message.writeBytes(GET_STRING);
     	message.writeBytes(INVERT_STRING);
-    	
+
+        // Request the thruster inversions from the board
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
-        
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
-    	
-    	byte[] msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-        byte[] inversions = ByteArrayUtility.startsWith(msg, INVERT_STRING) ? Arrays.copyOfRange(msg, INVERT_STRING.length, msg.length) : null;
-        boolean[] inversionsArray = new boolean[8];
+
+        // Retrieve messages from the board until we get the right one
+        byte[] msg = null;
+        do {
+            if (msg != null) {
+                MessageStack.getInstance().push(msg);
+            }
+            msg = MessageStack.getInstance().pop(READ_TIMEOUT_LENGTH, TimeUnit.MILLISECONDS);
+        } while (ByteArrayUtility.startsWith(msg, INVERT_STRING));
+
+        byte[] inversions = Arrays.copyOfRange(msg, INVERT_STRING.length, msg.length);
+
+        // Process inversions
+        boolean[] inversionsArray = new boolean[THRUSTER_COUNT];
 
         for(int i = 0; i < inversions.length; i++) {
 
-            if(inversions[i] == (byte)0) {
+            if(inversions[i] == (byte) 0) {
                 inversionsArray[i] = false;
-            } else if(inversions[i] == (byte)1) {
+            } else if(inversions[i] == (byte) 1) {
                 inversionsArray[i] = true;
             } else {
                 throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
@@ -167,10 +183,9 @@ class ControlBoardCommunication {
         byte[] rawSpeedMessage = SerialCommunicationUtility.constructMessage(rawSpeed.toByteArray());
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
     }
-    
 
     /**
-     * Sets x, y, z, pitch, roll, and yaw in local mode
+     * Sets x, y, z, pitch, roll, and yaw in local mode (in that order).
      * Each double should be from -1 to 1.
      */
     public void setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
@@ -196,21 +211,5 @@ class ControlBoardCommunication {
     public void feedWatchdogMotor() {
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(WATCHDOG_FEED_STRING);
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
-    }
-    
-    /**
-     * Sets the current mode
-     * @param mode the mode to set (enum: ControlBoardMode)
-     */
-    public static void setCurrentMode(ControlBoardMode mode) {
-    	currentMode = mode;
-    }
-    
-    /**
-     * Gets the current mode
-     * @return the current mode as a ControlBoardMode enum
-     */
-    public static ControlBoardMode getCurrentMode() {
-    	return currentMode;
     }
 }
