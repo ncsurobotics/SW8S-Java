@@ -25,6 +25,10 @@ public class MotorTestInitState extends State {
     }
 
     public State nextState() {
+<<<<<<< HEAD
         return new MotorTestState(manager, 1);
+=======
+        return new MotorTestState1(manager);
+>>>>>>> d3e7155119f9ffbe9fc1acb58c0fe9196a662b2c
     }
 }

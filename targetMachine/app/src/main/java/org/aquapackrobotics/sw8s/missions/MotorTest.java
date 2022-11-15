@@ -11,6 +11,9 @@ import java.util.concurrent.*;
 import java.net.*;
 import java.io.*;
 
+import java.net.*;
+import java.io.*;
+
 /**
  * State machine for testing motors
  */
