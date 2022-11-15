@@ -2,7 +2,6 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-import javax.naming.ldap.Control;
 import java.util.concurrent.*;
 
 public class ControlBoardThreadManager {
@@ -120,25 +119,7 @@ public class ControlBoardThreadManager {
         Callable<boolean[]> inversionsGetter = new Callable<>() {
             @Override
             public boolean[] call() throws Exception {
-                controlBoardCommunication.getThrusterInversions();
-                String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-                String inversionsString = msg.startsWith("TINV") ? msg.substring(4) : null;
-                boolean[] inversionsArray = new boolean[8];
-    
-                for(int i = 0; i < inversionsString.length(); i++) {
-    
-                    if(inversionsString.charAt(i) == '0') {
-                        inversionsArray[i] = false;
-                    } else if(inversionsString.charAt(i) == '1') {
-                        inversionsArray[i] = true;
-                    } else {
-                        throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
-                    }
-                    
-                }
-    
-                return inversionsArray;
-    
+                return controlBoardCommunication.getThrusterInversions();
             }
         };
     

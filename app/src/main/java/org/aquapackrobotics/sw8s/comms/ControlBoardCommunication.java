@@ -1,10 +1,8 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import com.fazecast.jSerialComm.SerialPort;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * Synchronous SW8 control board communication handler
@@ -71,14 +69,14 @@ class ControlBoardCommunication {
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     	
     	ControlBoardMode controlBoardMode;
-        String msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
-        String mode = msg.startsWith("MODE") ? msg.substring(4) : null;
+        byte[] msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
+        byte mode = ByteArrayUtility.startsWith(msg, MODE_STRING) ? msg[4] : null;
 
         switch (mode) {
-            case "R":
+            case RAW_BYTE:
                 controlBoardMode = ControlBoardMode.RAW;
                 break;
-            case "L":
+            case LOCAL_BYTE:
                 controlBoardMode = ControlBoardMode.LOCAL;
                 break;
             default:
@@ -88,6 +86,7 @@ class ControlBoardCommunication {
 
         return controlBoardMode;
     }
+ 
 
     /**
      * Sets the thruster inversions individually.
@@ -119,7 +118,7 @@ class ControlBoardCommunication {
      * Gets the current thruster inversions.
      * @return Array of 8 booleans, each representing an individual thruster.
      */
-    public void getThrusterInversions() {
+    public boolean[] getThrusterInversions() throws InterruptedException{
     	ByteArrayOutputStream message = new ByteArrayOutputStream();
     	
     	message.writeBytes(GET_STRING);
@@ -128,6 +127,24 @@ class ControlBoardCommunication {
     	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
         
     	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
+    	
+    	byte[] msg = MessageStack.getInstance().pop(1000, TimeUnit.MILLISECONDS);
+        byte[] inversions = ByteArrayUtility.startsWith(msg, INVERT_STRING) ? Arrays.copyOfRange(msg, INVERT_STRING.length, msg.length) : null;
+        boolean[] inversionsArray = new boolean[8];
+
+        for(int i = 0; i < inversions.length; i++) {
+
+            if(inversions[i] == (byte)0) {
+                inversionsArray[i] = false;
+            } else if(inversions[i] == (byte)1) {
+                inversionsArray[i] = true;
+            } else {
+                throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
+            }
+            
+        }
+
+        return inversionsArray;
     }
 
     /**

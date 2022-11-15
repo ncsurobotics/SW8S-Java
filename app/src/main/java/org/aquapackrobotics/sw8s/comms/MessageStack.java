@@ -5,11 +5,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageStack {
     private static MessageStack ms;
-    private LinkedBlockingDeque<String> messages;
+    private LinkedBlockingDeque<byte[]> messages;
 
 
     private MessageStack() {
-        messages = new LinkedBlockingDeque<String>();
+        messages = new LinkedBlockingDeque<byte[]>();
     }
 
     public static MessageStack getInstance() {
@@ -23,7 +23,7 @@ public class MessageStack {
      * Puts the given message at the front of the message deque
      * @param message message to add
      */
-    public void push(String message) {
+    public void push(byte[] message) {
     	//This adds the message onto the message deque
     	messages.addFirst(message);
     }
@@ -35,7 +35,7 @@ public class MessageStack {
      * @return the first element of the deque, or null if no element during specified timeout
      * @throws InterruptedException if interrupted while waiting for element to become available
      */
-    public String pop(long timeout, TimeUnit unit) throws InterruptedException {
+    public byte[] pop(long timeout, TimeUnit unit) throws InterruptedException {
     	//Returns the first message stored in the deque
     	return messages.pollFirst(timeout, unit);
     }
