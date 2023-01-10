@@ -62,35 +62,7 @@ class ControlBoardCommunication {
      * @throws InterruptedException If message retrieval takes too long.
      * @return The mode set in the control board.
      */
-    public ControlBoardMode getMode() throws InterruptedException {
-    	ByteArrayOutputStream message = new ByteArrayOutputStream();
-    	
-    	message.writeBytes(GET_STRING);
-    	message.writeBytes(MODE_STRING);
-    	
-    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
-        
-    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
-    	
-    	ControlBoardMode controlBoardMode;
-        byte[] msg = MessageStack.getInstance().pop(READ_TIMEOUT_LENGTH, TimeUnit.MILLISECONDS);
-        byte mode = ByteArrayUtility.startsWith(msg, MODE_STRING) ? msg[MODE_STRING.length] : null;
-
-        switch (mode) {
-            case RAW_BYTE:
-                controlBoardMode = ControlBoardMode.RAW;
-                break;
-            case LOCAL_BYTE:
-                controlBoardMode = ControlBoardMode.LOCAL;
-                break;
-            default:
-                controlBoardMode = ControlBoardMode.UNKNOWN;
-
-        }
-
-        return controlBoardMode;
-    }
- 
+    
 
     /**
      * Sets the thruster inversions individually.
@@ -124,45 +96,7 @@ class ControlBoardCommunication {
      * @throws InterruptedException If message retrieval takes too long.
      * @return Array of 8 booleans, each representing an individual thruster.
      */
-    public boolean[] getThrusterInversions() throws InterruptedException {
-    	ByteArrayOutputStream message = new ByteArrayOutputStream();
-    	
-    	message.writeBytes(GET_STRING);
-    	message.writeBytes(INVERT_STRING);
-
-        // Request the thruster inversions from the board
-    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(message.toByteArray());
-    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
-
-        // Retrieve messages from the board until we get the right one
-        byte[] msg = null;
-        do {
-            if (msg != null) {
-                MessageStack.getInstance().push(msg);
-            }
-            msg = MessageStack.getInstance().pop(READ_TIMEOUT_LENGTH, TimeUnit.MILLISECONDS);
-        } while (ByteArrayUtility.startsWith(msg, INVERT_STRING));
-
-        byte[] inversions = Arrays.copyOfRange(msg, INVERT_STRING.length, msg.length);
-
-        // Process inversions
-        boolean[] inversionsArray = new boolean[THRUSTER_COUNT];
-
-        for(int i = 0; i < inversions.length; i++) {
-
-            if(inversions[i] == (byte) 0) {
-                inversionsArray[i] = false;
-            } else if(inversions[i] == (byte) 1) {
-                inversionsArray[i] = true;
-            } else {
-                throw new IllegalArgumentException("Received invalid inversion message. Expected a string of 1s or 0s.");
-            }
-            
-        }
-
-        return inversionsArray;
-    }
-
+     
     /**
      * Directly sets the speeds of the thrusters.
      * Each double should be from -1 to 1.

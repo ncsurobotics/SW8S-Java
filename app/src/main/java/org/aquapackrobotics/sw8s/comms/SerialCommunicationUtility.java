@@ -15,7 +15,7 @@ public class SerialCommunicationUtility {
     private static final byte START_BYTE = (byte) 253;
     private static final byte END_BYTE = (byte) 254;
     private static final byte ESCAPE_BYTE = (byte) 255;
-
+    private static short uniqueID = 0;
     /**
      * Takes in a raw message and converts it into the format a SW8 control board can use.
      * @param message The raw message
@@ -25,6 +25,7 @@ public class SerialCommunicationUtility {
         ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
 
         formattedMessage.write(START_BYTE);
+        formattedMessage.write(uniqueID);
 
         // Add escaped message to formatted message
         for (byte msgByte : message) {
@@ -39,8 +40,11 @@ public class SerialCommunicationUtility {
         addEscapedByteToStream(formattedMessage, lowByte);
 
         formattedMessage.write(END_BYTE);
-
         return formattedMessage.toByteArray();
+    }
+
+    public static short incrementID(){
+        return uniqueID++;
     }
 
     /**
