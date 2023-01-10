@@ -206,6 +206,27 @@ class ControlBoardCommunication {
     }
     
     /**
+     * Sets x, y, z, pitch, roll, and yaw in global mode (in that order).
+     * Each double should be from -1 to 1.
+     */
+    public void setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
+    	ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
+    	localSpeed.writeBytes(LOCAL_STRING);
+
+		SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) z);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) pitch);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) roll);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) yaw);
+
+        byte[] localSpeedMessage = SerialCommunicationUtility.constructMessage(localSpeed.toByteArray());
+
+        
+        controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
+    }
+    
+    /**
      * Feeds motor watchdog
      */
     public void feedWatchdogMotor() {
