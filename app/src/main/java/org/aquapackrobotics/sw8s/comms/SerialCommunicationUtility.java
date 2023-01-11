@@ -26,7 +26,10 @@ public class SerialCommunicationUtility {
 
         formattedMessage.write(START_BYTE);
         formattedMessage.write(uniqueID);
-
+        uniqueID++;
+        if( uniqueID == 32767){
+            uniqueID = 0;
+        }
         // Add escaped message to formatted message
         for (byte msgByte : message) {
             addEscapedByteToStream(formattedMessage, msgByte);
@@ -40,12 +43,11 @@ public class SerialCommunicationUtility {
         addEscapedByteToStream(formattedMessage, lowByte);
 
         formattedMessage.write(END_BYTE);
+
         return formattedMessage.toByteArray();
     }
 
-    public static short incrementID(){
-        return uniqueID++;
-    }
+   
 
     /**
      * Takes in an encoded message received from a SW8 control board and converts it into a usable format.
