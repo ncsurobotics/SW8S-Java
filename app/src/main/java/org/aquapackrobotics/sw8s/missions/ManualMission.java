@@ -64,6 +64,7 @@ public class ManualMission extends Mission {
                     System.out.println(i);
                 }
             }
+            
             System.out.println("Closing connection");
 
             // close connection
@@ -79,43 +80,59 @@ public class ManualMission extends Mission {
 
     // TODO: fix this spaghetti
     private static double power = 0.5;
+    // [right/left, forward/backward, up/down, pitch up/down, roll left/right, yaw left/right]
+    // (x,y,z,pitch,roll,yaw)
+
+    private double[] moveArray = new double[6];
     private void processController(String command) throws ExecutionException, InterruptedException {
         switch (command.toLowerCase()) {
+
+            //TODO: Limit to -1, 0, 1
             case "a":  // left
-                manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
+                //manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
+                moveArray[0] += 1;
                 break;
             case "d": // right
-                manager.setLocalSpeeds(power, 0, 0, 0, 0, 0);
+                //manager.setLocalSpeeds(power, 0, 0, 0, 0, 0);
+                moveArray[0] += -1;
                 break;
             case "w": // forward
-                manager.setLocalSpeeds(0, power, 0, 0, 0, 0);
+                //manager.setLocalSpeeds(0, power, 0, 0, 0, 0);
                 break;
             case "s": // backward
-                manager.setLocalSpeeds(0, -power, 0, 0, 0, 0);
+                //manager.setLocalSpeeds(0, -power, 0, 0, 0, 0);
                 break;
-            case "up": // pitch up
-                manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
+            case "up": //  up
+                //manager.setLocalSpeeds(0, 0, power, 0, 0, 0);
                 break;
-            case "down": // pitch down
-                manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
+            case "down": // down
+                //manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
+                break;
+            case "u": // pitch up
+                //manager.setLocalSpeeds(0, 0, 0, power, 0, 0);
+                break;
+            case "j": // pitch down
+                //manager.setLocalSpeeds(0, 0, -power, 0, 0, 0);
                 break;
             case "q": // roll left
-                manager.setLocalSpeeds(0, 0, 0, 0, power, 0);
+                //manager.setLocalSpeeds(0, 0, 0, 0, power, 0);
                 break;
             case "e": // roll right
-                manager.setLocalSpeeds(0, 0, 0, 0, -power, 0);
+                //manager.setLocalSpeeds(0, 0, 0, 0, -power, 0);
                 break;
             case "right": // yaw forward
-                manager.setLocalSpeeds(0, 0, 0, 0, 0, power);
+                //manager.setLocalSpeeds(0, 0, 0, 0, 0, power);
+                moveArray[5] += 1;
                 break;
             case "left": // yaw backward
-                manager.setLocalSpeeds(0, 0, 0, 0, 0, -power);
+                //manager.setLocalSpeeds(0, 0, 0, 0, 0, -power);
+                moveArray[5] += -1;
                 break;
-            case "space": // space
-                manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+            case "backspace": // stop
+                //manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
                 break;
             default:
-                manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+                //manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
                 break;
         }
     }
