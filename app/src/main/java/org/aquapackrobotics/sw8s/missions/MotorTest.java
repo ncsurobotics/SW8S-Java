@@ -1,11 +1,8 @@
-//to build gradle do: .\gradlew.bat build
-//to run grade do: .\gradlew.bat run
 package org.aquapackrobotics.sw8s.missions;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.states.MotorTestStates.*;
 
 import java.util.concurrent.*;
 import java.net.*;
@@ -26,7 +23,7 @@ public class MotorTest extends Mission {
 
     @Override
     protected State initialState(){
-        return new MotorTestInitState(manager);
+        return new MotorTestState(manager, 0);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.states.MotorTestStates;
+package org.aquapackrobotics.sw8s.states;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
@@ -14,6 +14,7 @@ public class MotorTestState extends State {
     // Time in milliseconds
     private static long MOTOR_RUN_TIME = 500;
     private static long DELAY = 2000;
+    private static double TEST_SPEED = 0.5;
 
     public MotorTestState(ControlBoardThreadManager manager, int motorNumber) {
         super(manager);
@@ -23,40 +24,18 @@ public class MotorTestState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
         startTime = System.currentTimeMillis();
+
+		double[] speeds = new double[8];
+		if (motorNumber >= 1 && motorNumber <= 8) {
+			speeds[motorNumber - 1] = TEST_SPEED;
+		}
+        manager.setMotorSpeeds(speeds[0], speeds[1], speeds[2], speeds[3],
+				speeds[4], speeds[5], speeds[6], speeds[7]);
     }
 
 
     public boolean onPeriodic() throws ExecutionException, InterruptedException {
-        switch(motorNumber) {
-            case 1:
-                manager.setMotorSpeeds(0.5,0,0,0,0,0,0,0);
-                break;
-            case 2:
-                manager.setMotorSpeeds(0,0.5,0,0,0,0,0,0);
-                break;
-            case 3:
-                manager.setMotorSpeeds(0,0,0.5,0,0,0,0,0);
-                break;
-            case 4:
-                manager.setMotorSpeeds(0,0,0,0.5,0,0,0,0);
-                break;
-            case 5:
-                manager.setMotorSpeeds(0,0,0,0,0.5,0,0,0);
-                break;
-            case 6:
-                manager.setMotorSpeeds(0,0,0,0,0,0.5,0,0);
-                break;
-            case 7:
-                manager.setMotorSpeeds(0,0,0,0,0,0,0.5,0);
-                break;
-            case 8:
-                manager.setMotorSpeeds(0,0,0,0.5,0,0,0,0.5);
-                break;
-            default: 
-                break;
-        }
         endTime = System.currentTimeMillis();
         if (endTime - startTime >= MOTOR_RUN_TIME) {
             return true;
