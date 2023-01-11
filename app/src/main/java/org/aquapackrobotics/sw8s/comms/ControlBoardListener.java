@@ -13,6 +13,7 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
 	private static final String WATCHDOG_KILL = "WDGK";
+	private static final String ACKNOWLEDGE = "ACK";
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -52,10 +53,16 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
 
 			if (ByteArrayUtility.startsWith(decodedMessage, WATCHDOG_KILL.getBytes())) {
+				//Notifies that watchdog has killed motors
 				WatchDogStatus.getInstance().setWatchDogKill(true);
 			}
+			else if (ByteArrayUtility.startsWith(decodedMessage, ACKNOWLEDGE.getBytes())){
+				//Pushes message onto message stack if acknowledge message
+				MessageStack.getInstance().push(Arrays.copyOfRange(decodedMessage, 3, message.length));
+			}
 			else {
-				MessageStack.getInstance().push(decodedMessage);
+				//Received message is not an acknowledgement message, it is ignored
+				throw new IllegalArgumentException();
 			}
 		}
 		catch (IllegalArgumentException e) {
