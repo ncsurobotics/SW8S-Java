@@ -12,7 +12,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
  */
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
-	private static final String WATCHDOG_KILL = "WDGK";
+	private static final String WATCHDOG_STATUS = "WDGS";
+	private static final String ACKNOWLEDGE = "ACK";
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -31,15 +32,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 		byte[] message = new byte[size];
 		event.getSerialPort().readBytes(message, size);
 
-		serialmessageHandler(message);
+		serialMessageHandler(message);
 	}
 
 	/**
 	 * Processes an incoming message
 	 * @param message The message to process
 	 */
-	@Override
-	public void serialmessageHandler(byte[] message) {
+	public void serialMessageHandler(byte[] message) {
 		try {
 			//If message does not start with start byte or end with end byte, it is ignored
 			if (!SerialCommunicationUtility.isStartOfMessage(message[0]) ||
@@ -53,11 +53,16 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
 
 
-			if (ByteArrayUtility.startsWith(decodedMessage, WATCHDOG_KILL.getBytes())) {
-				WatchDogStatus.getInstance().setWatchDogKill(true);
+			if (ByteArrayUtility.startsWith(decodedMessage, WATCHDOG_STATUS.getBytes()) && decodedMessage[4] == (byte)0) {
+					WatchDogStatus.getInstance().setWatchDogKill(true);
+			}
+			else if (ByteArrayUtility.startsWith(decodedMessage, ACKNOWLEDGE.getBytes())) {
+				//Pushes message onto message stack if acknowledge message
+				MessageStack.getInstance().push(Arrays.copyOfRange(decodedMessage, 3, message.length));
 			}
 			else {
-				MessageStack.getInstance().push(decodedMessage);
+				//Received message is not an acknowledgement message, it is ignored
+				throw new IllegalArgumentException();
 			}
 			
 		}
