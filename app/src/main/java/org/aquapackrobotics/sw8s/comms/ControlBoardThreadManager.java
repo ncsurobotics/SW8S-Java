@@ -45,44 +45,6 @@ public class ControlBoardThreadManager {
     }
 
     /**
-     * Sets the mode of the control board.
-     * @param controlBoardMode The new disired controlBoardMode.
-     * @return ScheduledFuture that will return void.
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<Void> setMode(ControlBoardMode controlBoardMode) throws ExecutionException, InterruptedException {
-        Callable<Void> modeRunnable = new Callable<Void>() {
-            @Override
-            public Void call() {
-                controlBoardCommunication.setMode(controlBoardMode);
-                return null;
-            }
-        };
-
-        return scheduleTask(modeRunnable);
-    }
-
-    /**
-     * Gets the current mode from the control board
-     * @return ScheduledFuture that will return the ControlBoardMode.
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<ControlBoardMode> getMode() throws ExecutionException, InterruptedException {
-
-        Callable<ControlBoardMode> modeCallable = new Callable<>() {
-            @Override
-            public ControlBoardMode call() throws InterruptedException {
-                return controlBoardCommunication.getMode();
-                
-            }
-        };
-
-        return scheduleTask(modeCallable);
-    }
-
-    /**
      * Set the inversions for each thruster individually.
      * @param invert1 Boolean that the first thruster inversion will be set to.
      * @param invert2 Boolean that the second thruster inversion will be set to.
@@ -106,24 +68,6 @@ public class ControlBoardThreadManager {
         };
 
        return scheduleTask(inversionCallable);
-    }
-
-    /**
-     * Gets the current inversions from the control board.
-     * @return ScheduledFuture with a list of eight booleans which represents the inversion state for each motor respectively. 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<boolean[]> getThrusterInversions() throws ExecutionException, InterruptedException {
-        //REVERT TO boolean[] RETURN AFTER TEST
-        Callable<boolean[]> inversionsGetter = new Callable<>() {
-            @Override
-            public boolean[] call() throws Exception {
-                return controlBoardCommunication.getThrusterInversions();
-            }
-        };
-    
-        return scheduleTask(inversionsGetter);
     }
 
     /**
