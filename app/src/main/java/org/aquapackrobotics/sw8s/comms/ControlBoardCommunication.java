@@ -17,7 +17,12 @@ class ControlBoardCommunication {
     private static final byte[] GET_STRING = "?".getBytes();
     private static final byte[] RAW_STRING = "RAW".getBytes();
     private static final byte[] LOCAL_STRING = "LOCAL".getBytes();
+    private static final byte[] GLOBAL_STRINNG = "GLOBAL".getBytes();
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
+    private static final byte[] STABILITY_ASSIST_1 = "SASSISTST1".getBytes();
+    private static final byte[] STABILITY_ASSIST_2 = "SASSISTST2".getBytes();
+
+
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
     private static final long READ_TIMEOUT_LENGTH = 1000;
@@ -145,7 +150,7 @@ class ControlBoardCommunication {
      */
     public void setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
     	ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
-    	localSpeed.writeBytes(LOCAL_STRING);
+    	localSpeed.writeBytes(GLOBAL_STRING);
 
 		SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) y);
@@ -159,7 +164,42 @@ class ControlBoardCommunication {
         
         controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
     }
+
+    public void SetStabilityAssist1(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth){
+        ByteArrayOutputStream StabilityAssist1 = new ByteArrayOutputStream();
+    	StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
+
+		SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) yaw);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targePitch);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targetRoll);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targetDepth);
+
+        byte[] StabilityAssistMessage1 = SerialCommunicationUtility.constructMessage(StabilityAssist1.toByteArray());
+
+        
+        controlBoardPort.writeBytes(StabilityAssistMessage1, StabilityAssistMessage1.length);
+    }
+
+    public void SetStabilityAssist2(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth){
+        ByteArrayOutputStream StabilityAssist2 = new ByteArrayOutputStream();
+    	StabilityAssist2.writeBytes(STABILITY_ASSIST_1);
+
+		SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) yaw);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targePitch);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetRoll);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetDepth);
+
+        byte[] StabilityAssistMessage = SerialCommunicationUtility.constructMessage(StabilityAssist2.toByteArray());
+
+        
+        controlBoardPort.writeBytes(StabilityAssistMessage2, StabilityAssistMessage2.length);
+    }
     
+
     /**
      * Feeds motor watchdog
      */
