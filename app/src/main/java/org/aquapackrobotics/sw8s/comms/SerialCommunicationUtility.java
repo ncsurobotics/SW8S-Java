@@ -121,14 +121,6 @@ public class SerialCommunicationUtility {
             stream.write(bb.array());
         } catch(IOException e) {}
     }
-    
-    /**
-     * 
-     * @return
-     */
-    public static boolean checkMessageId() {
-    	//TODO: Implement
-    }
 
     /**
      * Checks if a byte is the start of a message.
