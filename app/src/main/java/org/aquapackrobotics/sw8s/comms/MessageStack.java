@@ -1,5 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
@@ -9,10 +11,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class MessageStack {
     private static MessageStack ms;
-    private LinkedBlockingDeque<byte[]> messages;
+    private ConcurrentHashMap<Short, byte[]> messages;
 
     private MessageStack() {
-        messages = new LinkedBlockingDeque<byte[]>();
+        messages = new ConcurrentHashMap<Short, byte[]>();
     }
 
     /**
@@ -32,19 +34,19 @@ public class MessageStack {
      */
     public void push(byte[] message) {
     	//This adds the message onto the message deque
-    	messages.addFirst(message);
+        short id = (short) message[3];
+        byte[] msg = Arrays.copyOfRange(message, 4, message.length);
+    	messages.put(id, msg);
     }
     
     /**
      * Removes the first element of the deque and returns it. Also features a timeout if no element is available.
-     * @param timeout the length of the timeout
-     * @param unit the time unit the timeout is specified in
      * @return the first element of the deque, or null if no element during specified timeout
      * @throws InterruptedException if interrupted while waiting for element to become available
      */
-    public byte[] pop(long timeout, TimeUnit unit) throws InterruptedException {
+    public byte[] getMsgById(short id) {
     	//Returns the first message stored in the deque
-    	return messages.pollFirst(timeout, unit);
+    	return messages.remove(id);
     }
     
     /**
