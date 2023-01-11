@@ -16,6 +16,13 @@ public class SerialCommunicationUtility {
     private static final byte END_BYTE = (byte) 254;
     private static final byte ESCAPE_BYTE = (byte) 255;
     private static short uniqueID = 0;
+    
+    public static void incrementId() {
+    	uniqueID++;
+        if( uniqueID == 32767){
+            uniqueID = 0;
+        }
+    }
     /**
      * Takes in a raw message and converts it into the format a SW8 control board can use.
      * @param message The raw message
@@ -25,11 +32,14 @@ public class SerialCommunicationUtility {
         ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
 
         formattedMessage.write(START_BYTE);
-        formattedMessage.write(uniqueID);
-        uniqueID++;
-        if( uniqueID == 32767){
-            uniqueID = 0;
-        }
+        short messageId = uniqueID;
+        incrementId();
+        byte idLowByte = (byte) (messageId & 0x00FF);
+        byte idHighByte = (byte) ((messageId & 0xFF00) >> 8);
+        
+        addEscapedByteToStream(formattedMessage, idHighByte);
+        addEscapedByteToStream(formattedMessage, idLowByte);
+        
         // Add escaped message to formatted message
         for (byte msgByte : message) {
             addEscapedByteToStream(formattedMessage, msgByte);
@@ -110,6 +120,14 @@ public class SerialCommunicationUtility {
             bb.putFloat(value);
             stream.write(bb.array());
         } catch(IOException e) {}
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public static boolean checkMessageId() {
+    	//TODO: Implement
     }
 
     /**
