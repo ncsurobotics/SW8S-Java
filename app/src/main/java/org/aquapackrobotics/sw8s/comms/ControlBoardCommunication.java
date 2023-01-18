@@ -17,10 +17,12 @@ class ControlBoardCommunication {
     private static final byte[] GET_STRING = "?".getBytes();
     private static final byte[] RAW_STRING = "RAW".getBytes();
     private static final byte[] LOCAL_STRING = "LOCAL".getBytes();
-    private static final byte[] GLOBAL_STRINNG = "GLOBAL".getBytes();
+    private static final byte[] GLOBAL_STRING = "GLOBAL".getBytes();
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte[] STABILITY_ASSIST_1 = "SASSISTST1".getBytes();
     private static final byte[] STABILITY_ASSIST_2 = "SASSISTST2".getBytes();
+    private static final byte[] MOTOR_MATRIX_UPDATE = "MMATU".getBytes();
+    private static final byte[] IMU_AXIS_CONFIG = "BNO055A".getBytes();
 
 
     private static final byte RAW_BYTE = (byte) 'R';
@@ -193,12 +195,48 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetRoll);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetDepth);
 
-        byte[] StabilityAssistMessage = SerialCommunicationUtility.constructMessage(StabilityAssist2.toByteArray());
+        byte[] StabilityAssistMessage2 = SerialCommunicationUtility.constructMessage(StabilityAssist2.toByteArray());
 
         
         controlBoardPort.writeBytes(StabilityAssistMessage2, StabilityAssistMessage2.length);
     }
+
+    // TO DO : ADD INTO THREAD MANAGER
+    public void MatrixUpdate(){
+        ByteArrayOutputStream MotorMatrixUpdate = new ByteArrayOutputStream();
+        MotorMatrixUpdate.writeBytes(MOTOR_MATRIX_UPDATE);
+
+        byte[] UpdateMessage = SerialCommunicationUtility.constructMessage(MotorMatrixUpdate.toByteArray());
+
+        controlBoardPort.writeBytes(UpdateMessage, UpdateMessage.length);
+    }
     
+    // TO DO : ADD INTO THREAD MANAGER
+    public void ImuAxisConfig(int config){
+        ByteArrayOutputStream AxisConfig = new ByteArrayOutputStream();
+        AxisConfig.writeBytes(IMU_AXIS_CONFIG);
+        byte config_byte = (byte) config;
+        AxisConfig.write(config_byte);
+
+        byte [] AxisConfigMessage = SerialCommunicationUtility.constructMessage(AxisConfig.toByteArray());
+
+        controlBoardPort.writeBytes(AxisConfigMessage, AxisConfigMessage.length);
+    }
+
+    // TO DO : ADD INTO THREAD MANAGER
+    public StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit){
+
+    }
+
+    //Messages to implement:
+    // Motor Matrix Set
+    // Stablility Assist PID tune
+    // BNO055 Periodic Read
+    // BNO055 Read
+    // MS5837 Read
+    // BNO055 Data Status
+    // MS5837 Data Status
+
 
     /**
      * Feeds motor watchdog
