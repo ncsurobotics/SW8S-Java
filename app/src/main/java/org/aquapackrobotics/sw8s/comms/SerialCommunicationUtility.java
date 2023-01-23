@@ -28,7 +28,7 @@ public class SerialCommunicationUtility {
      * @param message The raw message
      * @return The message encoded in the format the SW8 control board uses
      */
-    public static byte[] constructMessage(byte[] message) {
+    public static MessageStruct constructMessage(byte[] message) {
         ByteArrayOutputStream formattedMessage = new ByteArrayOutputStream();
 
         formattedMessage.write(START_BYTE);
@@ -53,8 +53,12 @@ public class SerialCommunicationUtility {
         addEscapedByteToStream(formattedMessage, lowByte);
 
         formattedMessage.write(END_BYTE);
+        MessageStruct ms = new MessageStruct();
+        ms.message = formattedMessage.toByteArray();
+        ms.id = messageId;
 
-        return formattedMessage.toByteArray();
+
+        return ms;
     }
 
    

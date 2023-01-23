@@ -6,8 +6,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A singleton of a stack of incoming messages.
- * Pop to consume.
+ * A singleton {@link ConcurrentHashMap} of message IDs and their corresponding acknowledgements.
  */
 public class MessageStack {
     private static MessageStack ms;
