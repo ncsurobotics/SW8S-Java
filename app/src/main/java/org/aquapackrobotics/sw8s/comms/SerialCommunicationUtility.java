@@ -45,8 +45,15 @@ public class SerialCommunicationUtility {
             addEscapedByteToStream(formattedMessage, msgByte);
         }
 
-        // Add CRC to formatted message
-        short crc16 = CRC.CITT16_False(message, message.length);
+        // calculate CRC
+        ByteArrayOutputStream crcMessage = new ByteArrayOutputStream();
+        crcMessage.write(idHighByte);
+        crcMessage.write(idLowByte);
+        crcMessage.writeBytes(message);
+
+        short crc16 = CRC.CITT16_False(crcMessage.toByteArray(), message.length);
+
+        // Append CRC
         byte lowByte = (byte) (crc16 & 0x00FF);
         byte highByte = (byte) ((crc16 & 0xFF00) >> 8);
         addEscapedByteToStream(formattedMessage, highByte);
