@@ -1,6 +1,8 @@
 package org.aquapackrobotics.sw8s.comms;
 
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -54,9 +56,14 @@ public class MessageStack {
      * @return the first element of the deque, or null if no element during specified timeout
      * @throws InterruptedException if interrupted while waiting for element to become available
      */
-    public byte[] getMsgById(short id) {
-    	//Returns the first message stored in the deque
-    	return messages.remove(id);
+    public byte[] getMsgById(short id) throws InterruptedException {
+    	//Returns the first message stored in the map
+        Thread.sleep(250);
+        AcknowledgeMessageStruct msg = null;
+        while ((msg.data = messages.remove(id)) == null)  {
+            Thread.sleep(1);
+        }
+    	return msg.data;
     }
     
     /**
