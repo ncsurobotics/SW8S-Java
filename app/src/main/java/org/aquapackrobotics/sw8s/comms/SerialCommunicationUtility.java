@@ -51,7 +51,7 @@ public class SerialCommunicationUtility {
         crcMessage.write(idLowByte);
         crcMessage.writeBytes(message);
 
-        short crc16 = CRC.CITT16_False(crcMessage.toByteArray(), message.length);
+        short crc16 = CRC.CITT16_False(crcMessage.toByteArray(), crcMessage.length);
 
         // Append CRC
         byte lowByte = (byte) (crc16 & 0x00FF);
