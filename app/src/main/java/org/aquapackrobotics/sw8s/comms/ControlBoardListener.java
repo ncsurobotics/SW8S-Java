@@ -67,7 +67,8 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			
 		}
 		catch (IllegalArgumentException e) {
-			//Do nothing
+			System.out.print("Something went wrong");
+			System.out.println(e.getMessage());
 		}
 	}
 }
