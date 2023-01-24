@@ -68,11 +68,11 @@ public class MessageStack {
     public byte[] getMsgById(short id) throws InterruptedException {
     	//Returns the first message stored in the map
         Thread.sleep(250);
-        AcknowledgeMessageStruct msg = null;
-        while ((msg.data = messages.remove(id)) == null)  {
+        byte[] msg;
+        while ((msg = messages.remove(id)) == null)  {
             Thread.sleep(1);
         }
-    	return msg.data;
+    	return msg;
     }
     
     /**
