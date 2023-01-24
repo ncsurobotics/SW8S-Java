@@ -33,9 +33,20 @@ public class MessageStack {
      */
     public void push(byte[] message) {
     	//This adds the message onto the message deque
-        short id = (short) message[3];
-        byte[] msg = Arrays.copyOfRange(message, 4, message.length);
-    	messages.put(id, msg);
+       
+        byte lowByte = message[0];
+        byte highByte = message[1];
+
+        short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
+
+        byte[] msg = Arrays.copyOfRange(message, 2, message.length);
+    	messages.put(id, msg); // puts inside 
+
+        AcknowledgeMessageStruct ack = new AcknowledgeMessageStruct();
+        ack.acknowledgeId = id;
+        ack.errorCode = msg[3];
+        ack.data = Arrays.copyOfRange(message, 4, message.length);
+        System.out.println(ack.errorCode);
     }
     
     /**
