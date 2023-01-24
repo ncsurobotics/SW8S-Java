@@ -34,21 +34,30 @@ public class MessageStack {
      * @param message message to add
      */
     public void push(byte[] message) {
-    	//This adds the message onto the message deque
-       
+
+        // ID
         byte lowByte = message[0];
         byte highByte = message[1];
-
         short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
 
-        byte[] msg = Arrays.copyOfRange(message, 2, message.length);
-    	messages.put(id, msg); // puts inside 
+        // Error code
+        int errorCode = message[2];
 
-        AcknowledgeMessageStruct ack = new AcknowledgeMessageStruct();
-        ack.acknowledgeId = id;
-        ack.errorCode = msg[3];
-        ack.data = Arrays.copyOfRange(message, 4, message.length);
-        System.out.println(ack.errorCode);
+        // Data
+        byte[] data = Arrays.copyOfRange(message, 3, message.length);
+
+        // If there's an error, exit
+        if (errorCode != (byte) 0) {
+            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " ;
+            for (var c : data) {
+                errorMsg += (byte) c + " ";
+            }
+            System.out.print(errorMsg);
+            return;
+        }
+
+        // Payload
+    	messages.put(id, data);
     }
     
     /**
