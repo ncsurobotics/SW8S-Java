@@ -23,6 +23,7 @@ class ControlBoardCommunication {
     private static final byte[] STABILITY_ASSIST_2 = "SASSISTST2".getBytes();
     private static final byte[] MOTOR_MATRIX_UPDATE = "MMATU".getBytes();
     private static final byte[] IMU_AXIS_CONFIG = "BNO055A".getBytes();
+    private static final byte[] MOTOR_MATRIX_SET = "MMATS".getBytes();
 
 
     private static final byte RAW_BYTE = (byte) 'R';
@@ -199,6 +200,17 @@ class ControlBoardCommunication {
         controlBoardPort.writeBytes(UpdateMessage, UpdateMessage.length);
         return messageStruct.id;
     }
+
+    public short setMotorMatrix() {
+        ByteArrayOutputStream MotorMatrixSet = new ByteArrayOutputStream();
+        MotorMatrixSet.writeBytes(MOTOR_MATRIX_SET);
+
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MotorMatrixSet.toByteArray());
+        byte[] UpdateMessage = messageStruct.message;
+        controlBoardPort.writeBytes(UpdateMessage, UpdateMessage.length);
+        return messageStruct.id;
+    }
+    
     
     // TO DO : ADD INTO THREAD MANAGER
     public short ImuAxisConfig(int config) {
