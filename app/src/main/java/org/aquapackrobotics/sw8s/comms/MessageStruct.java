@@ -9,7 +9,8 @@ public class MessageStruct {
     public byte[] message;
 }
 
-// Needs series of structs to handle message data
-// Need a message struct for recieving
-// Error code in message structs
 // Implement all the rest of the commands
+// Black board for all sensor data
+// Make sure everything works
+// Cameras
+// Mission
