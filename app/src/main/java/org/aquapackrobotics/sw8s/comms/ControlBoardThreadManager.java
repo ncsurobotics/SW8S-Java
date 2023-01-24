@@ -23,6 +23,29 @@ public class ControlBoardThreadManager {
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
+        try{
+            byte motor_num1 = (byte) 1;
+            byte motor_num2 = (byte) 2;
+            byte motor_num3 = (byte) 3;
+            byte motor_num4 = (byte) 4;
+            byte motor_num5 = (byte) 5;
+            byte motor_num6 = (byte) 6;
+            byte motor_num7 = (byte) 7;
+            byte motor_num8 = (byte) 8;
+            matrixSet(motor_num1,-1,-1,0,0,0,1);
+            matrixSet(motor_num2,1,-1,0,0,0,-1);
+            matrixSet(motor_num3,-1,1,0,0,0,-1);
+            matrixSet(motor_num4,1,1,0,0,0,1);
+            matrixSet(motor_num5,0,0,-1,-1,-1,0);
+            matrixSet(motor_num6,0,0,-1,-1,1,0);
+            matrixSet(motor_num7,0,0,-1,1,-1,0);
+            matrixSet(motor_num8,0,0,-1,1,1,0);
+        }
+        catch(Exception e){
+            System.out.println("Could not set motor matrix");
+
+        }
+
     }
 
     /**
@@ -31,6 +54,7 @@ public class ControlBoardThreadManager {
     private void startWatchDog() {
         pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
+   
 
     /**
      * Utility function that waits for the result from a ScheduledFuture and returns it when it is available.
@@ -119,6 +143,18 @@ public class ControlBoardThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.MatrixUpdate();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> matrixSet(byte thruster_num, double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setMotorMatrix(thruster_num, x,y,z,pitch,roll,yaw);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };

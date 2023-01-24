@@ -201,11 +201,21 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short setMotorMatrix() {
+    public short setMotorMatrix(byte thruster_num, double x, double y, double z, double pitch, double roll, double yaw) {
         ByteArrayOutputStream MotorMatrixSet = new ByteArrayOutputStream();
         MotorMatrixSet.writeBytes(MOTOR_MATRIX_SET);
 
+        MotorMatrixSet.write(thruster_num);
+        
+		SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) z);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) pitch);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) roll);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) yaw);
+
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MotorMatrixSet.toByteArray());
+
         byte[] UpdateMessage = messageStruct.message;
         controlBoardPort.writeBytes(UpdateMessage, UpdateMessage.length);
         return messageStruct.id;
