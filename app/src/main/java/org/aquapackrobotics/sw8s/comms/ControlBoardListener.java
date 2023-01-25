@@ -51,7 +51,8 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			//Will throw IllegalArgumentException if garbage/corrupted
 			byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
 
-
+			//Remove message ID of received message
+			decodedMessage = Arrays.copyOfRange(decodedMessage, 2, decodedMessage.length);
 
 			if (ByteArrayUtility.startsWith(decodedMessage, WATCHDOG_STATUS.getBytes()) && decodedMessage[4] == (byte)0) {
 					WatchDogStatus.getInstance().setWatchDogKill(true);
