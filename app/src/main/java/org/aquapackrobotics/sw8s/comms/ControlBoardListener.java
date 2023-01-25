@@ -44,7 +44,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			//If message does not start with start byte or end with end byte, it is ignored
 			if (!SerialCommunicationUtility.isStartOfMessage(message[0]) ||
 					!SerialCommunicationUtility.isEndOfMessage(message[message.length - 1]))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Message does not start with start byte or end byte: " + Arrays.toString(message));
 			//Remove start and end bytes
 
 			byte[] strippedMessage = Arrays.copyOfRange(message, 1, message.length - 1);
@@ -62,13 +62,13 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 				MessageStack.getInstance().push(Arrays.copyOfRange(decodedMessage, 3, message.length));
 			}
 			else {
-				//Received message is not an acknowledgement message, it is ignored
-				throw new IllegalArgumentException();
+				//Received message is not a watchdog or acknowledgement message, it is ignored
+				throw new IllegalArgumentException("Received message is not a watchdog status or an acknowledge message: " + Arrays.toString(decodedMessage));
 			}
 			
 		}
 		catch (IllegalArgumentException e) {
-			System.out.print("Something went wrong");
+			System.out.println("Something went wrong in receiving a message");
 			System.out.println(e.getMessage());
 		}
 	}
