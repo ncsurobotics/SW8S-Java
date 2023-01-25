@@ -36,8 +36,8 @@ public class MessageStack {
     public void push(byte[] message) {
 
         // ID
-        byte lowByte = message[0];
-        byte highByte = message[1];
+        byte lowByte = message[1];
+        byte highByte = message[0];
         short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
 
         // Error code
