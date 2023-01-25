@@ -7,6 +7,7 @@ public class WatchDogStatus {
     private static WatchDogStatus wds;
 
     private WatchDogStatus() {
+        watchDogKill = new AtomicBoolean();
         watchDogKill.set(false);
     }
 
