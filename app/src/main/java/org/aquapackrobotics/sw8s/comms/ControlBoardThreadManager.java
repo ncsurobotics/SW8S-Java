@@ -43,7 +43,6 @@ public class ControlBoardThreadManager {
         }
         catch(Exception e){
             System.out.println("Could not set motor matrix");
-
         }
 
     }

@@ -60,7 +60,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			}
 			else if (ByteArrayUtility.startsWith(decodedMessage, ACKNOWLEDGE.getBytes())) {
 				//Pushes message onto message stack if acknowledge message
-				MessageStack.getInstance().push(Arrays.copyOfRange(decodedMessage, 3, message.length));
+				MessageStack.getInstance().push(Arrays.copyOfRange(decodedMessage, 3, decodedMessage.length));
 			}
 			else {
 				//Received message is not a watchdog or acknowledgement message, it is ignored

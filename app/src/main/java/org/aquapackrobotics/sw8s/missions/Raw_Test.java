@@ -26,8 +26,6 @@ public class Raw_Test extends Mission {
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
         ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
-
-        manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
 
         boolean cont = true;
