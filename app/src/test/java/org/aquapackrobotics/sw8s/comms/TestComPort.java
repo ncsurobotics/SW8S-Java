@@ -39,7 +39,7 @@ public class TestComPort implements ICommPort {
 
     public void writeBytes(byte[] bytes, long length) {
         verifyPortOpened();
-
+        
         // Load message in
         boolean isEscape = false;
         for (int i = 0; i < bytes.length && i < length; i++) {
@@ -80,7 +80,7 @@ public class TestComPort implements ICommPort {
 
     private void readBuffer() {
         byte[] receivedAsBytes = received.toByteArray();
-
+        
         receivedAsBytes = SerialCommunicationUtility.destructMessage(receivedAsBytes);
 
         for (byte b : receivedAsBytes) {
@@ -93,6 +93,12 @@ public class TestComPort implements ICommPort {
             System.out.print(" ");
         }
 
+        //Remove message ID
+        byte lowByte = receivedAsBytes[1];
+        byte highByte = receivedAsBytes[0];
+        short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
+        receivedAsBytes = Arrays.copyOfRange(receivedAsBytes, 2, receivedAsBytes.length);
+        
         processMessage(receivedAsBytes);
     }
 
@@ -137,7 +143,7 @@ public class TestComPort implements ICommPort {
             }
             sendingMessage[sendingMessage.length - 1] = appendedMode;
 
-            portListener.serialEvent(SerialCommunicationUtility.constructMessage(sendingMessage));
+            portListener.eventBytesHandler(SerialCommunicationUtility.constructMessage(sendingMessage).message);
 
             outputResult(RequestedModeMsg);
         }
