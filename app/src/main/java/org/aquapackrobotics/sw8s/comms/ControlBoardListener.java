@@ -37,7 +37,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 		byte[] message = new byte[size];
 		event.getSerialPort().readBytes(message, size);
 
-		messageHandler(message);
+		eventBytesHandler(message);
 	}
 	
 	/**
