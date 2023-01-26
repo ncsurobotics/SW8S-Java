@@ -75,7 +75,7 @@ public class SerialCommunicationUtility {
 
     /**
      * Takes in an encoded message received from a SW8 control board and converts it into a usable format.
-     * @param message An encoded message from a control board. Should not include the start and end bytes.
+     * @param message A decoded message from a control board. Should not include the start and end bytes or escaped bytes.
      * @return The raw message extracted from the encoded message
      */
     public static byte[] destructMessage(byte[] message) throws IllegalArgumentException {
@@ -85,21 +85,6 @@ public class SerialCommunicationUtility {
         } else if (message.length < 3) {
             throw new IllegalArgumentException("Message argument was too short to hold a message and a CRC16");
         }
-        
-        ByteArrayOutputStream deEscapedMessage = new ByteArrayOutputStream();
-        // Strip escape bytes
-        for (int msgIndex = 0; msgIndex < message.length; msgIndex++) {
-            byte msgByte = message[msgIndex];
-
-            if (msgByte != ESCAPE_BYTE)
-                deEscapedMessage.write(msgByte);
-            else if (message[msgIndex + 1] == ESCAPE_BYTE) {
-            	deEscapedMessage.write(ESCAPE_BYTE);
-            	msgIndex++;
-            }
-        }
-        message = deEscapedMessage.toByteArray();
-
         
         // Verify CRC
         byte lowByte = message[message.length - 1];
