@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
+
 import java.io.IOException;
 
 /**
@@ -43,13 +43,13 @@ public class SerialCommunicationUtility {
         byte idLowByte = (byte) (messageId & 0x00FF);
         byte idHighByte = (byte) ((messageId & 0xFF00) >> 8);
         
-        addEscapedByteToStream(formattedMessage, idHighByte);
-        addEscapedByteToStream(formattedMessage, idLowByte);
+        //addEscapedByteToStream(formattedMessage, idHighByte);
+        //addEscapedByteToStream(formattedMessage, idLowByte);
         
         // Add escaped message to formatted message
-        for (byte msgByte : message) {
+        /*for (byte msgByte : message) {
             addEscapedByteToStream(formattedMessage, msgByte);
-        }
+        }*/
 
         // calculate CRC
         ByteArrayOutputStream crcMessage = new ByteArrayOutputStream();
@@ -65,17 +65,23 @@ public class SerialCommunicationUtility {
         addEscapedByteToStream(formattedMessage, highByte);
         addEscapedByteToStream(formattedMessage, lowByte);
 
+        for (byte msgByte : message) {
+            addEscapedByteToStream(formattedMessage, msgByte);
+        }
+
         formattedMessage.write(END_BYTE);
         MessageStruct ms = new MessageStruct();
         ms.message = formattedMessage.toByteArray();
         ms.id = messageId;
+
+
 
         return ms;
     }
 
     /**
      * Takes in an encoded message received from a SW8 control board and converts it into a usable format.
-     * @param message A decoded message from a control board. Should not include the start and end bytes or escaped bytes.
+     * @param message An encoded message from a control board. Should not include the start and end bytes.
      * @return The raw message extracted from the encoded message
      */
     public static byte[] destructMessage(byte[] message) throws IllegalArgumentException {
@@ -85,8 +91,9 @@ public class SerialCommunicationUtility {
         } else if (message.length < 3) {
             throw new IllegalArgumentException("Message argument was too short to hold a message and a CRC16");
         }
-        
+
         // Verify CRC
+
         byte lowByte = message[message.length - 1];
         byte highByte = message[message.length - 2];
         short retrievedCRC16 = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
@@ -99,11 +106,20 @@ public class SerialCommunicationUtility {
                     " is not equal to the attached CRC16 " +
                     ((retrievedCRC16 & 0xFF00) >> 8) + " " + (retrievedCRC16 & 0x00FF));
         }
-        //Verification complete
 
-        
-        //Returns message without CRC bytes
-        return Arrays.copyOfRange(message, 0, message.length - 2);
+        // Verification completed, extract the message
+        ByteArrayOutputStream deFormattedMessage = new ByteArrayOutputStream();
+
+        // Strip escape bytes
+        for (int msgIndex = 0; msgIndex < message.length - 2; msgIndex++) {
+            byte msgByte = message[msgIndex];
+
+            if (msgByte != ESCAPE_BYTE)
+                deFormattedMessage.write(msgByte);
+        }
+
+        return deFormattedMessage.toByteArray();
+
     }
 
     /**

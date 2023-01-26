@@ -63,14 +63,18 @@ class ControlBoardCommunication {
         ByteArrayOutputStream message = new ByteArrayOutputStream();
 
         message.writeBytes(INVERT_STRING);
-        appendInversion(message , invert1);
-        appendInversion(message , invert2);
-        appendInversion(message , invert3);
-        appendInversion(message , invert4);
-        appendInversion(message , invert5);
-        appendInversion(message , invert6);
-        appendInversion(message , invert7);
-        appendInversion(message , invert8);
+        byte inv = 0;
+        
+        appendInversion(inv, invert8);
+        appendInversion(inv, invert7);
+        appendInversion(inv, invert6);
+        appendInversion(inv, invert5);
+        appendInversion(inv, invert4);
+        appendInversion(inv, invert3);
+        appendInversion(inv, invert2);
+        appendInversion(inv, invert1);
+
+        message.write(inv);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(message.toByteArray());
         byte[] messageBytes = messageStruct.message;
@@ -79,9 +83,10 @@ class ControlBoardCommunication {
         return msgID;
     }
 
-    private void appendInversion(ByteArrayOutputStream stream , boolean b){
+    private void appendInversion(byte inversion, boolean b){
         byte value = b ? (byte) 1 : (byte) 0; 
-        stream.write(value);
+        inversion <<= (byte) 1 ;
+        inversion |= value;
     }
 
     /**
@@ -242,7 +247,6 @@ class ControlBoardCommunication {
     }
 
     //Messages to implement:
-    // Motor Matrix Set
     // Stablility Assist PID tune
     // BNO055 Periodic Read
     // BNO055 Read
