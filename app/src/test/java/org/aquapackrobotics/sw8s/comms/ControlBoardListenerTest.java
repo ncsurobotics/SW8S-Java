@@ -59,8 +59,6 @@ public class ControlBoardListenerTest {
     @Test
     public void testAcknowledgeMessage() {
     	ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
-        //Expected message retrieved from MessageStack should be empty
-    	byte[] expectedMessage = new byte[0];
     	//Tests sending acknowledge messages with 20 different ack_ids
     	for (short i = 1; i <= 20; i++) {
     		//Appends 'ACK' to acknowledge message
@@ -72,6 +70,11 @@ public class ControlBoardListenerTest {
 	        acknowledgeMessage.write(idLowByte);
 	        //Appends error code to acknowledge message
 	        acknowledgeMessage.write((byte)0);
+	        //Testing that acknowledge message data is stored, using the id low and high bytes to represent random data
+	        acknowledgeMessage.write((byte)idLowByte);
+	        acknowledgeMessage.write((byte)idHighByte);
+	        //Expected message retrieved from MessageStack should be data containing the idLowByte and idHighByte
+	        byte[] expectedMessage = {(byte)idLowByte, (byte)idHighByte};
 	        MessageStruct message = SerialCommunicationUtility.constructMessage(acknowledgeMessage.toByteArray());
 	        //System.out.println(i);
 	        //Sends message bytes to listener
@@ -90,6 +93,40 @@ public class ControlBoardListenerTest {
     
     @Test
     public void testMultipleMessages() {
-    	//TODO: Finish test case
+    	ByteArrayOutputStream acknowledgeMessageDouble = new ByteArrayOutputStream();
+    	ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
+    	byte[] expectedMessage = new byte[0];
+
+    	short id = 0;
+    	//Appends 'ACK' to acknowledge message
+    	acknowledgeMessage.writeBytes("ACK".getBytes());
+    	//Appends ack_id to acknowledge message
+    	byte idLowByte = (byte) (id & 0x00FF);
+        byte idHighByte = (byte) ((id & 0xFF00) >> 8);
+        acknowledgeMessage.write(idHighByte);
+        acknowledgeMessage.write(idLowByte);
+        //Appends error code to acknowledge message
+        acknowledgeMessage.write((byte)0);
+        acknowledgeMessageDouble.writeBytes(SerialCommunicationUtility.constructMessage(acknowledgeMessage.toByteArray()).message);
+        
+        acknowledgeMessage.reset();
+        short id2 = 10;
+        //Appends 'ACK' to acknowledge message
+    	acknowledgeMessage.writeBytes("ACK".getBytes());
+    	//Appends ack_id to acknowledge message
+    	idLowByte = (byte) (id2 & 0x00FF);
+        idHighByte = (byte) ((id2 & 0xFF00) >> 8);
+        acknowledgeMessage.write(idHighByte);
+        acknowledgeMessage.write(idLowByte);
+        //Appends error code to acknowledge message
+        acknowledgeMessage.write((byte)0);
+        acknowledgeMessageDouble.writeBytes(SerialCommunicationUtility.constructMessage(acknowledgeMessage.toByteArray()).message);
+        
+        listener.eventBytesHandler(acknowledgeMessageDouble.toByteArray());
+        try {
+			Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id)));
+			Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id2)));
+
+		} catch (InterruptedException e) { }
     }
 }
