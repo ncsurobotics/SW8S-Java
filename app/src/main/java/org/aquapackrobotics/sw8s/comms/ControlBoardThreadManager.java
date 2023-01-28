@@ -173,6 +173,65 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
+    public ScheduledFuture<byte[]> StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit) throws ExecutionException, InterruptedException{
+        Callable<byte[]> assistCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,kf,limit);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(assistCallable);
+    }
+
+    public ScheduledFuture<byte[]> BNO055PeriodicRead(byte enable) throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.BNO055PeriodicRead(enable);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> BNO055Read() throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.BNO055Read();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> MS5837Read() throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.MS5837Read();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> MSPeriodicRead(byte enable) throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.MSPeriodicRead(enable);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    
+
+
+
     //Closes controlBoardCommunication.
     public void dispose() {
         controlBoardCommunication.dispose();

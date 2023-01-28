@@ -9,8 +9,7 @@ public class MessageStruct {
     public byte[] message;
 }
 
-// Need to account for partial messages
-// Implement all the rest of the commands
+
 // Black board for all sensor data
 // Make sure everything works
 // Cameras

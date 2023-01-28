@@ -24,6 +24,11 @@ class ControlBoardCommunication {
     private static final byte[] MOTOR_MATRIX_UPDATE = "MMATU".getBytes();
     private static final byte[] IMU_AXIS_CONFIG = "BNO055A".getBytes();
     private static final byte[] MOTOR_MATRIX_SET = "MMATS".getBytes();
+    private static final byte[] STAB_ASSIST_PID_TUNE = "SASSISTTN".getBytes();
+    private static final byte[] BNO055_PERIODIC_READ = "BNO055P".getBytes();
+    private static final byte[] BNO055_READ = "BNO055R".getBytes();
+    private static final byte[] MS5837_READ = "MS5837R".getBytes();
+    private static final byte[] MS5837_PERIODIC_READ = "MS5837P".getBytes();
 
 
     private static final byte RAW_BYTE = (byte) 'R';
@@ -227,7 +232,6 @@ class ControlBoardCommunication {
     }
     
     
-    // TO DO : ADD INTO THREAD MANAGER
     public short ImuAxisConfig(int config) {
         ByteArrayOutputStream AxisConfig = new ByteArrayOutputStream();
         AxisConfig.writeBytes(IMU_AXIS_CONFIG);
@@ -240,20 +244,65 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    // TO DO : ADD INTO THREAD MANAGER
     public short StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit){
         //TODO
-        return 0;
+        ByteArrayOutputStream StabAssistTuner = new ByteArrayOutputStream();
+        StabAssistTuner.writeBytes(STAB_ASSIST_PID_TUNE);
+        byte w = (byte) which;
+        StabAssistTuner.write(w);
+
+        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kp);
+        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) ki);
+        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kd);
+        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kf);
+        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) limit);
+
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(StabAssistTuner.toByteArray());
+        byte [] StabAssistTunerMessage = messageStruct.message;
+        controlBoardPort.writeBytes(StabAssistTunerMessage, StabAssistTunerMessage.length);
+        return messageStruct.id;
     }
 
-    //Messages to implement:
-    // Stablility Assist PID tune
-    // BNO055 Periodic Read
-    // BNO055 Read
-    // MS5837 Read
-    // BNO055 Data Status
-    // MS5837 Data Status
+    public short BNO055PeriodicRead(byte enable){
+        //TODO
+        ByteArrayOutputStream PeriodicRead = new ByteArrayOutputStream();
+        PeriodicRead.writeBytes(BNO055_PERIODIC_READ);
+        PeriodicRead.write(enable);
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(PeriodicRead.toByteArray());
+        byte [] PeriodicReadMessage = messageStruct.message;
+        controlBoardPort.writeBytes(PeriodicReadMessage, PeriodicReadMessage.length);
+        return messageStruct.id;
+    }
 
+    public short BNO055Read(){
+        ByteArrayOutputStream Read = new ByteArrayOutputStream();
+        Read.writeBytes(BNO055_READ);
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(Read.toByteArray());
+        byte [] ReadMessage = messageStruct.message;
+        controlBoardPort.writeBytes(ReadMessage, ReadMessage.length);
+        return messageStruct.id;
+    }
+
+    public short MS5837Read(){
+        ByteArrayOutputStream MSRead = new ByteArrayOutputStream();
+        MSRead.writeBytes(MS5837_READ);
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MSRead.toByteArray());
+        byte [] MSReadMessage = messageStruct.message;
+        controlBoardPort.writeBytes(MSReadMessage, MSReadMessage.length);
+        return messageStruct.id;
+    }
+    
+    public short MSPeriodicRead(byte enable){
+        ByteArrayOutputStream MSPeriodicRead = new ByteArrayOutputStream();
+        MSPeriodicRead.writeBytes(MS5837_PERIODIC_READ);
+        MSPeriodicRead.write(enable);
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MSPeriodicRead.toByteArray());
+        byte [] MSPeriodicReadMessage = messageStruct.message;
+        controlBoardPort.writeBytes(MSPeriodicReadMessage, MSPeriodicReadMessage.length);
+        return messageStruct.id;
+
+    }
+   
 
     /**
      * Feeds motor watchdog
