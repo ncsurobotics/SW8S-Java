@@ -29,7 +29,6 @@ public class Local_Test extends Mission {
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
         Scanner scnr = new Scanner(System.in);
 
-        manager.setMode(ControlBoardMode.LOCAL);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
 
         boolean cont = true;

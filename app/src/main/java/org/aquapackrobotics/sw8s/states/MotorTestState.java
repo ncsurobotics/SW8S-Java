@@ -22,7 +22,6 @@ public class MotorTestState extends State {
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         startTime = System.currentTimeMillis();
 

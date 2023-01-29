@@ -25,8 +25,6 @@ public class Raw_Test extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
-
-        manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
 
         boolean cont = true;

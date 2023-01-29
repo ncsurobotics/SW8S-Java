@@ -13,7 +13,6 @@ public class SubmergeTestInitState extends State {
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
     }

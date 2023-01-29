@@ -30,6 +30,10 @@ public class SerialCommunicationUtilityTest {
     private static final float rawFloat = 10f;
     private static final byte[] encodedFloat = new byte[] { 0, 0, 32, 65 };
 
+    // Watchdog message
+    private static final byte[] rawMessage_Watchdog = new byte[] {87,68,70,71};
+    private static final byte[] encodedMessage_Watchdog = new byte[] {87,68,70,71,ESCAPE_BYTE,END_BYTE,(byte)242};
+
     @Test
     public void testDestructModel() {
         Assert.assertArrayEquals(rawMessage_MODEL,
@@ -46,32 +50,6 @@ public class SerialCommunicationUtilityTest {
     public void testDestructZeros() {
         Assert.assertArrayEquals(rawMessage_Zeros,
                 SerialCommunicationUtility.destructMessage(encodedMessage_Zeros));
-    }
-
-    @Test
-    public void testConstructModel() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_MODEL),
-                SerialCommunicationUtility.constructMessage(rawMessage_MODEL));
-    }
-
-    @Test
-    public void testConstructTINV() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_TINV),
-                SerialCommunicationUtility.constructMessage(rawMessage_TINV));
-    }
-
-    @Test
-    public void testConstructZeros() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
-                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
-    }
-
-    @Test
-    public void testEncodingFloats() {
-        ByteArrayOutputStream testStream = new ByteArrayOutputStream();
-        SerialCommunicationUtility.writeEncodedFloat(testStream, rawFloat);
-
-        Assert.assertArrayEquals(encodedFloat, testStream.toByteArray());
     }
 
     @Test

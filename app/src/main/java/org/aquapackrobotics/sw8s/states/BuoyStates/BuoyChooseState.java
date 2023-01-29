@@ -14,7 +14,6 @@ public class BuoyChooseState extends State {
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        manager.setMode(ControlBoardMode.LOCAL);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
         startTime = System.currentTimeMillis();

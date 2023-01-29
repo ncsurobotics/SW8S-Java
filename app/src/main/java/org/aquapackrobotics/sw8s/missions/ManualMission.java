@@ -27,7 +27,6 @@ public class ManualMission extends Mission {
     @Override
     protected State initialState() {
         try {
-            manager.setMode(ControlBoardMode.LOCAL);
             manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         }
         catch(Exception e) {
