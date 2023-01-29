@@ -19,10 +19,19 @@ public class App {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-		ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
         String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
         System.out.println("Basic Format: gradle run --args='_'");        
+
+        /* Special case for testing without control board connection */
+        if (args.length == 1 && args[0].equals("--local_comm_test")) {
+            System.out.println("COMM TEST");
+            Mission missionComms = (Mission) new LocalComms(null, 5000);
+            missionComms.run();
+            System.exit(0);
+        }
+
+        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
 
         for (String str: args) {
             switch (str) {
