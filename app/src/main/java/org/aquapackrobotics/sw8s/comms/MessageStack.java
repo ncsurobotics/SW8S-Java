@@ -57,7 +57,7 @@ public class MessageStack {
         }
 
         // Payload
-    	messages.put(id, data);
+        messages.put(id, data);
     }
     
     /**
@@ -66,19 +66,19 @@ public class MessageStack {
      * @throws InterruptedException if interrupted while waiting for element to become available
      */
     public byte[] getMsgById(short id) throws InterruptedException {
-    	//Returns the first message stored in the map
+        //Returns the first message stored in the map
         Thread.sleep(250);
         byte[] msg;
         while ((msg = messages.remove(id)) == null)  {
             Thread.sleep(1);
         }
-    	return msg;
+        return msg;
     }
     
     /**
      * Clears the MessageStack by setting the singleton to null.
      */
     public static void clear() {
-    	ms = null;
+        ms = null;
     }
 }

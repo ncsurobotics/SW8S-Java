@@ -24,11 +24,11 @@ public class SubmergeTest extends Mission {
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
-		state.onEnter();
+        state.onEnter();
         while (state.onPeriodic()) {
             
         }
-		state.onExit();
+        state.onExit();
     }
 
     @Override

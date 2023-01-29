@@ -36,10 +36,10 @@ class ControlBoardCommunication {
     private static final long READ_TIMEOUT_LENGTH = 1000;
     private static final int THRUSTER_COUNT = 8;
 
-	/**
-	 * Construct a new ControlBoardCommunication listening and writing on the given port
-	 * @param port The port to listen on
-	 */
+    /**
+     * Construct a new ControlBoardCommunication listening and writing on the given port
+     * @param port The port to listen on
+     */
     public ControlBoardCommunication(ICommPort port) {
         controlBoardPort = port;
         controlBoardPort.openPort(new ControlBoardListener());
@@ -84,7 +84,7 @@ class ControlBoardCommunication {
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(message.toByteArray());
         byte[] messageBytes = messageStruct.message;
         short msgID = messageStruct.id;
-    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
+        controlBoardPort.writeBytes(messageBytes, messageBytes.length);
         return msgID;
     }
 
@@ -105,10 +105,10 @@ class ControlBoardCommunication {
      * Each double should be from -1 to 1.
      */
     public short setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
-    	ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
-    	rawSpeed.writeBytes(RAW_STRING);
+        ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
+        rawSpeed.writeBytes(RAW_STRING);
 
-		SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed1);
+        SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed1);
         SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed2);
         SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed3);
         SerialCommunicationUtility.writeEncodedFloat(rawSpeed, (float) speed4);
@@ -128,10 +128,10 @@ class ControlBoardCommunication {
      * Each double should be from -1 to 1.
      */
     public short setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
-    	ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
-    	localSpeed.writeBytes(LOCAL_STRING);
+        ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
+        localSpeed.writeBytes(LOCAL_STRING);
 
-		SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) z);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) pitch);
@@ -149,10 +149,10 @@ class ControlBoardCommunication {
      * Each double should be from -1 to 1.
      */
     public short setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
-    	ByteArrayOutputStream globalSpeed = new ByteArrayOutputStream();
+        ByteArrayOutputStream globalSpeed = new ByteArrayOutputStream();
         globalSpeed.writeBytes(GLOBAL_STRING);
 
-		SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) z);
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) pitch);
@@ -167,9 +167,9 @@ class ControlBoardCommunication {
 
     public short SetStabilityAssist1(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth) {
         ByteArrayOutputStream StabilityAssist1 = new ByteArrayOutputStream();
-    	StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
+        StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
 
-		SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) yaw);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targePitch);
@@ -184,9 +184,9 @@ class ControlBoardCommunication {
 
     public short SetStabilityAssist2(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth){
         ByteArrayOutputStream StabilityAssist2 = new ByteArrayOutputStream();
-    	StabilityAssist2.writeBytes(STABILITY_ASSIST_2);
+        StabilityAssist2.writeBytes(STABILITY_ASSIST_2);
 
-		SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) yaw);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targePitch);
@@ -217,7 +217,7 @@ class ControlBoardCommunication {
 
         MotorMatrixSet.write(thruster_num);
         
-		SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) z);
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) pitch);
@@ -308,7 +308,7 @@ class ControlBoardCommunication {
      * Feeds motor watchdog
      */
     public void feedWatchdogMotor() {
-    	byte[] messageBytes = SerialCommunicationUtility.constructMessage(WATCHDOG_FEED_STRING).message;
-    	controlBoardPort.writeBytes(messageBytes, messageBytes.length);
+        byte[] messageBytes = SerialCommunicationUtility.constructMessage(WATCHDOG_FEED_STRING).message;
+        controlBoardPort.writeBytes(messageBytes, messageBytes.length);
     }
 }

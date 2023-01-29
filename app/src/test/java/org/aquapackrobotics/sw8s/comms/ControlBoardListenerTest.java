@@ -39,12 +39,12 @@ public class ControlBoardListenerTest {
     }
     
     private byte[] generateAcknowledgeMessage(short id, byte errorCode, byte[] data) {
-    	ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
+        ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
 
-    	//Appends 'ACK' to acknowledge message
-    	acknowledgeMessage.writeBytes("ACK".getBytes());
-    	//Appends ack_id to acknowledge message
-    	byte idLowByte = (byte) (id & 0x00FF);
+        //Appends 'ACK' to acknowledge message
+        acknowledgeMessage.writeBytes("ACK".getBytes());
+        //Appends ack_id to acknowledge message
+        byte idLowByte = (byte) (id & 0x00FF);
         byte idHighByte = (byte) ((id & 0xFF00) >> 8);
         acknowledgeMessage.write(idHighByte);
         acknowledgeMessage.write(idLowByte);
@@ -56,71 +56,71 @@ public class ControlBoardListenerTest {
 
     @Test
     public void testWatchDogStatus() {
-    	//Makes sure WatchDogKill is initially set to false
-    	Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
-    	
-    	//Sends watchdog enable message
-    	listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
-    	Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        //Makes sure WatchDogKill is initially set to false
+        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        
+        //Sends watchdog enable message
+        listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
+        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
 
-    	//Sends watchdog kill message
-    	listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogKillMessage).message);
-    	Assert.assertTrue(WatchDogStatus.getInstance().getWatchDogKill());
-    	
-    	//Sends watchdog enable message
-    	listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
-    	Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        //Sends watchdog kill message
+        listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogKillMessage).message);
+        Assert.assertTrue(WatchDogStatus.getInstance().getWatchDogKill());
+        
+        //Sends watchdog enable message
+        listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
+        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
     }
     
     @Test
     public void testAcknowledgeMessage() {
-    	//Tests sending acknowledge messages with 20 different ack_ids
-    	for (short id = 1; id <= 20; id++) {
-    		byte idLowByte = (byte) (id & 0x00FF);
+        //Tests sending acknowledge messages with 20 different ack_ids
+        for (short id = 1; id <= 20; id++) {
+            byte idLowByte = (byte) (id & 0x00FF);
             byte idHighByte = (byte) ((id & 0xFF00) >> 8);
-	        //Expected message retrieved from MessageStack should be data containing the idLowByte and idHighByte
-	        byte[] expectedMessageData = {(byte)idLowByte, (byte)idHighByte};
-	        //Generates acknowledge message
-    		byte[] acknowledgeMessage = generateAcknowledgeMessage(id, (byte)0, expectedMessageData);
+            //Expected message retrieved from MessageStack should be data containing the idLowByte and idHighByte
+            byte[] expectedMessageData = {(byte)idLowByte, (byte)idHighByte};
+            //Generates acknowledge message
+            byte[] acknowledgeMessage = generateAcknowledgeMessage(id, (byte)0, expectedMessageData);
 
-	        //System.out.println(i);
-	        //Sends message bytes to listener
-	        listener.eventBytesHandler(acknowledgeMessage);
-	        try {
-				Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
-			} catch (InterruptedException e) { }
-    	}
+            //System.out.println(i);
+            //Sends message bytes to listener
+            listener.eventBytesHandler(acknowledgeMessage);
+            try {
+                Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
+            } catch (InterruptedException e) { }
+        }
     }
     
     @Test
     public void testPartialMessage() {
-    	ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
-    	byte[] firstHalfAcknowledge;
-    	byte[] secondHalfAcknowledge;
-    	byte[] expectedMessageData = {(byte)255};
-    	
-    	short id = 0;
-    	byte[] fullMessage = generateAcknowledgeMessage(id, (byte)0, expectedMessageData);
+        ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
+        byte[] firstHalfAcknowledge;
+        byte[] secondHalfAcknowledge;
+        byte[] expectedMessageData = {(byte)255};
+        
+        short id = 0;
+        byte[] fullMessage = generateAcknowledgeMessage(id, (byte)0, expectedMessageData);
 
-    	firstHalfAcknowledge = Arrays.copyOfRange(fullMessage, 0, fullMessage.length / 2);
+        firstHalfAcknowledge = Arrays.copyOfRange(fullMessage, 0, fullMessage.length / 2);
         secondHalfAcknowledge = Arrays.copyOfRange(fullMessage, fullMessage.length / 2, fullMessage.length);
         
         listener.eventBytesHandler(firstHalfAcknowledge);
         listener.eventBytesHandler(secondHalfAcknowledge);
         
         try {
-			Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
-		} catch (InterruptedException e) { }
+            Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
+        } catch (InterruptedException e) { }
         acknowledgeMessage.reset();
         
     }
     
     @Test
     public void testMultipleMessages() {
-    	ByteArrayOutputStream acknowledgeMessageDouble = new ByteArrayOutputStream();
-    	byte[] expectedMessage = new byte[0];
+        ByteArrayOutputStream acknowledgeMessageDouble = new ByteArrayOutputStream();
+        byte[] expectedMessage = new byte[0];
 
-    	short id = 0;
+        short id = 0;
         acknowledgeMessageDouble.writeBytes(generateAcknowledgeMessage(id, (byte)0, expectedMessage));
         
         short id2 = 10;
@@ -128,9 +128,9 @@ public class ControlBoardListenerTest {
 
         listener.eventBytesHandler(acknowledgeMessageDouble.toByteArray());
         try {
-			Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id)));
-			Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id2)));
+            Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id)));
+            Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id2)));
 
-		} catch (InterruptedException e) { }
+        } catch (InterruptedException e) { }
     }
 }

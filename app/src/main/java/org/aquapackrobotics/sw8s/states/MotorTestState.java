@@ -25,12 +25,12 @@ public class MotorTestState extends State {
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         startTime = System.currentTimeMillis();
 
-		double[] speeds = new double[8];
-		if (motorNumber >= 1 && motorNumber <= 8) {
-			speeds[motorNumber - 1] = TEST_SPEED;
-		}
+        double[] speeds = new double[8];
+        if (motorNumber >= 1 && motorNumber <= 8) {
+            speeds[motorNumber - 1] = TEST_SPEED;
+        }
         manager.setMotorSpeeds(speeds[0], speeds[1], speeds[2], speeds[3],
-				speeds[4], speeds[5], speeds[6], speeds[7]);
+                speeds[4], speeds[5], speeds[6], speeds[7]);
     }
 
 

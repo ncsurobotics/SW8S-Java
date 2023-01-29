@@ -11,25 +11,25 @@ import org.aquapackrobotics.sw8s.states.DirectionalStates.*;
  */
 public class DirectionTest extends Mission {
 
-	public DirectionTest(ControlBoardThreadManager manager) {
-		super(manager);
-	}
+    public DirectionTest(ControlBoardThreadManager manager) {
+        super(manager);
+    }
 
-	@Override
-	protected State initialState() {
-		return new StationaryInitState(manager);
-	}
+    @Override
+    protected State initialState() {
+        return new StationaryInitState(manager);
+    }
 
-	@Override
-	protected void executeState(State state) throws ExecutionException, InterruptedException {
+    @Override
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
         while (state.onPeriodic()) {
             
         }
-	}
+    }
 
-	@Override
-	protected State nextState(State state) {
-		return state.nextState();
-	}
+    @Override
+    protected State nextState(State state) {
+        return state.nextState();
+    }
 
 }
