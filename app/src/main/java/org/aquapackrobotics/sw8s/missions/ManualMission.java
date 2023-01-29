@@ -50,19 +50,26 @@ public class ManualMission extends Mission {
             String line = "";
 
             // reads message from client until "Over" is sent
-            while (!line.equals("Over"))
-            {
-                try
-                {
-                    line = in.readUTF();
-                    System.out.println(line);
-                    processController(line);
-                }
-                catch(Exception i)
-                {
-                    System.out.println(i);
-                }
-            }
+			try
+			{
+				while (!line.equals("Over"))
+				{
+						line = in.readUTF();
+						System.out.println(line);
+						processController(line);
+					}
+				}
+			catch(Exception i)
+			{
+				try {
+					manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+					System.out.println(i);
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
             System.out.println("Closing connection");
 
             // close connection
