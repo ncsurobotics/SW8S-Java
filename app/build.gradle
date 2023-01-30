@@ -51,10 +51,11 @@ task fatJar(type: Jar) {
 }
 
 remotes {
-    raspberryPi {
+    orangePi {
         host = '192.168.2.5'
         user = 'sw8'
-		identity = file('.sw8_ssh_identity')
+        identity = file('.sw8_ssh_identity')
+        password = file('.sw8_password').getText('UTF-8').trim()
     }
 }
 
@@ -62,8 +63,10 @@ task deploy {
     dependsOn fatJar
     doLast {
         ssh.run {
-            session(remotes.raspberryPi) {
-                put from: "$buildDir/libs/app-all.jar", into: 'java'
+            session(remotes.orangePi) {
+                execute "sudo -S mount -o remount,rw /", inputStream: remotes.orangePi.password
+                put from: "$buildDir/libs/app-all.jar", into: 'app-all.jar'
+                execute "sudo -S mount -o remount,ro /", inputStream: remotes.orangePi.password
             }
         }
     }

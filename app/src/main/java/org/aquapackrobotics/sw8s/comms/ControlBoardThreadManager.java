@@ -19,10 +19,32 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM0");
-        controlBoardCommunication = new ControlBoardCommunication(robotPort);
+        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
+        controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
+        try{
+            byte motor_num1 = (byte) 1;
+            byte motor_num2 = (byte) 2;
+            byte motor_num3 = (byte) 3;
+            byte motor_num4 = (byte) 4;
+            byte motor_num5 = (byte) 5;
+            byte motor_num6 = (byte) 6;
+            byte motor_num7 = (byte) 7;
+            byte motor_num8 = (byte) 8;
+            matrixSet(motor_num1,-1,-1,0,0,0,1);
+            matrixSet(motor_num2,1,-1,0,0,0,-1);
+            matrixSet(motor_num3,-1,1,0,0,0,-1);
+            matrixSet(motor_num4,1,1,0,0,0,1);
+            matrixSet(motor_num5,0,0,-1,-1,-1,0);
+            matrixSet(motor_num6,0,0,-1,-1,1,0);
+            matrixSet(motor_num7,0,0,-1,1,-1,0);
+            matrixSet(motor_num8,0,0,-1,1,1,0);
+        }
+        catch(Exception e){
+            System.out.println("Could not set motor matrix");
+        }
+
     }
 
     /**
@@ -31,6 +53,7 @@ public class ControlBoardThreadManager {
     private void startWatchDog() {
         pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
+   
 
     /**
      * Utility function that waits for the result from a ScheduledFuture and returns it when it is available.
@@ -42,44 +65,6 @@ public class ControlBoardThreadManager {
      */
     public <V> V waitForResult(ScheduledFuture<V> scheduledFuture) throws ExecutionException, InterruptedException {
         return scheduledFuture.get();
-    }
-
-    /**
-     * Sets the mode of the control board.
-     * @param controlBoardMode The new disired controlBoardMode.
-     * @return ScheduledFuture that will return void.
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<Void> setMode(ControlBoardMode controlBoardMode) throws ExecutionException, InterruptedException {
-        Callable<Void> modeRunnable = new Callable<Void>() {
-            @Override
-            public Void call() {
-                controlBoardCommunication.setMode(controlBoardMode);
-                return null;
-            }
-        };
-
-        return scheduleTask(modeRunnable);
-    }
-
-    /**
-     * Gets the current mode from the control board
-     * @return ScheduledFuture that will return the ControlBoardMode.
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<Void> getMode() throws ExecutionException, InterruptedException {
-        //REVERT TO CONTROLMODE RETURN AFTER TEST
-        Callable<Void> modeCallable = new Callable<>() {
-            @Override
-            public Void call() {
-//                return controlBoardCommunication.getMode();
-                return null;
-            }
-        };
-
-        return scheduleTask(modeCallable);
     }
 
     /**
@@ -96,35 +81,16 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<Void> setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) throws ExecutionException, InterruptedException {
-        Callable<Void> inversionCallable = new Callable<Void>() {
+    public ScheduledFuture<byte[]> setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) throws ExecutionException, InterruptedException {
+        Callable<byte[]> inversionCallable = new Callable<byte[]>() {
             @Override
-            public Void call() throws Exception {
-                controlBoardCommunication.setThrusterInversions(invert1, invert2, invert3, invert4, invert5, invert6, invert7, invert8);
-                return null;
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setThrusterInversions(invert1, invert2, invert3, invert4, invert5, invert6, invert7, invert8);
+                return MessageStack.getInstance().getMsgById(id);
             }
         };
 
        return scheduleTask(inversionCallable);
-    }
-
-    /**
-     * Gets the current inversions from the control board.
-     * @return ScheduledFuture with a list of eight booleans which represents the inversion state for each motor respectively. 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    public ScheduledFuture<Void> getThrusterInversions() throws ExecutionException, InterruptedException {
-        //REVERT TO boolean[] RETURN AFTER TEST
-        Callable<Void> inversionsGetter = new Callable<>() {
-            @Override
-            public Void call() throws Exception {
-//                return controlBoardCommunication.getThrusterInversions();
-                return null;
-            }
-        };
-
-        return scheduleTask(inversionsGetter);
     }
 
     /**
@@ -141,12 +107,12 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<Void> setMotorSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) throws ExecutionException, InterruptedException {
-        Callable<Void> speedsCallable = new Callable<Void>() {
+    public ScheduledFuture<byte[]> setMotorSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
-            public Void call() throws Exception {
-                controlBoardCommunication.setRawSpeeds(speed1, speed2, speed3, speed4, speed5, speed6, speed7, speed8);
-                return null;
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setRawSpeeds(speed1, speed2, speed3, speed4, speed5, speed6, speed7, speed8);
+                return MessageStack.getInstance().getMsgById(id);
             }
         };
 
@@ -159,17 +125,112 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<Void> setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
-        Callable<Void> speedsCallable = new Callable<Void>() {
+    public ScheduledFuture<byte[]> setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
-            public Void call() throws Exception {
-                controlBoardCommunication.setLocalSpeeds(x, y, z, pitch, roll, yaw);
-                return null;
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setLocalSpeeds(x, y, z, pitch, roll, yaw);
+                return MessageStack.getInstance().getMsgById(id);
             }
         };
 
         return scheduleTask(speedsCallable);
     }
+
+    public ScheduledFuture<byte[]> matrixUpdate() throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.MatrixUpdate();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> matrixSet(byte thruster_num, double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setMotorMatrix(thruster_num, x,y,z,pitch,roll,yaw);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> ImuAxisConfig(int config) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.ImuAxisConfig(config);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit) throws ExecutionException, InterruptedException{
+        Callable<byte[]> assistCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,kf,limit);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(assistCallable);
+    }
+
+    public ScheduledFuture<byte[]> BNO055PeriodicRead(byte enable) throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.BNO055PeriodicRead(enable);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> BNO055Read() throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.BNO055Read();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> MS5837Read() throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.MS5837Read();
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<byte[]> MSPeriodicRead(byte enable) throws ExecutionException, InterruptedException{
+        Callable<byte[]> readCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.MSPeriodicRead(enable);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    
+
+
 
     //Closes controlBoardCommunication.
     public void dispose() {

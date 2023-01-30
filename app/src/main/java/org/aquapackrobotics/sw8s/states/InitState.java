@@ -1,10 +1,16 @@
 package org.aquapackrobotics.sw8s.states;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import org.aquapackrobotics.sw8s.states.*;
+import org.aquapackrobotics.sw8s.comms.*;
+
+import java.util.Scanner;
+
+import java.util.concurrent.*;
 
 public class InitState extends State {
-    public InitState(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public InitState(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     // TODO: implement

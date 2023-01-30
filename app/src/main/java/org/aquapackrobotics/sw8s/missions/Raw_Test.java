@@ -1,6 +1,6 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -12,22 +12,19 @@ import java.util.concurrent.*;
 public class Raw_Test extends Mission {
     Scanner scnr = new Scanner(System.in);
 
-    public Raw_Test(ScheduledThreadPoolExecutor pool) {
-        super(pool);
+    public Raw_Test(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     // TODO: implement
     @Override
     protected State initialState() {
-        return new InitState(pool);
+        return new InitState(manager);
     }
 
     // TODO: implement
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
-        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
-
-        manager.setMode(ControlBoardMode.RAW);
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
 
         boolean cont = true;
