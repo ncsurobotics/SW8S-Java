@@ -54,7 +54,7 @@ public class MotorTestState extends State {
     }
 
     public State nextState() {
-        if (motorNumber == 8) {
+        if (motorNumber > 8) {
             return null;
         }
         return new MotorTestState(manager, motorNumber + 1);
