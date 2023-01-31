@@ -67,6 +67,9 @@ public class App {
                     Mission submergeMission = (Mission) new SubmergeTest(manager);
                     submergeMission.run();
                     break;
+                case "--local_comms":
+                    Mission localComms = (Mission) new LocalComms(manager, 5000);
+                    localComms.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();

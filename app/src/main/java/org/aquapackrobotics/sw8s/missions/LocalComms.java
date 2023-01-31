@@ -15,6 +15,7 @@ public class LocalComms extends Mission {
     private Socket       socket = null;
     private ServerSocket server = null;
     private DataInputStream in   = null;
+    private DataOutputStream out = null;
     int port;
 
     public LocalComms(ControlBoardThreadManager manager, int port) {
@@ -35,7 +36,9 @@ public class LocalComms extends Mission {
 
             socket = server.accept();
             System.out.println("Client accepted");
-
+            out = new DataOutputStream(socket.getOutputStream());
+            out.writeUTF("Hello");
+            System.out.println("Message sent");
             // takes input from the client socket
             in = new DataInputStream(
                 new BufferedInputStream(socket.getInputStream()));
@@ -57,7 +60,6 @@ public class LocalComms extends Mission {
                 }
             }
             System.out.println("Closing connection");
-
             // close connection
             socket.close();
             in.close();
