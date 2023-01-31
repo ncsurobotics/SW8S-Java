@@ -9,8 +9,14 @@ public class MessageStruct {
     public byte[] message;
 }
 
+public class DataStruct{
+    public double MS5837depth; // depth
+    public double[] BNO055data = new double[7]; // gyros and quaternions
+}
 
-// Black board for all sensor data
+
+
+// Black board for all sensor data from status and acknowledgement messages(Implement command to recieve depth every .1 seconds)
 // Make sure everything works
 // Cameras
 // Mission

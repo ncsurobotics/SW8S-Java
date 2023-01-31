@@ -13,9 +13,14 @@ import com.fazecast.jSerialComm.SerialPortEvent;
  */
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
-	private static final String WATCHDOG_STATUS = "WDGS";
+	//Acknowledgements
 	private static final String ACKNOWLEDGE = "ACK";
-	
+	//Status Messages
+	private static final String BNO05_STATUS = "BNO055D";
+	private static final String WATCHDOG_STATUS = "WDGS";
+	private static final String MS5837_STATUS = "MS5837D";
+
+
 	private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
 	private static boolean parseStarted = true;
 	private static boolean parseEscaped = false;
@@ -49,7 +54,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			if (parseEscaped) {
 				//Currently escaped
 				//Handle valid escape sequences
-				if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicationUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
+				if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicatio8nUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
 					messageStore.write(b);
 				
 				//No longer escaped
@@ -120,6 +125,9 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 					WatchDogStatus.getInstance().setWatchDogKill(true);
 				else if (strippedMessage[4] == (byte)1)
 					WatchDogStatus.getInstance().setWatchDogKill(false);
+			}
+			else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
+				
 			}
 			else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
 				//Pushes message onto message stack if acknowledge message
