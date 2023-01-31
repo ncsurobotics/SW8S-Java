@@ -20,12 +20,15 @@ public class DataBuffer {
 	
 	private int size;
 	
+	private float sum;
+	
 	@SuppressWarnings("unchecked")
 	public DataBuffer() {
 		buffer = new float[BUFFER_CAPACITY];
 		size = 0;
 		front = 0;
 		rear = 0;
+		sum = 0;
 	}
 	
 	/**
@@ -38,6 +41,7 @@ public class DataBuffer {
 		}
 		buffer[rear] = data;
 		rear = (rear + 1) % buffer.length;
+		sum += data;
 		size++;
 	}
 	
@@ -45,6 +49,7 @@ public class DataBuffer {
 	 * Removes the last element in the buffer
 	 */
 	private void removeLast() {
+		sum -= buffer[front];
 		front = (front + 1) % buffer.length;
 		size--;
 	}
@@ -55,11 +60,16 @@ public class DataBuffer {
 	 */
 	private float getAverage() {
 		//TODO: Remove outliers
-		
-		float sum = 0;
-		for (int i = front; i != rear; i = (i + 1) % buffer.length) {
-			sum = buffer[i];
+		float mean = sum / size;
+		float stdDev = 0;
+		for (int i = 0; i < size; i++) {
+			stdDev = stdDev + (buffer[(front + i) % buffer.length] - mean) * (buffer[(front + i) % buffer.length] - mean);
 		}
+		stdDev = stdDev / (size - 1);
+		
+		//TODO: Check for outliers and recalculate mean
+		
+		
 		return sum / size;
 	}
 	
