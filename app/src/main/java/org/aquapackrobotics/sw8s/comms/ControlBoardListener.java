@@ -16,7 +16,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 	//Acknowledgements
 	private static final String ACKNOWLEDGE = "ACK";
 	//Status Messages
-	private static final String BNO05_STATUS = "BNO055D";
+	private static final String BNO055_STATUS = "BNO055D";
 	private static final String WATCHDOG_STATUS = "WDGS";
 	private static final String MS5837_STATUS = "MS5837D";
 
@@ -127,7 +127,36 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 					WatchDogStatus.getInstance().setWatchDogKill(false);
 			}
 			else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
-				
+				byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+				ByteBuffer buffer = ByteBuffer.wrap(data);
+				MS5837GlobalBuffer value = new MS5837DataBuffer();
+				float num = buffer.getFloat();
+				value.depth = num;
+			}
+			else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
+				byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+				ByteBuffer buffer = ByteBuffer.wrap(data);
+				BNO055GlobalBuffer values = new BNO055GlobalBuffer();
+
+				float num1 = buffer.getFloat();
+				float num2 = buffer.getFloat();
+				float num3 = buffer.getFloat();
+				float num4 = buffer.getFloat();
+				float num5 = buffer.getFloat();
+				float num6 = buffer.getFloat();
+				float num7 = buffer.getFloat();
+				float num8 = buffer.getFloat();
+
+				values.gyrox = num1;
+				values.gyroy = num2;
+				values.gyroz = num3;
+				values.quat_w = num4;
+				values.quat_x= num5;
+				values.quat_y = num6;
+				values.quat_z = num7;
+
+
+
 			}
 			else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
 				//Pushes message onto message stack if acknowledge message
