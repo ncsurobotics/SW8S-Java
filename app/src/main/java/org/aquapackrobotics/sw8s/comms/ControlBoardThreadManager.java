@@ -9,6 +9,7 @@ public class ControlBoardThreadManager {
     //Instance variables
     private ScheduledThreadPoolExecutor pool;
     private ControlBoardCommunication controlBoardCommunication;
+    private ControlBoardListener listener;
     Runnable watchDog = new Runnable() {
         @Override
         public void run() {
@@ -21,6 +22,7 @@ public class ControlBoardThreadManager {
         this.pool = pool;
         SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
+        listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
         try{
@@ -226,6 +228,26 @@ public class ControlBoardThreadManager {
             }
         };
         return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<Float> getDepth() throws ExecutionException, InterruptedException{
+        Callable<Float> getCallable = new Callable<>(){
+            @Override
+            public Float call() throws Exception {
+                return listener.getDepth();
+            }
+        };
+        return scheduleTask(getCallable);
+    }
+
+    public ScheduledFuture<Float> getGyrox() throws ExecutionException, InterruptedException{
+        Callable<Float> getCallable = new Callable<>(){
+            @Override
+            public Float call() throws Exception {
+                return listener.getGyroxData();
+            }
+        };
+        return scheduleTask(getCallable);
     }
 
     
