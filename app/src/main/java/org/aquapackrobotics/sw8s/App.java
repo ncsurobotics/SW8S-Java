@@ -6,21 +6,33 @@ package org.aquapackrobotics.sw8s;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
 
 public class App {
 
-    static final int POOLSIZE = 1;
+    static final int POOLSIZE = 16;
     
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
         System.out.println("Basic Format: gradle run --args='_'");        
+
+        /* Special case for testing without control board connection */
+        if (args.length == 1 && args[0].equals("--local_comm_test")) {
+            System.out.println("COMM TEST");
+            Mission missionComms = (Mission) new LocalComms(null, 5000);
+            missionComms.run();
+            System.exit(0);
+        }
+
+        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
+        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
+
         for (String str: args) {
             switch (str) {
                 case "--test":
@@ -36,36 +48,34 @@ public class App {
                     }
                     break;
                 case "--raw_test":
-                    Mission missionRaw_Test = (Mission) new Raw_Test(pool);
+                    Mission missionRaw_Test = (Mission) new Raw_Test(manager);
                     missionRaw_Test.run();
                     break;
                 case "--local_test":
-                    Mission missionLocal_Test = (Mission) new Local_Test(pool);
+                    Mission missionLocal_Test = (Mission) new Local_Test(manager);
                     missionLocal_Test.run();
                     break;
-                // case "-s1":
-                //     executeState(State1);
-                //     break;
-                // case "-s2":
-                //     executeState(State2);
-                //     break;
-                // case "-s3":
-                //     executeState(State3);
-                //     break;
-                case "manual":
-                    Mission missionManual = (Mission) new ManualMission(pool);
+                case "--manual":
+                    Mission missionManual = (Mission) new ManualMission(manager, 5000);
                     missionManual.run();
                     break;
+                case "--motor_test":
+                    Mission motorMission = (Mission) new MotorTest(manager);
+                    motorMission.run();
+                    break;
+                case "--submerge_test":
+                    Mission submergeMission = (Mission) new SubmergeTest(manager);
+                    submergeMission.run();
+                    break;
+                case "--local_comms":
+                    Mission localComms = (Mission) new LocalComms(manager, 5000);
+                    localComms.run();
                 default:
-                    Mission missionAuto = (Mission) new AutoMission(pool);
+                    Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
                     break;
 
             }
         }
-        
-        Mission mission = (Mission) new AutoMission(pool);
-
-        
     }
 }

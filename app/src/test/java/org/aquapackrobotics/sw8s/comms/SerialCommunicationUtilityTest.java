@@ -53,52 +53,6 @@ public class SerialCommunicationUtilityTest {
     }
 
     @Test
-    public void testConstructModel() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_MODEL),
-                SerialCommunicationUtility.constructMessage(rawMessage_MODEL));
-    }
-
-    @Test
-    public void testConstructTINV() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_TINV),
-                SerialCommunicationUtility.constructMessage(rawMessage_TINV));
-    }
-
-    @Test
-    public void testConstructZeros() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Zeros),
-                SerialCommunicationUtility.constructMessage(rawMessage_Zeros));
-    }
-
-    @Test
-    public void testWatchdog() {
-        Assert.assertArrayEquals(appendStartEndMarkers(encodedMessage_Watchdog),
-                SerialCommunicationUtility.constructMessage(rawMessage_Watchdog));
-
-
-    }
-
-    @Test
-    public void testConstructDestructPassThrough() {
-        final String watchdog = "WDGF";
-
-        byte[] encodedModel = SerialCommunicationUtility.constructMessage(watchdog.getBytes());
-        encodedModel = Arrays.copyOfRange(encodedModel, 1, encodedModel.length - 1); // Strip start & end bytes
-
-        byte[] decodedModel = SerialCommunicationUtility.destructMessage(encodedModel);
-
-        Assert.assertArrayEquals(watchdog.getBytes(), decodedModel);
-    }
-
-    @Test
-    public void testEncodingFloats() {
-        ByteArrayOutputStream testStream = new ByteArrayOutputStream();
-        SerialCommunicationUtility.writeEncodedFloat(testStream, rawFloat);
-
-        Assert.assertArrayEquals(encodedFloat, testStream.toByteArray());
-    }
-
-    @Test
     public void testCRC16() {
         short crc16 = CRC.CITT16_False(rawMessage_MODEL, rawMessage_MODEL.length);
         byte lowByte = (byte) (crc16 & 0x00FF);

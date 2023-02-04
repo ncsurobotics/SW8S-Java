@@ -7,11 +7,11 @@ import org.aquapackrobotics.sw8s.states.State;
 import java.util.concurrent.*;
 
 /**
- * Competition mission, fully autonomous.
+ * Mission for navigating gates
  */
-public class AutoMission extends Mission {
+public class Gate extends Mission {
 
-    public AutoMission(ControlBoardThreadManager manager) {
+    public Gate(ControlBoardThreadManager manager) {
         super(manager);
     }
 

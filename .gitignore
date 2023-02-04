@@ -17,5 +17,9 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 build
-/bin/
-.idea
+/app/build/
+
+*.hprof
+
+app/.sw8_ssh_identity
+app/.sw8_password
