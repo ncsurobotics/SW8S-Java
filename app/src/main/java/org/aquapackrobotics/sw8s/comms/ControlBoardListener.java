@@ -142,14 +142,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                     WatchDogStatus.getInstance().setWatchDogKill(false);
             }
             else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float num = buffer.getFloat();
                 depths.depth.enqueue(num);
             }
             else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
 
