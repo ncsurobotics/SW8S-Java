@@ -33,7 +33,7 @@ public class Depth extends State {
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                return false;
+                return true;
             }
         }
         return false;
