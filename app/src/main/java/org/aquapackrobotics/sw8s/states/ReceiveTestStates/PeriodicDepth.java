@@ -8,17 +8,17 @@ import java.util.Arrays;
 
 import java.util.concurrent.*;
 
-public class Gyro extends State {
-    ScheduledFuture<byte[]> gyroRead;
+public class PeriodicDepth extends State {
+    ScheduledFuture<byte[]> depthRead;
 
-    public Gyro(ControlBoardThreadManager manager) {
+    public PeriodicDepth(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     // TODO: implement
     public void onEnter() {
         try {
-            gyroRead = manager.BNO055Read();
+            depthRead = manager.MSPeriodicRead((byte)1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,14 +26,14 @@ public class Gyro extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( gyroRead.isDone() ) {
+        if ( depthRead.isDone() ) {
             try {
-                System.out.println("Gyro: " +
-                    Arrays.toString(gyroRead.get()));
+                System.out.println("PeriodicDepth: " +
+                    Arrays.toString(depthRead.get()));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                return false;
+                return true;
             }
         }
         return false;
@@ -45,6 +45,6 @@ public class Gyro extends State {
 
     // TODO: implement
     public State nextState() {
-        return new PeriodicDepth(manager);
+        return new PeriodicGyro(manager);
     }
 }
