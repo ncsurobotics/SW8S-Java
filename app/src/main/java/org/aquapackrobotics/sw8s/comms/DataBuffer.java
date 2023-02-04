@@ -58,11 +58,11 @@ public class DataBuffer {
      * Returns the average of the data contained in the buffer, removing any outliers.
      * @return the average of the data contained in the buffer, removing any outliers.
      */
-    private float getAverage() {
+    public float getAverage() {
         return sum / size;
     }
 
-    private float getCurrentValue(){
+    public float getCurrentValue(){
         return buffer[rear];
     }
     

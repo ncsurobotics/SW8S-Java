@@ -189,10 +189,10 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     /**
      * Returns the current depth and gyrox 
      */
-    public MS5837GlobalBuffer getDepth(){
+    public float getDepth(){
         return depths.depth.getCurrentValue();
     }
-    public BNO055GlobalBuffer getGyroxData(){
+    public float getGyroxData(){
         return imuData.gyrox.getCurrentValue();
     }
 }
