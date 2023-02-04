@@ -59,18 +59,11 @@ public class DataBuffer {
 	 * @return the average of the data contained in the buffer, removing any outliers.
 	 */
 	private float getAverage() {
-		//TODO: Remove outliers
-		float mean = sum / size;
-		float stdDev = 0;
-		for (int i = 0; i < size; i++) {
-			stdDev = stdDev + (buffer[(front + i) % buffer.length] - mean) * (buffer[(front + i) % buffer.length] - mean);
-		}
-		stdDev = stdDev / (size - 1);
-		
-		//TODO: Check for outliers and recalculate mean
-		
-		
 		return sum / size;
+	}
+
+	private float getCurrentValue(){
+		return buffer[rear];
 	}
 	
 	

@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.nio.ByteBuffer;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -22,8 +23,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
 
 	private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
+
+	private static MS5837GlobalBuffer depths = new MS5837GlobalBuffer();
+	private static BNO055GlobalBuffer imuData = new BNO055GlobalBuffer();
+
 	private static boolean parseStarted = true;
 	private static boolean parseEscaped = false;
+
+
 	
 	/**
 	 * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -54,9 +61,9 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			if (parseEscaped) {
 				//Currently escaped
 				//Handle valid escape sequences
-				if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicatio8nUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
+				if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicationUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
 					messageStore.write(b);
-				
+
 				//No longer escaped
 				parseEscaped = false;
 			}
@@ -129,14 +136,13 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
 				byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
 				ByteBuffer buffer = ByteBuffer.wrap(data);
-				MS5837GlobalBuffer value = new MS5837DataBuffer();
+
 				float num = buffer.getFloat();
-				value.depth = num;
+				depths.depth.enqueue(num);
 			}
 			else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
 				byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
 				ByteBuffer buffer = ByteBuffer.wrap(data);
-				BNO055GlobalBuffer values = new BNO055GlobalBuffer();
 
 				float num1 = buffer.getFloat();
 				float num2 = buffer.getFloat();
@@ -147,14 +153,13 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 				float num7 = buffer.getFloat();
 				float num8 = buffer.getFloat();
 
-				values.gyrox = num1;
-				values.gyroy = num2;
-				values.gyroz = num3;
-				values.quat_w = num4;
-				values.quat_x= num5;
-				values.quat_y = num6;
-				values.quat_z = num7;
-
+				imuData.gyrox.enqueue(num1);
+				imuData.gyrox.enqueue(num2);
+				imuData.gyrox.enqueue(num3);
+				imuData.gyrox.enqueue(num4);
+				imuData.gyrox.enqueue(num5);
+				imuData.gyrox.enqueue(num6);
+				imuData.gyrox.enqueue(num7);
 
 
 			}
@@ -173,8 +178,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 			System.out.println(e.getMessage());
 		}
 	}
-}
 
- //Messages to implement:
-    // BNO055 Data Status
-    // MS5837 Data Status
+	/**
+	 * Returns the current depth and gyrox 
+	 */
+	public MS5837GlobalBuffer getDepth(){
+		return depths.depth.getCurrentValue();
+	}
+	public BNO055GlobalBuffer getGyroxData(){
+		return imuData.gyrox.getCurrentValue();
+	}
+}
