@@ -234,14 +234,8 @@ public class ControlBoardThreadManager {
         return listener.getDepth();
     }
 
-    public ScheduledFuture<Float> getGyrox() throws ExecutionException, InterruptedException{
-        Callable<Float> getCallable = new Callable<>(){
-            @Override
-            public Float call() throws Exception {
-                return listener.getGyroxData();
-            }
-        };
-        return scheduleTask(getCallable);
+    public float getGyrox(){
+        return listener.getGyroxData();
     }
 
     
