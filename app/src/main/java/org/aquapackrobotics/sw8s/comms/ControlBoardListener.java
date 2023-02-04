@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.comms;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -143,13 +144,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
                 byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
-
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float num = buffer.getFloat();
                 depths.depth.enqueue(num);
             }
             else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
                 byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
 
                 float num1 = buffer.getFloat();
                 float num2 = buffer.getFloat();
