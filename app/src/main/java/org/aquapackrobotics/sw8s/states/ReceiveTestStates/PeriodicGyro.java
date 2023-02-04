@@ -10,9 +10,11 @@ import java.util.concurrent.*;
 
 public class PeriodicGyro extends State {
     ScheduledFuture<byte[]> gyroRead;
+    int loop_runs;
 
     public PeriodicGyro(ControlBoardThreadManager manager) {
         super(manager);
+        loop_runs = 0;
     }
 
     // TODO: implement
@@ -27,14 +29,12 @@ public class PeriodicGyro extends State {
     // TODO: implement
     public boolean onPeriodic() {
         if ( gyroRead.isDone() ) {
-            try {
-                System.out.println("PeriodicGyro: " +
-                    Arrays.toString(gyroRead.get()));
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
+            System.out.println("PeriodicGyro X: " +
+                Float.toString(manager.getGyrox()));
+            if (++loop_runs < 10) {
                 return false;
             }
+            return true;
         }
         return false;
     }

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Gyro extends State {
-    ScheduledFuture<byte[]> gyroRead;
+    ScheduledFuture<float[]> gyroRead;
 
     public Gyro(ControlBoardThreadManager manager) {
         super(manager);

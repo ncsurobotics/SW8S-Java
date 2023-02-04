@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Depth extends State {
-    ScheduledFuture<byte[]> depthRead;
+    ScheduledFuture<Float> depthRead;
 
     public Depth(ControlBoardThreadManager manager) {
         super(manager);
@@ -28,8 +28,7 @@ public class Depth extends State {
     public boolean onPeriodic() {
         if ( depthRead.isDone() ) {
             try {
-                System.out.println("Depth: " +
-                    Arrays.toString(depthRead.get()));
+                System.out.println("Depth: " + depthRead.get().toString());
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();

@@ -4,15 +4,17 @@ package org.aquapackrobotics.sw8s.states;
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
 
-import java.util.Arrays;
+import java.lang.Float;
 
 import java.util.concurrent.*;
 
 public class PeriodicDepth extends State {
     ScheduledFuture<byte[]> depthRead;
+    int loop_runs;
 
     public PeriodicDepth(ControlBoardThreadManager manager) {
         super(manager);
+        loop_runs = 0;
     }
 
     // TODO: implement
@@ -27,14 +29,12 @@ public class PeriodicDepth extends State {
     // TODO: implement
     public boolean onPeriodic() {
         if ( depthRead.isDone() ) {
-            try {
-                System.out.println("PeriodicDepth: " +
-                    Arrays.toString(depthRead.get()));
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return true;
+            System.out.println("PeriodicDepth: " +
+                Float.toString(manager.getDepth()));
+            if (++loop_runs < 10) {
+                return false;
             }
+            return true;
         }
         return false;
     }
