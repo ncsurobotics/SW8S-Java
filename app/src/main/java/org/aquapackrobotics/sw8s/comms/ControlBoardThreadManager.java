@@ -142,6 +142,18 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
+    public ScheduledFuture<byte[]> setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setGlobalSpeeds(x, y, z, pitch, roll, yaw);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
     public ScheduledFuture<byte[]> matrixUpdate() throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override

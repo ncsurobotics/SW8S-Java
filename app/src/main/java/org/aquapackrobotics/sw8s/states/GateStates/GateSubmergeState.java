@@ -6,31 +6,44 @@ import java.util.concurrent.*;
 
 public class GateSubmergeState extends State {
 
-    ControlBoardThreadManager manager;
-    long startTime;
-    long endTime;
+    ScheduledFuture<byte[]> depthRead;
 
     public GateSubmergeState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
+        try {
+            depthRead = manager.MSPeriodicRead((byte)1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        manager.setLocalSpeeds(0, 0, -0.5, 0, 0, 0);
-        startTime = System.currentTimeMillis();
     }
 
 
     public boolean onPeriodic() {
-        endTime = System.currentTimeMillis();
-        if (endTime - startTime >= 1500 ) {
+        try {
+            if ( depthRead.isDone() ) {
+                if ( manager.getDepth() > 20.0 ) {
+                    manager.setGlobalSpeeds(0, 0, -0.4, 0, 0, 0);
+                    return false;
+                } else {
+                    manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+                    return true;
+                }
+            }
+            manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
-        manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+        manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
     }
 
     public State nextState() {
