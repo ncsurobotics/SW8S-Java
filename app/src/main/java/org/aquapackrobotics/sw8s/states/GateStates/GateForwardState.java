@@ -58,6 +58,6 @@ public class GateForwardState extends State {
     }
 
     public State nextState() {
-        return null;
+        return new GateSpinState(manager);
     }
 }

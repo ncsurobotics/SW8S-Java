@@ -46,6 +46,6 @@ public class GateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GateSpinState(manager);
+        return new GateForwardState(manager);
     }
 }
