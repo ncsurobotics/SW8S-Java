@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.missions;
 import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.states.GateStates.*;
 
 import java.util.concurrent.*;
 
@@ -18,7 +19,7 @@ public class Gate extends Mission {
     // TODO: implement
     @Override
     protected State initialState() {
-        return null;
+        return new GateInitState(manager);
     }
 
     // TODO: implement

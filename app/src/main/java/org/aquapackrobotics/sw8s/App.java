@@ -73,6 +73,9 @@ public class App {
                 case "--receive_test":
                     Mission recieveTest = (Mission) new ReceiveTest(manager);
                     recieveTest.run();
+                case "--gate":
+                    Mission gate = (Mission) new Gate(manager);
+                    gate.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
