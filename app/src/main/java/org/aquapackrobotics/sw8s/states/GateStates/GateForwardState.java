@@ -6,31 +6,55 @@ import java.util.concurrent.*;
 
 public class GateForwardState extends State {
 
-    ControlBoardThreadManager manager;
     long startTime;
     long endTime;
+    boolean recoverDepth;
+    ScheduledFuture<byte[]> depthRead;
 
     public GateForwardState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
-        manager.setLocalSpeeds(0, 0.5, 0, 0, 0, 0);
+        try {
+            depthRead = manager.MSPeriodicRead((byte)1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         startTime = System.currentTimeMillis();
+        recoverDepth = false;
     }
 
 
     public boolean onPeriodic() {
-        endTime = System.currentTimeMillis();
-        if (endTime - startTime >= 2500) {
+        double ySpeed = 0;
+        try {
+            if ( depthRead.isDone() ) {
+                if ( manager.getDepth() > -0.5 ) {
+                    recoverDepth = true;
+                }
+                if ( recoverDepth && manager.getDepth() > -1.0 ) {
+                    ySpeed = -0.4;
+                } else {
+                    recoverDepth = false;
+                }
+            }
+
+            endTime = System.currentTimeMillis();
+            if (endTime - startTime >= 10000) {
+                manager.setGlobalSpeeds(0.3, 0, ySpeed, 0, 0, 0);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
-        manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
+        manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
     }
 
     public State nextState() {

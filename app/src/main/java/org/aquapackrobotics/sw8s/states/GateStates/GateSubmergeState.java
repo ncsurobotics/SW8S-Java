@@ -19,14 +19,13 @@ public class GateSubmergeState extends State {
         catch (Exception e) {
             e.printStackTrace();
         }
-        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
     }
 
 
     public boolean onPeriodic() {
         try {
             if ( depthRead.isDone() ) {
-                if ( manager.getDepth() > 20.0 ) {
+                if ( manager.getDepth() > -1.0 ) {
                     manager.setGlobalSpeeds(0, 0, -0.4, 0, 0, 0);
                     return false;
                 } else {
