@@ -25,9 +25,11 @@ public class Gate extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
-        System.out.println("State: " + state.getClass().getName());
-        System.out.println("Depth: " + Double.toString(manager.getDepth()));
-        System.out.println("Gyro X: " + Double.toString(manager.getGyrox()));
+        while (! state.onPeriodic()) {
+            System.out.println("State: " + state.getClass().getName());
+            System.out.println("Depth: " + Double.toString(manager.getDepth()));
+            System.out.println("Gyro X: " + Double.toString(manager.getGyrox()));
+        }
     }
 
     // TODO: implement
