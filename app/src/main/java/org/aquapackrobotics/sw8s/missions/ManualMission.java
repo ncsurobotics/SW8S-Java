@@ -5,6 +5,7 @@ import java.net.*;
 import java.io.*;
 
 import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.states.ManualDummy;
 import org.aquapackrobotics.sw8s.comms.*;
 
 /**
@@ -18,6 +19,9 @@ public class ManualMission extends Mission {
     private DataInputStream in   = null;
     int port;
 
+    ScheduledFuture<byte[]> depthRead;
+    ScheduledFuture<byte[]> gyroRead;
+
     public ManualMission(ControlBoardThreadManager manager, int port) {
         super(manager);
         this.port = port;
@@ -28,6 +32,8 @@ public class ManualMission extends Mission {
     protected State initialState() {
         try {
             manager.setThrusterInversions(true, true, false, false, true, false, false, true);
+            depthRead = manager.MSPeriodicRead((byte)1);
+            gyroRead = manager.BNO055PeriodicRead((byte)1);
         }
         catch(Exception e) {
             System.out.println(e);
@@ -80,7 +86,7 @@ public class ManualMission extends Mission {
         {
             System.out.println(i);
         }
-        return null;
+        return new ManualDummy(manager);
     }
 
     // TODO: fix this spaghetti
@@ -129,6 +135,15 @@ public class ManualMission extends Mission {
     // TODO: implement
     @Override
     protected void executeState(State state)  throws ExecutionException, InterruptedException  {
+        while (true) {
+            if ( depthRead.isDone() ) {
+                System.out.println("Depth: " + manager.getDepth());
+            }
+            if ( gyroRead.isDone() ) {
+                System.out.println("Gyro X: " + manager.getGyrox());
+            }
+            Thread.sleep(100);
+        }
     }
 
     // TODO: implement
