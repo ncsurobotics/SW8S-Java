@@ -27,9 +27,9 @@ public class GateInitState extends State {
 
     public boolean onPeriodic() {
         if ( depthRead.isDone() && gyroRead.isDone() ) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{

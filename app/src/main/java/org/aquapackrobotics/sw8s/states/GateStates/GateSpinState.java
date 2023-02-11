@@ -43,10 +43,11 @@ public class GateSpinState extends State {
 
             endTime = System.currentTimeMillis();
             if (endTime - startTime >= 10000) {
-                manager.setGlobalSpeeds(0, 0, ySpeed, 0, 0, 0.3);
-                return false;
+                return true;
             }
-            return true;
+
+            manager.setGlobalSpeeds(0, 0, ySpeed, 0, 0, 0.3);
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

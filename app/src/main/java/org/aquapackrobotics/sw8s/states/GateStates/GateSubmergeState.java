@@ -33,8 +33,9 @@ public class GateSubmergeState extends State {
                     return true;
                 }
             }
+
             manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
-            return true;
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
