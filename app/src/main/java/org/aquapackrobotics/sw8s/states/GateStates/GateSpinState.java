@@ -4,11 +4,14 @@ import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 
-public class GateSubmergeState extends State {
+public class GateSpinState extends State {
 
+    long startTime;
+    long endTime;
+    boolean recoverDepth;
     ScheduledFuture<byte[]> depthRead;
 
-    public GateSubmergeState(ControlBoardThreadManager manager) {
+    public GateSpinState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
@@ -19,21 +22,30 @@ public class GateSubmergeState extends State {
         catch (Exception e) {
             e.printStackTrace();
         }
+        startTime = System.currentTimeMillis();
+        recoverDepth = false;
     }
 
 
     public boolean onPeriodic() {
+        double ySpeed = 0;
         try {
             if ( depthRead.isDone() ) {
-                if ( manager.getDepth() > -1.0 ) {
-                    manager.setGlobalSpeeds(0, 0, -0.4, 0, 0, 0);
-                    return false;
+                if ( manager.getDepth() > -0.5 ) {
+                    recoverDepth = true;
+                }
+                if ( recoverDepth && manager.getDepth() > -1.0 ) {
+                    ySpeed = -0.4;
                 } else {
-                    manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
-                    return true;
+                    recoverDepth = false;
                 }
             }
-            manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+
+            endTime = System.currentTimeMillis();
+            if (endTime - startTime >= 10000) {
+                manager.setGlobalSpeeds(0, 0, ySpeed, 0, 0, 0.3);
+                return false;
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,6 +58,6 @@ public class GateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GateSpinState(manager);
+        return new GateForwardState(manager);
     }
 }
