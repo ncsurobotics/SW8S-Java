@@ -6,7 +6,8 @@ import java.util.concurrent.*;
 
 public class GateInitState extends State {
 
-    ControlBoardThreadManager manager;
+    ScheduledFuture<byte[]> depthRead;
+    ScheduledFuture<byte[]> gyroRead;
 
     public GateInitState(ControlBoardThreadManager manager) {
         super(manager);
@@ -15,11 +16,20 @@ public class GateInitState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+        try {
+            depthRead = manager.MSPeriodicRead((byte)1);
+            gyroRead = manager.BNO055PeriodicRead((byte)1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     public boolean onPeriodic() {
-        return false;
+        if ( depthRead.isDone() && gyroRead.isDone() ) {
+            return false;
+        }
+        return true;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
