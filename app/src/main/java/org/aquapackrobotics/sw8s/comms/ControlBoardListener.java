@@ -22,6 +22,10 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static final String WATCHDOG_STATUS = "WDGS";
     private static final String MS5837_STATUS = "MS5837D";
 
+    /** ONLY FOR DEV */
+    private static final String DEBUG_STRING = "DEBUG";
+
+
 
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
 
@@ -175,6 +179,11 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 //Pushes message onto message stack if acknowledge message
                 MessageStack.getInstance().push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
+            }
+            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
+                // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
+                // FIX LATER 
+                System.out.println(strippedMessage.toString());
             }
             else {
                 //Received message is not a watchdog or acknowledgement message, it is ignored
