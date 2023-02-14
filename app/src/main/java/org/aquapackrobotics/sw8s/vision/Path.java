@@ -12,6 +12,9 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import wolf_vision.ImagePrep;
+import wolf_vision.VisionMath;
+
 /**
  * Code for "Path" task
  * 
@@ -45,7 +48,10 @@ public class Path extends ImagePrep {
 	public double[] vectors = new double[4];
 	public double[] values = new double[2];
 
-	public ArrayList<double[]> results_prop = new ArrayList<>(); //array with each element containing [color, width, angle, vert_offset, hori_offset]
+	// positive hori_offset means path is right of the center
+	// positive vert_offset means path is down of the center
+	// positive angle means path is sloped right(positive)
+	public ArrayList<double[]> results_prop = new ArrayList<>(); //array with each element containing [color, width, angle, hori_offset, vert_offset]
 	public ArrayList<Boolean> result = new ArrayList<>(); // array containing boolean values where true = path, false = not path
 
 	/**
@@ -70,24 +76,28 @@ public class Path extends ImagePrep {
 			// compute the PCA vectors and stuff
 			List<Mat> PCA_output = binaryPCA(on_points);
 			// convert Mat to double[]
-			PCA_output.get(0).get(0,0, this.mean);
-			PCA_output.get(1).get(0,0, this.vectors);
-			PCA_output.get(2).get(0,0, this.values);
+			PCA_output.get(0).get(0,0, this.mean);		// center of the path
+			PCA_output.get(1).get(0,0, this.vectors);	// direction
+			PCA_output.get(2).get(0,0, this.values);	// width
 			// filter for the true path
 			boolean is_path = pathFilter(color2);
 			this.result.add(is_path);
 
-			System.out.println(PCA_output.get(1).dump());
-			System.out.println(Arrays.toString(this.vectors));
+			//System.out.println(PCA_output.get(1).dump());
+			//System.out.println(Arrays.toString(this.vectors));
 			//System.out.println(PCA_output.get(1).dump());
 			//System.out.println(PCA_output.get(2).dump());
 
 			// compute & store results
-			double[] img_center = {colored_image.rows()/2.,colored_image.cols()/2.};
+			double[] img_center = {colored_image.cols()/2.,colored_image.rows()/2.};
 			double[] offset = computeOffset(img_center);
-			double[] properties = {color2, computeAngle(), offset[0], offset[1]};
+			double[] properties = {color2, this.values[this.path_width_idx], computeAngle(), offset[0], offset[1]};
 			this.results_prop.add(properties);
+			//System.out.println(Arrays.toString(this.results_prop.get(color2))); // print all vectors
+
 		}
+		//System.out.println(Collections.frequency(this.result, true)); // number of true (how many vector passed the path filter)
+		//System.out.println(this.result.indexOf(true)); // index of the vectors that is a true path
 	}
 	/**
 	 * Same as iteratePathBinaryPCA(), but also returns image with vectors drawn, see drawPCA()
@@ -115,15 +125,15 @@ public class Path extends ImagePrep {
 			//System.out.println(PCA_output.get(2).dump());
 			draw = drawPCA(draw, is_path);
 
-			double[] img_center = {colored_image.rows()/2.,colored_image.cols()/2.};
+			double[] img_center = {colored_image.cols()/2.,colored_image.rows()/2.};
 			double[] offset = computeOffset(img_center);
 			double[] properties = {all_colors.get(color), this.values[this.path_width_idx],computeAngle(), offset[0], offset[1]};
 			this.results_prop.add(properties);
 			this.result.add(is_path);
-			System.out.println(Arrays.toString(this.results_prop.get(color)));
+			//System.out.println(Arrays.toString(this.results_prop.get(color))); // print all vectors
 		}
-		System.out.println(Collections.frequency(this.result, true));
-		System.out.println(this.result.indexOf(true));
+		//System.out.println(Collections.frequency(this.result, true)); // number of true (how many vector passed the path filter)
+		//System.out.println(this.result.indexOf(true)); // index of the vectors that is a true path
 		return draw;
 	}
 
