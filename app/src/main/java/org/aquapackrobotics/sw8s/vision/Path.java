@@ -12,9 +12,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import wolf_vision.ImagePrep;
-import wolf_vision.VisionMath;
-
 /**
  * Code for "Path" task
  * 
