@@ -22,7 +22,15 @@ import org.opencv.imgproc.Imgproc;
     	path_prep.sliceSize(25, 25);				// preprocess (prepare for kmeans)
     	path_prep.localKmeans(2,4);					// preprocess (compute kmeans)
     	Mat local_kmeans = path_prep.resultImg;		// preprocess output
-    	Mat pca_draw = path_process.iteratePathBinaryPCAAndDraw(local_kmeans); // image with drawn vectors
+    	
+    	path_process.iteratePathBinaryPCA(local_kmeans);	// no image output
+    	// or
+    	Mat pca_draw = path_process.iteratePathBinaryPCAAndDraw(local_kmeans); // draw image with drawn vectors
+    	
+    	// grab the output for first path (see results and results_prop below)
+    	if (path_process.result.indexOf(true) >= 0) {
+    		System.out.println(Arrays.toString(path_process.results_prop.get(path_process.result.indexOf(true))));
+    	}
     	
  * numerical outputs see results_prop and results array
  * 
