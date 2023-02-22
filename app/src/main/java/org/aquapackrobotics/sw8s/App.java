@@ -12,7 +12,9 @@ import java.util.concurrent.*;
 
 public class App {
 
-    static final int POOLSIZE = 16;
+    //static final int POOLSIZE = 16;
+    static final int POOLSIZE = 128;
+    //static final int POOLSIZE = 8;
     
     public String getGreeting() {
         return "Hello World!";
@@ -86,5 +88,6 @@ public class App {
 
             }
         }
+        System.exit(0);
     }
 }

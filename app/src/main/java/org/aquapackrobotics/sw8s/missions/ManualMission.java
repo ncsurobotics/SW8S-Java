@@ -63,8 +63,19 @@ public class ManualMission extends Mission {
                         line = in.readUTF();
                         System.out.println(line);
                         processController(line);
+                        System.out.println("DEPTH READ STATUS: " + depthRead.isDone());
+                        System.out.println("GYRO READ STATUS: " + gyroRead.isDone());
+                        if ( ! ( depthRead.isDone() && gyroRead.isDone() ) ) {
+                            System.out.println("WAITING");
+                        }
+                        if ( depthRead.isDone() ) {
+                            System.out.println("Depth: " + manager.getDepth());
+                        }
+                        if ( gyroRead.isDone() ) {
+                            System.out.println("Gyro X: " + manager.getGyrox());
+                        }
                     }
-                }
+            }
             catch(Exception i)
             {
                 try {
@@ -136,6 +147,9 @@ public class ManualMission extends Mission {
     @Override
     protected void executeState(State state)  throws ExecutionException, InterruptedException  {
         while (true) {
+            if ( ( depthRead.isDone() && gyroRead.isDone() ) ) {
+                System.out.println("WAITING");
+            }
             if ( depthRead.isDone() ) {
                 System.out.println("Depth: " + manager.getDepth());
             }

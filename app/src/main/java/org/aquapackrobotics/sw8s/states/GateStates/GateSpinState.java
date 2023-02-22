@@ -30,15 +30,13 @@ public class GateSpinState extends State {
     public boolean onPeriodic() {
         double ySpeed = 0;
         try {
-            if ( depthRead.isDone() ) {
-                if ( manager.getDepth() > -0.5 ) {
-                    recoverDepth = true;
-                }
-                if ( recoverDepth && manager.getDepth() > -1.0 ) {
-                    ySpeed = -0.4;
-                } else {
-                    recoverDepth = false;
-                }
+            if ( manager.getDepth() > -1.5 ) {
+                recoverDepth = true;
+            }
+            if ( recoverDepth && manager.getDepth() > -2.0 ) {
+                ySpeed = -0.9;
+            } else {
+                recoverDepth = false;
             }
 
             endTime = System.currentTimeMillis();

@@ -24,18 +24,13 @@ public class GateSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            if ( depthRead.isDone() ) {
-                if ( manager.getDepth() > -1.0 ) {
-                    manager.setGlobalSpeeds(0, 0, -0.4, 0, 0, 0);
-                    return false;
-                } else {
-                    manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
-                    return true;
-                }
+            if ( manager.getDepth() > -2.0 ) {
+                manager.setGlobalSpeeds(0, 0, -0.9, 0, 0, 0);
+                return false;
+            } else {
+                manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+                return true;
             }
-
-            manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
-            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

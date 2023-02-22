@@ -9,6 +9,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * ControlBoardListener listens for messages from a comm port.
  * See SerialCommunicationUtility for message implementation details.
@@ -24,6 +26,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
     /** ONLY FOR DEV */
     private static final String DEBUG_STRING = "DEBUG";
+    private static final String DEBUG_RAW = "DBGDAT";
 
 
 
@@ -50,11 +53,15 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
      */
     @Override
     public void serialEvent(SerialPortEvent event) {
+        try {
         int size = event.getSerialPort().bytesAvailable();
         byte[] message = new byte[size];
         event.getSerialPort().readBytes(message, size);
 
         eventBytesHandler(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -90,7 +97,6 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                     }
                     catch (IllegalArgumentException e) {
                         //Catches any exceptions thrown from destructMessage such as invalid CRC
-                        //System.out.println(e.getMessage());
                         //Invalid message so restarts parse
                         parseStarted = false;
                     }
@@ -164,15 +170,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 float num5 = buffer.getFloat();
                 float num6 = buffer.getFloat();
                 float num7 = buffer.getFloat();
-                float num8 = buffer.getFloat();
 
                 imuData.gyrox.enqueue(num1);
-                imuData.gyrox.enqueue(num2);
-                imuData.gyrox.enqueue(num3);
-                imuData.gyrox.enqueue(num4);
-                imuData.gyrox.enqueue(num5);
-                imuData.gyrox.enqueue(num6);
-                imuData.gyrox.enqueue(num7);
+                //imuData.gyrox.enqueue(num2);
+                //imuData.gyrox.enqueue(num3);
+                //imuData.gyrox.enqueue(num4);
+                //imuData.gyrox.enqueue(num5);
+                //imuData.gyrox.enqueue(num6);
+                //imuData.gyrox.enqueue(num7);
 
 
             }
@@ -183,7 +188,13 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
                 // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
                 // FIX LATER 
-                System.out.println(strippedMessage.toString());
+                // ISO-8859-1 is ASCII
+                System.out.println(System.currentTimeMillis() + "> DEBUG: " + new String(strippedMessage, StandardCharsets.US_ASCII));
+            }
+            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_RAW.getBytes())) {
+                // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
+                // FIX LATER 
+                System.out.println("DEBUG_RAW: " + Arrays.toString(strippedMessage));
             }
             else {
                 //Received message is not a watchdog or acknowledgement message, it is ignored

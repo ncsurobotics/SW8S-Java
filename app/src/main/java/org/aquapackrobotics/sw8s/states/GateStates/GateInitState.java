@@ -14,7 +14,8 @@ public class GateInitState extends State {
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
+        // 8 and 7 were pushing up
+        manager.setThrusterInversions(true, true, false, false, true, false, true, false);
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
@@ -26,6 +27,8 @@ public class GateInitState extends State {
 
 
     public boolean onPeriodic() {
+        System.out.println("Depth READ: " + depthRead.isDone());
+        System.out.println("Gyro READ: " + depthRead.isDone());
         if ( depthRead.isDone() && gyroRead.isDone() ) {
             return true;
         }

@@ -42,8 +42,8 @@ public class Raw_Test extends Mission {
                 String[] lineParts = nextLine.split(" ");
                 
                 int motorNumber = Integer.valueOf(lineParts[0]);
-                double speed = Double.valueOf(lineParts[1]);
-                double motor_vals[] = new double[8];
+                float speed = Float.valueOf(lineParts[1]);
+                float motor_vals[] = new float[8];
                 for (int i = 0; i < motor_vals.length; ++i) {
                     motor_vals[i] = 0;
                 }

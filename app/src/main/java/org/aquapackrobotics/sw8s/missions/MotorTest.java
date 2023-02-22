@@ -23,6 +23,11 @@ public class MotorTest extends Mission {
 
     @Override
     protected State initialState(){
+        try {
+            manager.setThrusterInversions(true, true, false, false, true, false, false, true).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new MotorTestState(manager, 0);
     }
 

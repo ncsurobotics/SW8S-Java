@@ -23,7 +23,7 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM0");
+        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
@@ -37,14 +37,16 @@ public class ControlBoardThreadManager {
             byte motor_num6 = (byte) 6;
             byte motor_num7 = (byte) 7;
             byte motor_num8 = (byte) 8;
-            matrixSet(motor_num1,-1,-1,0,0,0,1);
-            matrixSet(motor_num2,1,-1,0,0,0,-1);
-            matrixSet(motor_num3,-1,1,0,0,0,-1);
-            matrixSet(motor_num4,1,1,0,0,0,1);
-            matrixSet(motor_num5,0,0,-1,-1,-1,0);
-            matrixSet(motor_num6,0,0,-1,-1,1,0);
-            matrixSet(motor_num7,0,0,-1,1,-1,0);
-            matrixSet(motor_num8,0,0,-1,1,1,0);
+            /* Add gets to confirm they finish sending */
+            matrixSet(motor_num1,-1,-1,0,0,0,1).get();
+            matrixSet(motor_num2,1,-1,0,0,0,-1).get();
+            matrixSet(motor_num3,-1,1,0,0,0,-1).get();
+            matrixSet(motor_num4,1,1,0,0,0,1).get();
+            matrixSet(motor_num5,0,0,-1,-1,-1,0).get();
+            matrixSet(motor_num6,0,0,-1,-1,1,0).get();
+            matrixSet(motor_num7,0,0,-1,1,-1,0).get();
+            matrixSet(motor_num8,0,0,-1,1,1,0).get();
+            matrixUpdate().get(); // ADDED, MISSING FROM SPEC
         }
         catch(Exception e){
             System.out.println("Could not set motor matrix");
@@ -56,7 +58,7 @@ public class ControlBoardThreadManager {
      * Schedules the watch dog thread runnable.
      */
     private void startWatchDog() {
-        pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
+        //pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
    
 
@@ -112,7 +114,7 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<byte[]> setMotorSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setMotorSpeeds(float speed1, float speed2, float speed3, float speed4, float speed5, float speed6, float speed7, float speed8) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {

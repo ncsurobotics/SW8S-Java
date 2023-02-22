@@ -21,7 +21,7 @@ public class StabilityGateSpinState extends State {
     public boolean onPeriodic() {
         double ySpeed = 0;
         try {
-            manager.setStability1Speeds(0, 0, 0.3, 0, 0, 1);
+            manager.setStability1Speeds(0, 0, 0.3, 0, 0, -2);
 
             endTime = System.currentTimeMillis();
             if (endTime - startTime >= 10000) {

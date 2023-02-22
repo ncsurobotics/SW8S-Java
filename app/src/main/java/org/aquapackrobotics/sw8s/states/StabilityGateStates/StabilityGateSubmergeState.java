@@ -24,7 +24,7 @@ public class StabilityGateSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            manager.setStability1Speeds(0, 0, 0, 0, 0, 1);
+            manager.setStability1Speeds(0, 0, 0, 0, 0, -2);
             if ( depthRead.isDone() ) {
                 if ( manager.getDepth() > -1.0 ) {
                     return false;

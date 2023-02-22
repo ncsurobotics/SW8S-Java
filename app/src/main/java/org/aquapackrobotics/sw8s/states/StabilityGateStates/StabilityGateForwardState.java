@@ -26,7 +26,7 @@ public class StabilityGateForwardState extends State {
                 return true;
             }
 
-            manager.setStability1Speeds(0.3, 0, 0, 0, 0, 1);
+            manager.setStability1Speeds(0.3, 0, 0, 0, 0, -2);
             return false;
         } catch (Exception e) {
             e.printStackTrace();
