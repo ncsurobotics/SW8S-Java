@@ -52,13 +52,69 @@ public class LocalComms extends Mission {
                 {
                     line = in.readUTF();
                     System.out.println(line);
-                    processController(line);
+                    //processController(line);
+                    switch (line.toLowerCase()) {
+                        case "a":  // left
+                            out.writeUTF("a");
+                            System.out.println("reading");
+                            break;
+                        case "d": // right
+                            out.writeUTF("d");
+                            break;
+                        case "w": // forward
+                            out.writeUTF("w");
+                            break;
+                        case "s": // backward
+                            out.writeUTF("s");
+                            break;
+                        case "up": // up
+                            out.writeUTF("up");
+                            break;
+                        case "down": // down
+                            out.writeUTF("down");
+                            break;
+                        case "o": // pitch up
+                            out.writeUTF("o");
+                            break;
+                        case "u": // pitch down
+                            out.writeUTF("u");
+                            break;  
+                        case "q": // roll left
+                            out.writeUTF("q");
+                            break;
+                        case "e": // roll right
+                            out.writeUTF("e");
+                            break;
+                        case "l": // yaw clockwise
+                            out.writeUTF("l");
+                            break;
+                        case "j": // yaw counterclockwise
+                            out.writeUTF("j");
+                            break;
+                        case "space": // space
+                            out.writeUTF("zero");
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                }
+                catch(SocketException e)
+                {
+                    out.close();
+                    in.close();
+                    socket.close();
+                    System.exit(0);
                 }
                 catch(Exception i)
                 {
                     System.out.println(i);
                 }
             }
+
+            //Setting all motors to zero before shut off
+            //manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
             System.out.println("Closing connection");
             // close connection
             socket.close();
