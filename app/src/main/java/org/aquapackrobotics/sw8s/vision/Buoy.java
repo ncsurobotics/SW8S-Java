@@ -1,10 +1,5 @@
 package org.aquapackrobotics.sw8s.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
-
 /**
  * Code for "Mark the Grade" task
  * @author Xingjian Li
@@ -12,56 +7,61 @@ import org.opencv.imgproc.Imgproc;
  */
 
 public class Buoy extends nn_cv2 {
-	private static String cfg_path = "D:\\eclipse-workspace\\Data\\models\\yolov3.cfg";
-	private static String weights_path = "D:\\eclipse-workspace\\Data\\models\\yolov3.weights";
-	private final int bootlegger_classid = 1;
-	private final int GMan_classid = 2;
-	public boolean Bootlegger = true;
-	public boolean GMan = true;
-	// x, y ,z
+	private static String model_path = "D:\\eclipse-workspace\\Data\\models\\buoy_v5n_best.onnx";
+	private final int first_classid = 0;
+	private final int second_classid = 1;
+	public boolean first = true;
+	public boolean second = true;
+	// + left, - right [-1,1]
+	// + up, - down [-1,1]
+	// distance [0,1], higher means further away
 	public double[] translation = {0, 0, 0};
 	public double[] rotation = {0, 0, 0};
 
 	// load buoy specific network
 	public void load_buoy_model() {
-		super.loadModel(cfg_path, weights_path);
+		super.loadModel(model_path);
+		super.numObjects = 2;	// left and right buoy
 	}
 	
-	// turn the detected point into [x,y,z]
-	public void calcAlignVector() {
+	// turn the detected buoys into a translation vector
+	public void transAlign() {
 		// aiming for Bootlegger, and Bootlegger detected
-		if (Bootlegger && super.output.indexOf(bootlegger_classid) >= 0) {
+		if (first && super.output.indexOf(first_classid) >= 0) {
 			// middle coordinate, top left + width or height
-			double x =  super.output_description.get(super.output.indexOf(bootlegger_classid)).x +
-						super.output_description.get(super.output.indexOf(bootlegger_classid)).width / 2;
-			double y =  super.output_description.get(super.output.indexOf(bootlegger_classid)).y +
-						super.output_description.get(super.output.indexOf(bootlegger_classid)).height / 2;
+			System.out.println(super.output);
+			System.out.println(super.output_description);
+			double x =  super.output_description.get(super.output.indexOf(first_classid)).x +
+						super.output_description.get(super.output.indexOf(first_classid)).width / 2;
+			double y =  super.output_description.get(super.output.indexOf(first_classid)).y +
+						super.output_description.get(super.output.indexOf(first_classid)).height / 2;
 			this.translation[0] = x;
-			this.translation[2] = y;
-			// min dist would be when the object takes the entire image
-			double min_dist = super.processImg.rows() * super.processImg.height();
+			this.translation[1] = y;
+			// distance is referenced as the ratio of the object height and image height
 			// higher distance means further away, normalized between [0,1]
-			double distance = (min_dist - super.output_description.get(super.output.indexOf(bootlegger_classid)).area())/min_dist;
-			this.translation[1] = distance;
+			double min_dist = super.processImg.height();
+			double distance = (min_dist - super.output_description.get(super.output.indexOf(first_classid)).height)/min_dist;
+			this.translation[2] = distance;
 		}
 		
 		// aiming for GMan, and GMan detected
-		if (GMan && super.output.indexOf(GMan_classid) >= 0) {
-			double x =  super.output_description.get(super.output.indexOf(GMan_classid)).x +
-						super.output_description.get(super.output.indexOf(GMan_classid)).width / 2;
-			double y =  super.output_description.get(super.output.indexOf(GMan_classid)).y +
-						super.output_description.get(super.output.indexOf(GMan_classid)).height / 2;
+		if (second && super.output.indexOf(second_classid) >= 0) {
+			double x =  super.output_description.get(super.output.indexOf(second_classid)).x +
+						super.output_description.get(super.output.indexOf(second_classid)).width / 2;
+			double y =  super.output_description.get(super.output.indexOf(second_classid)).y +
+						super.output_description.get(super.output.indexOf(second_classid)).height / 2;
 			this.translation[0] = x;
-			this.translation[2] = y;
+			this.translation[1] = y;
 			// min dist would be when the object takes the entire image
-			double min_dist = super.processImg.rows() * super.processImg.height();
-			// higher distance means further away, normalized between [0,1]
-			double distance = (min_dist - super.output_description.get(super.output.indexOf(GMan_classid)).area())/min_dist;
-			this.translation[1] = distance;
+			double min_dist = super.processImg.height();
+			double distance = (min_dist - super.output_description.get(super.output.indexOf(second_classid)).height)/min_dist;
+			this.translation[2] = distance;
 		}
 		
-		// transform the target with respect to the center of image
-		this.translation[0] -= super.processImg.cols()/2;
-		this.translation[2] -= super.processImg.rows()/2;
+		// transform the target with respect to the center of image, within [-1,1]
+		this.translation[0] = (this.translation[0] - super.processImg.cols()/2) / (super.processImg.cols()/2);
+		this.translation[1] = -(this.translation[1] - super.processImg.rows()/2) / (super.processImg.rows()/2);
+		System.out.printf("Translation to Target Buoy: \n\t x: %.2f \n\t y: %.2f \n\t distance: %.2f\n",
+				this.translation[0], this.translation[1], this.translation[2]);
 	}
 }
