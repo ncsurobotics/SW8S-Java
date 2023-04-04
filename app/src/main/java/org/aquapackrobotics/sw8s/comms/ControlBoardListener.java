@@ -22,6 +22,10 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static final String WATCHDOG_STATUS = "WDGS";
     private static final String MS5837_STATUS = "MS5837D";
 
+    /** ONLY FOR DEV */
+    private static final String DEBUG_STRING = "DEBUG";
+
+
 
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
 
@@ -142,14 +146,14 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                     WatchDogStatus.getInstance().setWatchDogKill(false);
             }
             else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float num = buffer.getFloat();
                 depths.depth.enqueue(num);
             }
             else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,6,strippedMessage.length);
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -175,6 +179,11 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 //Pushes message onto message stack if acknowledge message
                 MessageStack.getInstance().push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
+            }
+            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
+                // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
+                // FIX LATER 
+                System.out.println(strippedMessage.toString());
             }
             else {
                 //Received message is not a watchdog or acknowledgement message, it is ignored

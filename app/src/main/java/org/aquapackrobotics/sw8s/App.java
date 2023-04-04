@@ -70,6 +70,9 @@ public class App {
                 case "--local_comms":
                     Mission localComms = (Mission) new LocalComms(manager, 5000);
                     localComms.run();
+                case "--receive_test":
+                    Mission recieveTest = (Mission) new ReceiveTest(manager);
+                    recieveTest.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();

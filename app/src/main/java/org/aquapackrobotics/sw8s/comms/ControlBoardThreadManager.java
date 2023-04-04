@@ -3,6 +3,9 @@ package org.aquapackrobotics.sw8s.comms;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.concurrent.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.BufferUnderflowException;
 
 public class ControlBoardThreadManager {
 
@@ -20,7 +23,7 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
+        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM0");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
@@ -197,23 +200,39 @@ public class ControlBoardThreadManager {
         return scheduleTask(readCallable);
     }
 
-    public ScheduledFuture<byte[]> BNO055Read() throws ExecutionException, InterruptedException{
-        Callable<byte[]> readCallable = new Callable<>(){
+    public ScheduledFuture<float[]> BNO055Read() throws ExecutionException, InterruptedException{
+        Callable<float[]> readCallable = new Callable<>(){
             @Override
-            public byte[] call() throws Exception {
+            public float[] call() throws Exception {
+                float[] data = new float[7];
+
                 short id = controlBoardCommunication.BNO055Read();
-                return MessageStack.getInstance().getMsgById(id);
+                ByteBuffer buffer_data = ByteBuffer.wrap(
+                        MessageStack.getInstance().getMsgById(id));
+
+                try {
+                    for (int i = 0; i < 7; i++) {
+                        data[i] = buffer_data.getFloat();
+                    }
+                } catch ( BufferUnderflowException e ) {
+                    e.printStackTrace();
+                    return null;
+                }
+                return data;
             }
         };
         return scheduleTask(readCallable);
     }
 
-    public ScheduledFuture<byte[]> MS5837Read() throws ExecutionException, InterruptedException{
-        Callable<byte[]> readCallable = new Callable<>(){
+    public ScheduledFuture<Float> MS5837Read() throws ExecutionException, InterruptedException{
+        Callable<Float>readCallable = new Callable<>(){
             @Override
-            public byte[] call() throws Exception {
+            public Float call() throws Exception {
                 short id = controlBoardCommunication.MS5837Read();
-                return MessageStack.getInstance().getMsgById(id);
+                ByteBuffer buffer_data = ByteBuffer.wrap(
+                        MessageStack.getInstance().getMsgById(id));
+                buffer_data.order(ByteOrder.LITTLE_ENDIAN);
+                return buffer_data.getFloat();
             }
         };
         return scheduleTask(readCallable);
