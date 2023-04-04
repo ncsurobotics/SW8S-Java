@@ -194,7 +194,15 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     public float getDepth(){
         return depths.depth.getCurrentValue();
     }
-    public float getGyroxData(){
-        return imuData.gyrox.getCurrentValue();
+    public float[] getGyroData(){
+        float [] values = new float[6];
+        values[0] = imuData.gyrox.getCurrentValue();
+        values[1] = imuData.gyroz.getCurrentValue();
+        values[2] = imuData.quat_w.getCurrentValue();
+        values[3] = imuData.quat_x.getCurrentValue();
+        values[4] = imuData.quat_y.getCurrentValue();
+        values[5] = imuData.quat_z.getCurrentValue();
+
+        return values;
     }
 }

@@ -234,8 +234,8 @@ public class ControlBoardThreadManager {
         return listener.getDepth();
     }
 
-    public float getGyrox(){
-        return listener.getGyroxData();
+    public float[] getGyrox(){
+        return listener.getGyroData();
     }
 
     
