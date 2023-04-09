@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import java.util.Enumeration;
+
 /**
  * A singleton {@link ConcurrentHashMap} of message IDs and their corresponding acknowledgements.
  */
@@ -67,8 +69,11 @@ public class MessageStack {
      */
     public byte[] getMsgById(short id) throws InterruptedException {
         //Returns the first message stored in the map
-        Thread.sleep(250);
         byte[] msg;
+        Enumeration enu = messages.keys();
+        //while (enu.hasMoreElements()) {
+            //System.out.println("STACK ENTRY: " + enu.nextElement());
+        //}
         while ((msg = messages.remove(id)) == null)  {
             Thread.sleep(1);
         }

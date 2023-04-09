@@ -70,14 +70,14 @@ class ControlBoardCommunication {
         message.writeBytes(INVERT_STRING);
         byte inv = 0;
         
-        appendInversion(inv, invert8);
-        appendInversion(inv, invert7);
-        appendInversion(inv, invert6);
-        appendInversion(inv, invert5);
-        appendInversion(inv, invert4);
-        appendInversion(inv, invert3);
-        appendInversion(inv, invert2);
-        appendInversion(inv, invert1);
+        inv = appendInversion(inv, invert8);
+        inv = appendInversion(inv, invert7);
+        inv = appendInversion(inv, invert6);
+        inv = appendInversion(inv, invert5);
+        inv = appendInversion(inv, invert4);
+        inv = appendInversion(inv, invert3);
+        inv = appendInversion(inv, invert2);
+        inv = appendInversion(inv, invert1);
 
         message.write(inv);
 
@@ -88,10 +88,12 @@ class ControlBoardCommunication {
         return msgID;
     }
 
-    private void appendInversion(byte inversion, boolean b){
+    // TODO bruh these aren't pointers they don't work like that
+    private byte appendInversion(byte inversion, boolean b){
         byte value = b ? (byte) 1 : (byte) 0; 
         inversion <<= (byte) 1 ;
         inversion |= value;
+        return inversion;
     }
 
     /**
@@ -104,7 +106,7 @@ class ControlBoardCommunication {
      * Directly sets the speeds of the thrusters.
      * Each double should be from -1 to 1.
      */
-    public short setRawSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) {
+    public short setRawSpeeds(float speed1, float speed2, float speed3, float speed4, float speed5, float speed6, float speed7, float speed8) {
         ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
         rawSpeed.writeBytes(RAW_STRING);
 

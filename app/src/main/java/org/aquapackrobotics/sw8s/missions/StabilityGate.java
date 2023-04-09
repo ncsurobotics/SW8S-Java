@@ -3,23 +3,23 @@ package org.aquapackrobotics.sw8s.missions;
 import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.GateStates.*;
+import org.aquapackrobotics.sw8s.states.StabilityGateStates.*;
 
 import java.util.concurrent.*;
 
 /**
  * Mission for navigating gates
  */
-public class Gate extends Mission {
+public class StabilityGate extends Mission {
 
-    public Gate(ControlBoardThreadManager manager) {
+    public StabilityGate(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     // TODO: implement
     @Override
     protected State initialState() {
-        return new GateInitState(manager);
+        return new StabilityGateInitState(manager);
     }
 
     // TODO: implement
@@ -35,6 +35,6 @@ public class Gate extends Mission {
     // TODO: implement
     @Override
     protected State nextState(State state) {
-        return state.nextState();
+        return null;
     }
 }

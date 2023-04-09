@@ -12,7 +12,9 @@ import java.util.concurrent.*;
 
 public class App {
 
-    static final int POOLSIZE = 16;
+    //static final int POOLSIZE = 16;
+    static final int POOLSIZE = 128;
+    //static final int POOLSIZE = 8;
     
     public String getGreeting() {
         return "Hello World!";
@@ -73,6 +75,12 @@ public class App {
                 case "--receive_test":
                     Mission recieveTest = (Mission) new ReceiveTest(manager);
                     recieveTest.run();
+                case "--gate":
+                    Mission gate = (Mission) new Gate(manager);
+                    gate.run();
+                case "--gate_stability":
+                    Mission stabilityGate = (Mission) new StabilityGate(manager);
+                    stabilityGate.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
@@ -80,5 +88,6 @@ public class App {
 
             }
         }
+        System.exit(0);
     }
 }

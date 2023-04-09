@@ -1,14 +1,14 @@
-package org.aquapackrobotics.sw8s.states.GateStates;
+package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 
-public class GateSubmergeState extends State {
+public class StabilityGateSubmergeState extends State {
 
     ScheduledFuture<byte[]> depthRead;
 
-    public GateSubmergeState(ControlBoardThreadManager manager) {
+    public StabilityGateSubmergeState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
@@ -24,13 +24,16 @@ public class GateSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            if ( manager.getDepth() > -2.0 ) {
-                manager.setGlobalSpeeds(0, 0, -0.9, 0, 0, 0);
-                return false;
-            } else {
-                manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
-                return true;
+            manager.setStability1Speeds(0, 0, 0, 0, 0, -2);
+            if ( depthRead.isDone() ) {
+                if ( manager.getDepth() > -1.0 ) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
+
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -42,6 +45,6 @@ public class GateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GateForwardState(manager);
+        return new StabilityGateForwardState(manager);
     }
 }
