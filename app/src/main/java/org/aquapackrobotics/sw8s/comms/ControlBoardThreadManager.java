@@ -23,7 +23,7 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
+        SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
@@ -51,7 +51,6 @@ public class ControlBoardThreadManager {
         catch(Exception e){
             System.out.println("Could not set motor matrix");
         }
-
     }
 
     /**
