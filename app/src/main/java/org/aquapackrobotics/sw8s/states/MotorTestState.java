@@ -16,9 +16,9 @@ public class MotorTestState extends State {
     ScheduledFuture<byte[]> motorSpeedsReturn;
 
     // Time in milliseconds
-    private static long MOTOR_RUN_TIME = 500;
+    private static long MOTOR_RUN_TIME = 1000;
     private static long DELAY = 1000;
-    private static float TEST_SPEED = (float) 0.5;
+    private static float TEST_SPEED = (float) 0.3;
 
     public MotorTestState(ControlBoardThreadManager manager, int motorNumber) {
         super(manager);
