@@ -10,7 +10,7 @@ import java.io.File;
 
 
 public class CameraFeedSender {
-	
+    
     static{
         try{
             // /path/to/opencv-VERSION.jar
@@ -66,7 +66,7 @@ public class CameraFeedSender {
         }
     }
 
-	public static void stream(String[] args){
+    public static void stream(String[] args){
         // NOTE: tee splits one src to multiple sinks
         String capPl = openPipeline(0, 800, 600, 30) + " ! tee name=t " + 
             "t. ! queue ! jpegdec ! videoconvert ! " + h264encPipeline(2048000) + " ! rtspclientsink location=rtsp://127.0.0.1:8554/cam0 " +
