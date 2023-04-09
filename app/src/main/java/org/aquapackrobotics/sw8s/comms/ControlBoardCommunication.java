@@ -167,7 +167,7 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short SetStabilityAssist1(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth) {
+    public short setStabilityAssist1(double x, double y, double yaw, double targePitch, double targetRoll, double targetDepth) {
         ByteArrayOutputStream StabilityAssist1 = new ByteArrayOutputStream();
         StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
 

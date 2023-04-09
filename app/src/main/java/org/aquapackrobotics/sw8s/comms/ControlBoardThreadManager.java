@@ -160,7 +160,7 @@ public class ControlBoardThreadManager {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.SetStabilityAssist1(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.setStabilityAssist1(x, y, z, pitch, roll, yaw);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
