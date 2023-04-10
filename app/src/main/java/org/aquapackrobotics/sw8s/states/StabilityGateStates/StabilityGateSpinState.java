@@ -15,14 +15,17 @@ public class StabilityGateSpinState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         startTime = System.currentTimeMillis();
+        try {
+            manager.setStability1Speeds(0, 0, 0.3, 0, 0, -2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     public boolean onPeriodic() {
         double ySpeed = 0;
         try {
-            manager.setStability1Speeds(0, 0, 0.3, 0, 0, -2);
-
             endTime = System.currentTimeMillis();
             if (endTime - startTime >= 10000) {
                 return true;

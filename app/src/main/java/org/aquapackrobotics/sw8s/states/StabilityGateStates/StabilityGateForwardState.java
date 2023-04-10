@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
+import java.util.Arrays;
 
 public class StabilityGateForwardState extends State {
 
@@ -15,6 +16,14 @@ public class StabilityGateForwardState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         startTime = System.currentTimeMillis();
+        try {
+            var mreturn = manager.setStability1Speeds(0, 0.3, 0, 0, 0, -2);
+            while (! mreturn.isDone());
+            System.out.println("DONE");
+            System.out.println(Arrays.toString(mreturn.get()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -26,7 +35,6 @@ public class StabilityGateForwardState extends State {
                 return true;
             }
 
-            manager.setStability1Speeds(0.3, 0, 0, 0, 0, -2);
             return false;
         } catch (Exception e) {
             e.printStackTrace();

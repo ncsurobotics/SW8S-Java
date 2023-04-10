@@ -50,11 +50,11 @@ public class MessageStack {
 
         // If there's an error, exit
         if (errorCode != (byte) 0) {
-            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " ;
+            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " + Arrays.toString(message);
             for (var c : data) {
                 errorMsg += (byte) c + " ";
             }
-            System.out.print(errorMsg);
+            System.out.println(errorMsg);
             return;
         }
 

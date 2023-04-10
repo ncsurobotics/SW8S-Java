@@ -144,6 +144,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             
             //Remove message ID of received message
             byte[] strippedMessage = Arrays.copyOfRange(message, 2, message.length);
+            //System.out.println("GET MESSAGE: " + Arrays.toString(strippedMessage));
 
             if (ByteArrayUtility.startsWith(strippedMessage, WATCHDOG_STATUS.getBytes())) {
                 if (strippedMessage[4] == (byte)0)

@@ -3,6 +3,7 @@ package org.aquapackrobotics.sw8s.comms;
 import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.concurrent.*;
+import java.util.Arrays;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.BufferUnderflowException;
@@ -29,6 +30,10 @@ public class ControlBoardThreadManager {
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
         try{
+            var axis_respond = ImuAxisConfig((byte)6);
+            System.out.println("RESPONSE: " + Arrays.toString(axis_respond.get()));
+            System.out.println("GET IMU");
+            Thread.sleep(3000);
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -57,7 +62,7 @@ public class ControlBoardThreadManager {
      * Schedules the watch dog thread runnable.
      */
     private void startWatchDog() {
-        //pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
+        pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
    
 
@@ -159,6 +164,7 @@ public class ControlBoardThreadManager {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
+                System.out.println("SPEEDS: " + Double.toString(x) + "," + Double.toString(y) + "," + Double.toString(z) + "," + Double.toString(pitch) + "," + Double.toString(roll) + "," + Double.toString(yaw));
                 short id = controlBoardCommunication.setStabilityAssist1(x, y, z, pitch, roll, yaw);
                 return MessageStack.getInstance().getMsgById(id);
             }
@@ -167,11 +173,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> setStability2Speeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setStability2Speeds(double x, double y, double yaw, double targetPitch, double targetRoll, double targetDepth) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.SetStabilityAssist2(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.SetStabilityAssist2(x, y, yaw, targetPitch, targetRoll, targetDepth);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -203,7 +209,7 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> ImuAxisConfig(int config) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> ImuAxisConfig(byte config) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {

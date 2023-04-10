@@ -19,8 +19,8 @@ class ControlBoardCommunication {
     private static final byte[] LOCAL_STRING = "LOCAL".getBytes();
     private static final byte[] GLOBAL_STRING = "GLOBAL".getBytes();
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
-    private static final byte[] STABILITY_ASSIST_1 = "SASSISTST1".getBytes();
-    private static final byte[] STABILITY_ASSIST_2 = "SASSISTST2".getBytes();
+    private static final byte[] STABILITY_ASSIST_1 = "SASSIST1".getBytes();
+    private static final byte[] STABILITY_ASSIST_2 = "SASSIST2".getBytes();
     private static final byte[] MOTOR_MATRIX_UPDATE = "MMATU".getBytes();
     private static final byte[] IMU_AXIS_CONFIG = "BNO055A".getBytes();
     private static final byte[] MOTOR_MATRIX_SET = "MMATS".getBytes();
@@ -234,15 +234,15 @@ class ControlBoardCommunication {
     }
     
     
-    public short ImuAxisConfig(int config) {
+    public short ImuAxisConfig(byte config) {
         ByteArrayOutputStream AxisConfig = new ByteArrayOutputStream();
         AxisConfig.writeBytes(IMU_AXIS_CONFIG);
-        byte config_byte = (byte) config;
-        AxisConfig.write(config_byte);
+        AxisConfig.write(config);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(AxisConfig.toByteArray());
         byte [] AxisConfigMessage = messageStruct.message;
         controlBoardPort.writeBytes(AxisConfigMessage, AxisConfigMessage.length);
+        System.out.println("IMU MESSAGE: " + Arrays.toString(AxisConfigMessage));
         return messageStruct.id;
     }
 
