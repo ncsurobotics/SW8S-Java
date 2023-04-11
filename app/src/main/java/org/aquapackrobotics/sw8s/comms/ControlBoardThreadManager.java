@@ -2,6 +2,10 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.concurrent.*;
 import java.util.Arrays;
 import java.nio.ByteBuffer;

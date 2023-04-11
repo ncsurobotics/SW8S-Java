@@ -1,11 +1,13 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import java.io.IOException;
+
 public interface ICommPort {
     /**
      * Opens the port for reading and writing.
      * @param listener The listener to hook up to this port.
      */
-    void openPort(ICommPortListener listener);
+    void openPort(ICommPortListener listener) throws IOException;
 
     /**
      * Writes the following bytes to the port.
@@ -17,5 +19,5 @@ public interface ICommPort {
     /**
      * Called when the port is no longer in use.
      */
-    void closePort();
+    void closePort() throws IOException;
 }

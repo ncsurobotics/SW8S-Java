@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gst1-java-core-1.4.0-sources">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.freedesktop.gstreamer/gst1-java-core/1.4.0/aaa25ab48ef388daad935694a8e6ea226871128b/gst1-java-core-1.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
