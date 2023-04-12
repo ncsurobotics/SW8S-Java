@@ -28,12 +28,12 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
-        controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
-        // uncomment line below for sim port
-        // controlBoardCommunication = new ControlBoardCommunication(new TCPCommPort(new Socket("localhost", 5012)));
+        //SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
+        Socket simsocket =  new Socket("localhost", 5012);
+        //controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
+        controlBoardCommunication = new ControlBoardCommunication(new TCPCommPort(simsocket));
         listener = new ControlBoardListener();
-        System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
+        //System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
         try{
             var axis_respond = ImuAxisConfig((byte)6);

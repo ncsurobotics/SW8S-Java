@@ -1,35 +1,60 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.ThreadFactory;
 
-public class TCPCommPort implements ICommPort {
+public class TCPCommPort implements ICommPort, ThreadFactory {
 
     private static String endPoint = "localhost";
     private static final int port = 5012;
     private DataInputStream socketIn;
     private DataOutputStream socketOut;
 
+    ControlBoardListener listener;
+
     private byte[] buffer;
 
     public Socket simSocket;
 
-    public TCPCommPort(Socket socket){
+    public TCPCommPort(Socket socket) {
         simSocket = socket;
         buffer = new byte[64];
     }
+    @Override
     public void openPort(ICommPortListener listener) {
         try {
-            simSocket = new Socket(endPoint, port);
+            //simSocket = new Socket(endPoint, port);
             socketIn = (DataInputStream) simSocket.getInputStream();
             socketOut = (DataOutputStream) simSocket.getOutputStream();
+            this.listener = (ControlBoardListener) listener;
+            newThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        listenForEvents();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         } catch (IOException e) {
 
         }
 
+    }
+
+    private void listenForEvents() throws IOException {
+        while (true) {
+            if (socketIn.available() > 0) {
+                listener.tcpEvent(this);
+            }
+        }
     }
 
     public byte[] getBytesAvailable() throws IOException {
@@ -60,5 +85,10 @@ public class TCPCommPort implements ICommPort {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Thread newThread(Runnable r) {
+        return new Thread(r);
     }
 }

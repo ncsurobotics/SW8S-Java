@@ -1,6 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -63,7 +64,11 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             e.printStackTrace();
         }
     }
-    
+
+    public void tcpEvent(TCPCommPort tcp) throws IOException {
+        byte[] message = tcp.getBytesAvailable();
+        eventBytesHandler(message);
+    }
     /**
      * Processes bytes from a serial port listening event that may contain an incomplete or multiple messages
      * @param message the bytes to process
