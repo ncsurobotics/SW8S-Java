@@ -13,12 +13,13 @@ public class TCPCommPort implements ICommPort {
     private DataInputStream socketIn;
     private DataOutputStream socketOut;
 
+    private byte[] buffer;
+
     public Socket simSocket;
 
-    @Override
     public TCPCommPort(Socket socket){
         simSocket = socket;
-
+        buffer = new byte[64];
     }
     public void openPort(ICommPortListener listener) {
         try {
@@ -31,12 +32,12 @@ public class TCPCommPort implements ICommPort {
 
     }
 
-    public byte[] getBytesAvailable() {
-        byte[] input = null;
-        try {
-            input = socketIn.readAllBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public byte[] getBytesAvailable() throws IOException {
+        int size = socketIn.read(buffer);
+        byte[] input = new byte[size];
+        for (int i = 0; i < size; i++) {
+            input[i] = buffer[i];
+            buffer[i] = 0;
         }
         return input;
     }
