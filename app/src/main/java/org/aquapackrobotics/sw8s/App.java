@@ -3,6 +3,7 @@
  */
 package org.aquapackrobotics.sw8s;
 
+import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
@@ -20,7 +21,7 @@ public class App {
         return "Hello World!";
     }
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
         String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
         System.out.println("Basic Format: gradle run --args='_'");        
 
