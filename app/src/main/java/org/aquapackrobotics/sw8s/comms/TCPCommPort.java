@@ -2,10 +2,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ThreadFactory;
 
@@ -13,8 +10,8 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
 
     private static String endPoint = "localhost";
     private static final int port = 5012;
-    private DataInputStream socketIn;
-    private DataOutputStream socketOut;
+    private InputStream socketIn;
+    private OutputStream socketOut;
 
     ControlBoardListener listener;
 
@@ -30,8 +27,8 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
     public void openPort(ICommPortListener listener) {
         try {
             //simSocket = new Socket(endPoint, port);
-            socketIn = (DataInputStream) simSocket.getInputStream();
-            socketOut = (DataOutputStream) simSocket.getOutputStream();
+            socketIn = simSocket.getInputStream();
+            socketOut = simSocket.getOutputStream();
             this.listener = (ControlBoardListener) listener;
             newThread(new Runnable() {
                 @Override
