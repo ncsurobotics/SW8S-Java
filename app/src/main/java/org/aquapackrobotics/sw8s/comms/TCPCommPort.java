@@ -15,14 +15,14 @@ public class TCPCommPort implements ICommPort {
 
     public Socket simSocket;
 
-    @Override
     public TCPCommPort(Socket socket){
         simSocket = socket;
 
     }
+    @Override
     public void openPort(ICommPortListener listener) {
         try {
-            simSocket = new Socket(endPoint, port);
+            //simSocket = new Socket(endPoint, port);
             socketIn = (DataInputStream) simSocket.getInputStream();
             socketOut = (DataOutputStream) simSocket.getOutputStream();
         } catch (IOException e) {
