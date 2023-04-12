@@ -10,11 +10,16 @@ public class TCPCommPort implements ICommPort {
 
     private static String endPoint = "localhost";
     private static final int port = 5012;
-    private Socket simSocket;
     private DataInputStream socketIn;
     private DataOutputStream socketOut;
 
+    public Socket simSocket;
+
     @Override
+    public TCPCommPort(Socket socket){
+        simSocket = socket;
+
+    }
     public void openPort(ICommPortListener listener) {
         try {
             simSocket = new Socket(endPoint, port);
@@ -37,7 +42,7 @@ public class TCPCommPort implements ICommPort {
     }
 
     @Override
-    public void writeBytes(byte[] bytes, long length) {
+    public synchronized void writeBytes(byte[] bytes, long length) {
         try {
             socketOut.write(bytes, 0, (int) length);
         } catch (IOException e) {
