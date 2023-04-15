@@ -29,8 +29,6 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static final String DEBUG_STRING = "DEBUG";
     private static final String DEBUG_RAW = "DBGDAT";
 
-
-
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
 
     private static MS5837GlobalBuffer depths = new MS5837GlobalBuffer();
@@ -39,7 +37,8 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static boolean parseStarted = true;
     private static boolean parseEscaped = false;
 
-
+    public ControlBoardListener() {
+    }
     
     /**
      * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -69,6 +68,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
         byte[] message = tcp.getBytesAvailable();
         eventBytesHandler(message);
     }
+
     /**
      * Processes bytes from a serial port listening event that may contain an incomplete or multiple messages
      * @param message the bytes to process

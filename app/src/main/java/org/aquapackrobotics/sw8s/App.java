@@ -13,6 +13,11 @@ import java.util.concurrent.*;
 
 public class App {
 
+    static {
+        System.setProperty("java.util.logging.SimpleFormatter.format",
+              "%1$tF %1$tT | %4$s | %5$s %n");
+    }
+
     //static final int POOLSIZE = 16;
     static final int POOLSIZE = 128;
     //static final int POOLSIZE = 8;

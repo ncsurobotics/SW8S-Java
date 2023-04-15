@@ -18,6 +18,7 @@ public class ControlBoardThreadManager {
     private ScheduledThreadPoolExecutor pool;
     private ControlBoardCommunication controlBoardCommunication;
     private ControlBoardListener listener;
+
     Runnable watchDog = new Runnable() {
         @Override
         public void run() {
@@ -28,12 +29,12 @@ public class ControlBoardThreadManager {
     //Constructor
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
+
         //SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
-        Socket simsocket =  new Socket("localhost", 5012);
-        //controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
-        controlBoardCommunication = new ControlBoardCommunication(new TCPCommPort(simsocket));
+        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyAAA");
+        controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
-        //System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
+        System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         startWatchDog();
         try{
             var axis_respond = ImuAxisConfig((byte)6);
@@ -70,7 +71,6 @@ public class ControlBoardThreadManager {
     private void startWatchDog() {
         pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
-   
 
     /**
      * Utility function that waits for the result from a ScheduledFuture and returns it when it is available.
