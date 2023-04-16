@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 import java.io.IOException;
 
+import java.lang.Byte;
+
 /**
  * Synchronous SW8 control board communication handler.
  * As a general rule:
@@ -297,7 +299,7 @@ class ControlBoardCommunication {
         byte [] AxisConfigMessage = messageStruct.message;
         controlBoardPort.writeBytes(AxisConfigMessage, AxisConfigMessage.length);
 
-        logCommand(messageStruct, "ImuAxisConfig", "");
+        logCommand(messageStruct, "ImuAxisConfig", Byte.toString(config));
 
         return messageStruct.id;
     }

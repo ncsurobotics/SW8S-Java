@@ -66,6 +66,7 @@ task deploy {
             session(remotes.orangePi) {
                 execute "sudo -S mount -o remount,rw /", inputStream: remotes.orangePi.password
                 put from: "$buildDir/libs/app-all.jar", into: 'app-all.jar'
+                put from: "util/", into: 'java-util'
                 execute "sudo -S mount -o remount,ro /", inputStream: remotes.orangePi.password
             }
         }

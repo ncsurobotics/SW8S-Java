@@ -16,7 +16,7 @@ public class StabilityGateSubmergeState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
-            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -2);
+            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
             while (! mreturn.isDone());
             System.out.println("DONE");
             System.out.println(Arrays.toString(mreturn.get()));
@@ -30,7 +30,7 @@ public class StabilityGateSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if ( depthRead.isDone() ) {
-                if ( manager.getDepth() < -1.8 ) {
+                if ( manager.getDepth() < -1.4 ) {
                     return true;
                 }
             }
@@ -47,6 +47,7 @@ public class StabilityGateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateForwardState(manager);
+        //return new StabilityGateForwardState(manager);
+        return null;
     }
 }
