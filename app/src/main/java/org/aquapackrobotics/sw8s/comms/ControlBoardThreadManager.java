@@ -30,8 +30,8 @@ public class ControlBoardThreadManager {
     public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
 
-        //SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyAAA");
+        SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
+        //SerialPort robotPort = SerialPort.getCommPort("/dev/ttyAAA");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
