@@ -20,7 +20,7 @@ public class StabilityGateHoldState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             //var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, 0, -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
             while (! mreturn.isDone());
             startTime = System.currentTimeMillis();
         }

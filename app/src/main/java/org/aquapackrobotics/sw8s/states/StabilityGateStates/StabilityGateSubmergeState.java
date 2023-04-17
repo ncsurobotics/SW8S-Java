@@ -17,7 +17,7 @@ public class StabilityGateSubmergeState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
             //var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, 0, -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
             while (! mreturn.isDone());
             System.out.println("DONE");
             System.out.println(Arrays.toString(mreturn.get()));
