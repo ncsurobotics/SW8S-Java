@@ -27,7 +27,7 @@ public class StabilityGateSpinState extends State {
         double ySpeed = 0;
         try {
             endTime = System.currentTimeMillis();
-            if (endTime - startTime >= 10000) {
+            if (endTime - startTime >= 5000) {
                 return true;
             }
 

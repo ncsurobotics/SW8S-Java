@@ -29,7 +29,7 @@ public class Gate extends Mission {
         while (! state.onPeriodic()) {
             System.out.println("State: " + state.getClass().getName());
             System.out.println("Depth: " + Double.toString(manager.getDepth()));
-            System.out.println("Gyro X: " + Arrays.toString(manager.getGyrox()));
+            System.out.println("Gyro X: " + Arrays.toString(manager.getGyro()));
         }
     }
 

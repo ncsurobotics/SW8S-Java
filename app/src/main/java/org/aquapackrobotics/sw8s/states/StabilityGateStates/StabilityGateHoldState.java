@@ -5,22 +5,24 @@ import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 import java.util.Arrays;
 
-public class StabilityGateSubmergeState extends State {
+public class StabilityGateHoldState extends State {
 
     ScheduledFuture<byte[]> depthRead;
 
-    public StabilityGateSubmergeState(ControlBoardThreadManager manager) {
+    // in milliseconds
+    private static long DELAY = 5000;
+    private long startTime;
+
+    public StabilityGateHoldState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte)1);
             //var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, 0, -1.5);
             while (! mreturn.isDone());
-            System.out.println("DONE");
-            System.out.println(Arrays.toString(mreturn.get()));
+            startTime = System.currentTimeMillis();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -30,17 +32,14 @@ public class StabilityGateSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            if ( depthRead.isDone() ) {
-                if ( manager.getDepth() < -1.4 ) {
-                    return true;
-                }
+            if (System.currentTimeMillis() - startTime >= DELAY) {
+                return true;
             }
-
-            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+        return false;
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
@@ -48,6 +47,6 @@ public class StabilityGateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateHoldState(manager);
+        return new StabilityGateForwardState(manager);
     }
 }

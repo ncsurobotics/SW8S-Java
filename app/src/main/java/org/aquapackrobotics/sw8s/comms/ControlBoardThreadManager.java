@@ -35,12 +35,13 @@ public class ControlBoardThreadManager {
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
-        startWatchDog();
         try{
             var axis_respond = ImuAxisConfig((byte)6);
             System.out.println("RESPONSE: " + Arrays.toString(axis_respond.get()));
             System.out.println("GET IMU");
-            Thread.sleep(3000);
+            setMotorSpeeds(0,0,0,0,0,0,0,0);
+            startWatchDog();
+            Thread.sleep(2000);
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -50,15 +51,20 @@ public class ControlBoardThreadManager {
             byte motor_num7 = (byte) 7;
             byte motor_num8 = (byte) 8;
             /* Add gets to confirm they finish sending */
-            matrixSet(motor_num1,-1,-1,0,0,0,1).get();
-            matrixSet(motor_num2,1,-1,0,0,0,-1).get();
-            matrixSet(motor_num3,-1,1,0,0,0,-1).get();
-            matrixSet(motor_num4,1,1,0,0,0,1).get();
-            matrixSet(motor_num5,0,0,-1,-1,-1,0).get();
-            matrixSet(motor_num6,0,0,-1,-1,1,0).get();
-            matrixSet(motor_num7,0,0,-1,1,-1,0).get();
-            matrixSet(motor_num8,0,0,-1,1,1,0).get();
+            matrixSet(motor_num3,-1,-1,0,0,0,1).get();
+            matrixSet(motor_num4,1,-1,0,0,0,-1).get();
+            matrixSet(motor_num1,-1,1,0,0,0,-1).get();
+            matrixSet(motor_num2,1,1,0,0,0,1).get();
+            matrixSet(motor_num7,0,0,-1,-1,-1,0).get();
+            matrixSet(motor_num8,0,0,-1,-1,1,0).get();
+            matrixSet(motor_num5,0,0,-1,1,-1,0).get();
+            matrixSet(motor_num6,0,0,-1,1,1,0).get();
             matrixUpdate().get(); // ADDED, MISSING FROM SPEC
+            
+            stabAssistPID('P', 0.8, 0.0, 0.0, 0.6, false).get();
+            stabAssistPID('R', 0.3, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('Y', 0.08, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
         }
         catch(Exception e){
             System.out.println("Could not set motor matrix");
@@ -179,11 +185,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> setStability2Speeds(double x, double y, double yaw, double targetPitch, double targetRoll, double targetDepth) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setStability2Speeds(double x, double y, double targetPitch, double targetRoll, double targetYaw, double targetDepth) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.SetStabilityAssist2(x, y, yaw, targetPitch, targetRoll, targetDepth);
+                short id = controlBoardCommunication.SetStabilityAssist2(x, y, targetPitch, targetRoll, targetYaw, targetDepth);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -227,11 +233,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit) throws ExecutionException, InterruptedException{
+    public ScheduledFuture<byte[]> stabAssistPID(char which, double kp, double ki, double kd, double limit, boolean invert) throws ExecutionException, InterruptedException{
         Callable<byte[]> assistCallable = new Callable<>(){
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,kf,limit);
+                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,limit,invert);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -302,8 +308,12 @@ public class ControlBoardThreadManager {
         return listener.getDepth();
     }
 
-    public float[] getGyrox(){
+    public double[] getGyro(){
         return listener.getGyroData();
+    }
+
+    public double getYaw() {
+        return getGyro()[7];
     }
 
     

@@ -12,6 +12,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 
 import java.nio.charset.StandardCharsets;
 
+import java.lang.Math;
+
 /**
  * ControlBoardListener listens for messages from a comm port.
  * See SerialCommunicationUtility for message implementation details.
@@ -177,10 +179,10 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 float num6 = buffer.getFloat();
                 float num7 = buffer.getFloat();
 
-                imuData.gyrox.enqueue(num1);
-                //imuData.gyrox.enqueue(num2);
-                //imuData.gyrox.enqueue(num3);
-                //imuData.gyrox.enqueue(num4);
+                imuData.quat_w.enqueue(num1);
+                imuData.quat_x.enqueue(num2);
+                imuData.quat_y.enqueue(num3);
+                imuData.quat_z.enqueue(num4);
                 //imuData.gyrox.enqueue(num5);
                 //imuData.gyrox.enqueue(num6);
                 //imuData.gyrox.enqueue(num7);
@@ -220,15 +222,29 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     public float getDepth(){
         return depths.depth.getCurrentValue();
     }
-    public float[] getGyroData(){
-        float [] values = new float[6];
-        values[0] = imuData.gyrox.getCurrentValue();
-        values[1] = imuData.gyroz.getCurrentValue();
-        values[2] = imuData.quat_w.getCurrentValue();
-        values[3] = imuData.quat_x.getCurrentValue();
-        values[4] = imuData.quat_y.getCurrentValue();
-        values[5] = imuData.quat_z.getCurrentValue();
 
-        return values;
+    public double[] getGyroData(){
+        double quat_w = imuData.quat_w.getCurrentValue();
+        double quat_x = imuData.quat_x.getCurrentValue();
+        double quat_y = imuData.quat_y.getCurrentValue();
+        double quat_z = imuData.quat_z.getCurrentValue();
+        
+        double pitch, roll, roll_denom, roll_numer, yaw, yaw_denom, yaw_numer;
+
+        pitch = 180.0 * Math.asin(2.0 * (quat_y*quat_z + quat_w*quat_x)) / Math.PI;
+        if ( Math.abs(90 - Math.abs(pitch)) < 0.1 ) {
+            yaw = 2.0 * 180.0 * Math.atan2(quat_y, quat_w) / Math.PI;
+            roll = 0.0;
+        } else {
+            roll_numer = 2.0 * (quat_w*quat_y - quat_x*quat_z);
+            roll_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_y*quat_y);
+            roll = 180.0 * Math.atan2(roll_numer, roll_denom) / Math.PI;
+            
+            yaw_numer = -2.0 * (quat_x*quat_y - quat_w*quat_z);
+            yaw_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_z*quat_z);
+            yaw = 180.0 * Math.atan2(yaw_numer, yaw_denom) / Math.PI;
+        }
+
+        return new double[]{quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw};
     }
 }

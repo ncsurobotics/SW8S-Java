@@ -7,6 +7,7 @@ import java.util.logging.*;
 import java.io.IOException;
 
 import java.lang.Byte;
+import java.lang.Boolean;
 
 /**
  * Synchronous SW8 control board communication handler.
@@ -227,15 +228,15 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short SetStabilityAssist2(double x, double y, double yaw, double targetPitch, double targetRoll, double targetDepth){
+    public short SetStabilityAssist2(double x, double y, double targetPitch, double targetRoll, double targetYaw, double targetDepth){
         ByteArrayOutputStream StabilityAssist2 = new ByteArrayOutputStream();
         StabilityAssist2.writeBytes(STABILITY_ASSIST_2);
 
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) y);
-        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) yaw);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetPitch);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetRoll);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetYaw);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetDepth);
 
 
@@ -244,8 +245,8 @@ class ControlBoardCommunication {
         controlBoardPort.writeBytes(StabilityAssistMessage2, StabilityAssistMessage2.length);
 
         logCommand(messageStruct, "setStabilityAssist_2", 
-                    Arrays.toString(new double[]{x, y, yaw, targetPitch,
-                        targetRoll, targetDepth}));
+                    Arrays.toString(new double[]{x, y, targetPitch,
+                        targetRoll, targetYaw, targetDepth}));
 
         return messageStruct.id;
     }
@@ -304,7 +305,7 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit){
+    public short StabAssistPID(char which, double kp, double ki, double kd, double limit, boolean invert){
         ByteArrayOutputStream StabAssistTuner = new ByteArrayOutputStream();
         StabAssistTuner.writeBytes(STAB_ASSIST_PID_TUNE);
         byte w = (byte) which;
@@ -313,15 +314,15 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kp);
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) ki);
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kd);
-        SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kf);
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) limit);
+        StabAssistTuner.write(invert ? (byte)1 : (byte)0);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(StabAssistTuner.toByteArray());
         byte [] StabAssistTunerMessage = messageStruct.message;
         controlBoardPort.writeBytes(StabAssistTunerMessage, StabAssistTunerMessage.length);
 
         logCommand(messageStruct, "stabAssistPID", which + ", " +
-                Arrays.toString(new double[]{kp, ki, kd, kf, limit}));
+                Arrays.toString(new double[]{kp, ki, kd, limit}) + ", " + Boolean.toString(invert));
 
         return messageStruct.id;
     }

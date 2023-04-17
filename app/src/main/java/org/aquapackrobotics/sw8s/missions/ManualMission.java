@@ -72,7 +72,7 @@ public class ManualMission extends Mission {
                             System.out.println("Depth: " + manager.getDepth());
                         }
                         if ( gyroRead.isDone() ) {
-                            System.out.println("Gyro X: " + manager.getGyrox());
+                            System.out.println("Gyro X: " + manager.getGyro());
                         }
                     }
             }
@@ -154,7 +154,7 @@ public class ManualMission extends Mission {
                 System.out.println("Depth: " + manager.getDepth());
             }
             if ( gyroRead.isDone() ) {
-                System.out.println("Gyro X: " + manager.getGyrox());
+                System.out.println("Gyro X: " + manager.getGyro());
             }
             Thread.sleep(100);
         }

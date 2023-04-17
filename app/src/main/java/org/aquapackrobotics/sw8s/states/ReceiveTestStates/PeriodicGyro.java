@@ -30,7 +30,7 @@ public class PeriodicGyro extends State {
     public boolean onPeriodic() {
         if ( gyroRead.isDone() ) {
             System.out.println("PeriodicGyro X: " +
-                Arrays.toString(manager.getGyrox()));
+                Arrays.toString(manager.getGyro()));
             if (++loop_runs < 10) {
                 return false;
             }
