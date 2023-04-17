@@ -5,6 +5,8 @@ import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 import java.util.Arrays;
 
+import java.lang.Double;
+
 public class StabilityGateSubmergeState extends State {
 
     ScheduledFuture<byte[]> depthRead;

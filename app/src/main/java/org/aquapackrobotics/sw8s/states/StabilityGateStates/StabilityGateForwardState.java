@@ -47,6 +47,7 @@ public class StabilityGateForwardState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateSpinState(manager);
+        //return new StabilityGateSpinState(manager);
+        return null;
     }
 }
