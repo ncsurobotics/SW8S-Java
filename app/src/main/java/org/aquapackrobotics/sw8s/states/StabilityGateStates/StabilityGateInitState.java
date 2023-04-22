@@ -16,7 +16,7 @@ public class StabilityGateInitState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
-        //manager.StabAssistPID('P', 0.05, 0.0, 0.0, 0.27, false);
+        //manager.StabAssistPID('X', 0.05, 0.0, 0.0, 0.27, false);
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
             gyroRead = manager.BNO055PeriodicRead((byte)1);

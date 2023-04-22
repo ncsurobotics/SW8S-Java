@@ -61,9 +61,9 @@ public class ControlBoardThreadManager {
             matrixSet(motor_num6,0,0,-1,1,1,0).get();
             matrixUpdate().get(); // ADDED, MISSING FROM SPEC
             
-            stabAssistPID('P', 0.8, 0.0, 0.0, 0.6, true).get();
-            stabAssistPID('R', 0.3, 0.0, 0.0, 0.2, false).get();
-            stabAssistPID('Y', 0.08, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, true).get();
+            stabAssistPID('Y', 0.3, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('Z', 0.08, 0.0, 0.0, 0.2, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
         }
         catch(Exception e){
