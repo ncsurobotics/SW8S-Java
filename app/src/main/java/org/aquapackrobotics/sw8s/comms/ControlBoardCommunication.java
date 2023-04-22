@@ -160,23 +160,23 @@ class ControlBoardCommunication {
      * Sets x, y, z, pitch, roll, and yaw in local mode (in that order).
      * Each double should be from -1 to 1.
      */
-    public short setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
+    public short setLocalSpeeds(double x, double y, double z, double xrot, double yrot, double zrot) {
         ByteArrayOutputStream localSpeed = new ByteArrayOutputStream();
         localSpeed.writeBytes(LOCAL_STRING);
 
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) z);
-        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) pitch);
-        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) roll);
-        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) yaw);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) xrot);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) yrot);
+        SerialCommunicationUtility.writeEncodedFloat(localSpeed, (float) zrot);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(localSpeed.toByteArray());
         byte[] localSpeedMessage = messageStruct.message;
         controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
 
         logCommand(messageStruct, "setLocalSpeeds", 
-                    Arrays.toString(new double[]{x, y, z, pitch, roll, yaw}));
+                    Arrays.toString(new double[]{x, y, z, xrot, yrot, zrot}));
 
         return messageStruct.id;
     }
@@ -185,34 +185,34 @@ class ControlBoardCommunication {
      * Sets x, y, z, pitch, roll, and yaw in global mode (in that order).
      * Each double should be from -1 to 1.
      */
-    public short setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) {
+    public short setGlobalSpeeds(double x, double y, double z, double pitchSpd, double rollSpd, double yawSpd) {
         ByteArrayOutputStream globalSpeed = new ByteArrayOutputStream();
         globalSpeed.writeBytes(GLOBAL_STRING);
 
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) z);
-        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) pitch);
-        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) roll);
-        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) yaw);
+        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) pitchSpd);
+        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) rollSpd);
+        SerialCommunicationUtility.writeEncodedFloat(globalSpeed, (float) yawSpd);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(globalSpeed.toByteArray());
         byte[] globalSpeedMessage = messageStruct.message;
         controlBoardPort.writeBytes(globalSpeedMessage, globalSpeedMessage.length);
 
         logCommand(messageStruct, "setGlobalSpeeds", 
-                    Arrays.toString(new double[]{x, y, z, pitch, roll, yaw}));
+                    Arrays.toString(new double[]{x, y, z, pitchSpd, rollSpd, yawSpd}));
 
         return messageStruct.id;
     }
 
-    public short setStabilityAssist1(double x, double y, double yaw, double targetPitch, double targetRoll, double targetDepth) {
+    public short setStabilityAssist1(double x, double y, double yawSpd, double targetPitch, double targetRoll, double targetDepth) {
         ByteArrayOutputStream StabilityAssist1 = new ByteArrayOutputStream();
         StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
 
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) y);
-        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) yaw);
+        SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) yawSpd);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targetPitch);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targetRoll);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist1, (float) targetDepth);
@@ -222,7 +222,7 @@ class ControlBoardCommunication {
         controlBoardPort.writeBytes(StabilityAssistMessage1, StabilityAssistMessage1.length);
 
         logCommand(messageStruct, "setStabilityAssist_1", 
-                    Arrays.toString(new double[]{x, y, yaw, targetPitch,
+                    Arrays.toString(new double[]{x, y, yawSpd, targetPitch,
                         targetRoll, targetDepth}));
 
         return messageStruct.id;

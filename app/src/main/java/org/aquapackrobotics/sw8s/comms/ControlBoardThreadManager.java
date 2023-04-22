@@ -148,11 +148,11 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<byte[]> setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setLocalSpeeds(double x, double y, double z, double xrot, double yrot, double zrot) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.setLocalSpeeds(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.setLocalSpeeds(x, y, z, xrot, yrot, zrot);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -160,11 +160,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> setGlobalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setGlobalSpeeds(double x, double y, double z, double pitch_spd, double roll_spd, double yaw_spd) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.setGlobalSpeeds(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.setGlobalSpeeds(x, y, z, pitch_spd, roll_spd, yaw_spd);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -172,12 +172,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> setStability1Speeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setStability1Speeds(double x, double y, double yawSpd, double targetPitch, double targetRoll, double targetDepth) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                System.out.println("SPEEDS: " + Double.toString(x) + "," + Double.toString(y) + "," + Double.toString(z) + "," + Double.toString(pitch) + "," + Double.toString(roll) + "," + Double.toString(yaw));
-                short id = controlBoardCommunication.setStabilityAssist1(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.setStabilityAssist1(x, y, yawSpd, targetPitch, targetRoll, targetDepth);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
