@@ -34,7 +34,7 @@ class ControlBoardCommunication {
     private static final byte[] BNO055_READ = "BNO055R".getBytes();
     private static final byte[] MS5837_READ = "MS5837R".getBytes();
     private static final byte[] MS5837_PERIODIC_READ = "MS5837P".getBytes();
-
+    private static final byte[] DOF_SPEED_SET = "RELDOF".getBytes();
 
     private static final byte RAW_BYTE = (byte) 'R';
     private static final byte LOCAL_BYTE = (byte) 'L';
@@ -377,6 +377,30 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
    
+    /**
+     * Sets relative speeds of motion in each degree of freedom.
+     * Each double should be from -1 to 1.
+     */
+    public short setDofSpeeds(float x, float y, float z, float xrot, float yrot, float zrot) {
+        ByteArrayOutputStream rawDoF = new ByteArrayOutputStream();
+        rawDoF.writeBytes(DOF_SPEED_SET);
+
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) z);
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) xrot);
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) yrot);
+        SerialCommunicationUtility.writeEncodedFloat(rawDoF, (float) zrot);
+
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(rawDoF.toByteArray());
+        byte[] rawDofMessage = messageStruct.message;
+        controlBoardPort.writeBytes(rawDofMessage, rawDofMessage.length);
+
+        logCommand(messageStruct, "setDofSpeeds", 
+                    Arrays.toString(new float[]{x, y, z, xrot, yrot, zrot}));
+
+        return messageStruct.id;
+    }
 
     /**
      * Feeds motor watchdog
