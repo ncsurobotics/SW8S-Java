@@ -65,6 +65,9 @@ public class ControlBoardThreadManager {
             stabAssistPID('Y', 0.3, 0.0, 0.0, 0.2, false).get();
             stabAssistPID('Z', 0.08, 0.0, 0.0, 0.2, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
+
+            setDofSpeeds((float)0.7071, (float)0.7071, (float)1.0,
+                    (float)0.4413, (float)1.0, (float)0.8139).get();
         }
         catch(Exception e){
             System.out.println("Could not set motor matrix");
@@ -315,9 +318,18 @@ public class ControlBoardThreadManager {
         return getGyro()[6];
     }
 
-    
-
-
+    public ScheduledFuture<byte[]> setDofSpeeds(float x, float y, float z,
+            float xrot, float yrot, float zrot) throws
+                ExecutionException, InterruptedException {
+        Callable<byte[]> setCallable = new Callable<>(){
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setDofSpeeds(x, y, z, xrot, yrot, zrot);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+        return scheduleTask(setCallable);
+    }
 
     //Closes controlBoardCommunication.
     public void dispose() {
