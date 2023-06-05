@@ -2,13 +2,23 @@ package org.aquapackrobotics.sw8s.comms;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.concurrent.*;
+import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.BufferUnderflowException;
 
 public class ControlBoardThreadManager {
 
     //Instance variables
     private ScheduledThreadPoolExecutor pool;
     private ControlBoardCommunication controlBoardCommunication;
+    private ControlBoardListener listener;
+
     Runnable watchDog = new Runnable() {
         @Override
         public void run() {
@@ -17,13 +27,21 @@ public class ControlBoardThreadManager {
     };
 
     //Constructor
-    public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) {
+    public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
-        SerialPort robotPort = SerialPort.getCommPort("/dev/ttyACM2");
+
+        SerialPort robotPort = SerialPort.getCommPort("/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
+        //SerialPort robotPort = SerialPort.getCommPort("/dev/ttyAAA");
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
+        listener = new ControlBoardListener();
         System.out.println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
-        startWatchDog();
         try{
+            var axis_respond = ImuAxisConfig((byte)6);
+            System.out.println("RESPONSE: " + Arrays.toString(axis_respond.get()));
+            System.out.println("GET IMU");
+            setMotorSpeeds(0,0,0,0,0,0,0,0);
+            startWatchDog();
+            Thread.sleep(2000);
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -32,19 +50,25 @@ public class ControlBoardThreadManager {
             byte motor_num6 = (byte) 6;
             byte motor_num7 = (byte) 7;
             byte motor_num8 = (byte) 8;
-            matrixSet(motor_num1,-1,-1,0,0,0,1);
-            matrixSet(motor_num2,1,-1,0,0,0,-1);
-            matrixSet(motor_num3,-1,1,0,0,0,-1);
-            matrixSet(motor_num4,1,1,0,0,0,1);
-            matrixSet(motor_num5,0,0,-1,-1,-1,0);
-            matrixSet(motor_num6,0,0,-1,-1,1,0);
-            matrixSet(motor_num7,0,0,-1,1,-1,0);
-            matrixSet(motor_num8,0,0,-1,1,1,0);
+            /* Add gets to confirm they finish sending */
+            matrixSet(motor_num3,-1,-1,0,0,0,1).get();
+            matrixSet(motor_num4,1,-1,0,0,0,-1).get();
+            matrixSet(motor_num1,-1,1,0,0,0,-1).get();
+            matrixSet(motor_num2,1,1,0,0,0,1).get();
+            matrixSet(motor_num7,0,0,-1,-1,-1,0).get();
+            matrixSet(motor_num8,0,0,-1,-1,1,0).get();
+            matrixSet(motor_num5,0,0,-1,1,-1,0).get();
+            matrixSet(motor_num6,0,0,-1,1,1,0).get();
+            matrixUpdate().get(); // ADDED, MISSING FROM SPEC
+            
+            stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, true).get();
+            stabAssistPID('Y', 0.3, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('Z', 0.08, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
         }
         catch(Exception e){
             System.out.println("Could not set motor matrix");
         }
-
     }
 
     /**
@@ -53,7 +77,6 @@ public class ControlBoardThreadManager {
     private void startWatchDog() {
         pool.scheduleAtFixedRate(watchDog, 0, 200, TimeUnit.MILLISECONDS);
     }
-   
 
     /**
      * Utility function that waits for the result from a ScheduledFuture and returns it when it is available.
@@ -107,7 +130,7 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<byte[]> setMotorSpeeds(double speed1, double speed2, double speed3, double speed4, double speed5, double speed6, double speed7, double speed8) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setMotorSpeeds(float speed1, float speed2, float speed3, float speed4, float speed5, float speed6, float speed7, float speed8) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
@@ -125,11 +148,47 @@ public class ControlBoardThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<byte[]> setLocalSpeeds(double x, double y, double z, double pitch, double roll, double yaw) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> setLocalSpeeds(double x, double y, double z, double xrot, double yrot, double zrot) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.setLocalSpeeds(x, y, z, pitch, roll, yaw);
+                short id = controlBoardCommunication.setLocalSpeeds(x, y, z, xrot, yrot, zrot);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> setGlobalSpeeds(double x, double y, double z, double pitch_spd, double roll_spd, double yaw_spd) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setGlobalSpeeds(x, y, z, pitch_spd, roll_spd, yaw_spd);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> setStability1Speeds(double x, double y, double yawSpd, double targetPitch, double targetRoll, double targetDepth) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.setStabilityAssist1(x, y, yawSpd, targetPitch, targetRoll, targetDepth);
+                return MessageStack.getInstance().getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
+    public ScheduledFuture<byte[]> setStability2Speeds(double x, double y, double targetPitch, double targetRoll, double targetYaw, double targetDepth) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.SetStabilityAssist2(x, y, targetPitch, targetRoll, targetYaw, targetDepth);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -161,7 +220,7 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> ImuAxisConfig(int config) throws ExecutionException, InterruptedException {
+    public ScheduledFuture<byte[]> ImuAxisConfig(byte config) throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override
             public byte[] call() throws Exception {
@@ -173,11 +232,11 @@ public class ControlBoardThreadManager {
         return scheduleTask(speedsCallable);
     }
 
-    public ScheduledFuture<byte[]> StabAssistPID(char which, double kp, double ki, double kd, double kf, double limit) throws ExecutionException, InterruptedException{
+    public ScheduledFuture<byte[]> stabAssistPID(char which, double kp, double ki, double kd, double limit, boolean invert) throws ExecutionException, InterruptedException{
         Callable<byte[]> assistCallable = new Callable<>(){
             @Override
             public byte[] call() throws Exception {
-                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,kf,limit);
+                short id = controlBoardCommunication.StabAssistPID(which,kp,ki,kd,limit,invert);
                 return MessageStack.getInstance().getMsgById(id);
             }
         };
@@ -195,23 +254,39 @@ public class ControlBoardThreadManager {
         return scheduleTask(readCallable);
     }
 
-    public ScheduledFuture<byte[]> BNO055Read() throws ExecutionException, InterruptedException{
-        Callable<byte[]> readCallable = new Callable<>(){
+    public ScheduledFuture<float[]> BNO055Read() throws ExecutionException, InterruptedException{
+        Callable<float[]> readCallable = new Callable<>(){
             @Override
-            public byte[] call() throws Exception {
+            public float[] call() throws Exception {
+                float[] data = new float[7];
+
                 short id = controlBoardCommunication.BNO055Read();
-                return MessageStack.getInstance().getMsgById(id);
+                ByteBuffer buffer_data = ByteBuffer.wrap(
+                        MessageStack.getInstance().getMsgById(id));
+
+                try {
+                    for (int i = 0; i < 7; i++) {
+                        data[i] = buffer_data.getFloat();
+                    }
+                } catch ( BufferUnderflowException e ) {
+                    e.printStackTrace();
+                    return null;
+                }
+                return data;
             }
         };
         return scheduleTask(readCallable);
     }
 
-    public ScheduledFuture<byte[]> MS5837Read() throws ExecutionException, InterruptedException{
-        Callable<byte[]> readCallable = new Callable<>(){
+    public ScheduledFuture<Float> MS5837Read() throws ExecutionException, InterruptedException{
+        Callable<Float>readCallable = new Callable<>(){
             @Override
-            public byte[] call() throws Exception {
+            public Float call() throws Exception {
                 short id = controlBoardCommunication.MS5837Read();
-                return MessageStack.getInstance().getMsgById(id);
+                ByteBuffer buffer_data = ByteBuffer.wrap(
+                        MessageStack.getInstance().getMsgById(id));
+                buffer_data.order(ByteOrder.LITTLE_ENDIAN);
+                return buffer_data.getFloat();
             }
         };
         return scheduleTask(readCallable);
@@ -226,6 +301,18 @@ public class ControlBoardThreadManager {
             }
         };
         return scheduleTask(readCallable);
+    }
+
+    public float getDepth() {
+        return listener.getDepth();
+    }
+
+    public double[] getGyro(){
+        return listener.getGyroData();
+    }
+
+    public double getYaw() {
+        return getGyro()[6];
     }
 
     

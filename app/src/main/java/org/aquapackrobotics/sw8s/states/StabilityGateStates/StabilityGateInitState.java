@@ -1,22 +1,22 @@
-package org.aquapackrobotics.sw8s.states.GateStates;
+package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 
-public class GateInitState extends State {
+public class StabilityGateInitState extends State {
 
     ScheduledFuture<byte[]> depthRead;
     ScheduledFuture<byte[]> gyroRead;
 
-    public GateInitState(ControlBoardThreadManager manager) {
+    public StabilityGateInitState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        // 8 and 7 were pushing up
-        manager.setThrusterInversions(true, true, false, false, true, false, true, false);
+        manager.setThrusterInversions(true, true, false, false, true, false, false, true);
         manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+        //manager.StabAssistPID('X', 0.05, 0.0, 0.0, 0.27, false);
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
             gyroRead = manager.BNO055PeriodicRead((byte)1);
@@ -27,8 +27,6 @@ public class GateInitState extends State {
 
 
     public boolean onPeriodic() {
-        System.out.println("Depth READ: " + depthRead.isDone());
-        System.out.println("Gyro READ: " + depthRead.isDone());
         if ( depthRead.isDone() && gyroRead.isDone() ) {
             return true;
         }
@@ -39,6 +37,6 @@ public class GateInitState extends State {
     }
 
     public State nextState() {
-        return new GateSubmergeState(manager);
+        return new StabilityGateSubmergeState(manager);
     }
 }

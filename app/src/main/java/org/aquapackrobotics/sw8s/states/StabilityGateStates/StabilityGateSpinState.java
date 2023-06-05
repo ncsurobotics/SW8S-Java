@@ -1,36 +1,37 @@
-package org.aquapackrobotics.sw8s.states.GateStates;
+package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 
-public class GateSubmergeState extends State {
+public class StabilityGateSpinState extends State {
 
-    ScheduledFuture<byte[]> depthRead;
+    long startTime;
+    long endTime;
 
-    public GateSubmergeState(ControlBoardThreadManager manager) {
+    public StabilityGateSpinState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
+        startTime = System.currentTimeMillis();
         try {
-            depthRead = manager.MSPeriodicRead((byte)1);
-        }
-        catch (Exception e) {
+            manager.setStability1Speeds(0, 0, 0.3, 0, 0, -2);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     public boolean onPeriodic() {
+        double ySpeed = 0;
         try {
-            if ( manager.getDepth() > -2.0 ) {
-                manager.setGlobalSpeeds(0, 0, -0.9, 0, 0, 0);
-                return false;
-            } else {
-                manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+            endTime = System.currentTimeMillis();
+            if (endTime - startTime >= 5000) {
                 return true;
             }
+
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -42,6 +43,6 @@ public class GateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GateForwardState(manager);
+        return null;
     }
 }

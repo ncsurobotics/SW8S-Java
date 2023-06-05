@@ -77,6 +77,9 @@ repositories {
     mavenCentral()
 }
 
+def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
+def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
+
 dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13.2'
@@ -84,6 +87,12 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+
+     if(System.properties['os.name'].toLowerCase().contains('win')){
+        implementation files(cv_win)
+    }else{
+        implementation files(cv_lin)
+    }
 }
 
 application {

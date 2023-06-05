@@ -1,11 +1,18 @@
 package org.aquapackrobotics.sw8s.comms;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+
+import java.nio.charset.StandardCharsets;
+
+import java.lang.Math;
 
 /**
  * ControlBoardListener listens for messages from a comm port.
@@ -13,13 +20,27 @@ import com.fazecast.jSerialComm.SerialPortEvent;
  */
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
-    private static final String WATCHDOG_STATUS = "WDGS";
+    //Acknowledgements
     private static final String ACKNOWLEDGE = "ACK";
-    
+    //Status Messages
+    private static final String BNO055_STATUS = "BNO055D";
+    private static final String WATCHDOG_STATUS = "WDGS";
+    private static final String MS5837_STATUS = "MS5837D";
+
+    /** ONLY FOR DEV */
+    private static final String DEBUG_STRING = "DEBUG";
+    private static final String DEBUG_RAW = "DBGDAT";
+
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
+
+    private static MS5837GlobalBuffer depths = new MS5837GlobalBuffer();
+    private static BNO055GlobalBuffer imuData = new BNO055GlobalBuffer();
+
     private static boolean parseStarted = true;
     private static boolean parseEscaped = false;
-    
+
+    public ControlBoardListener() {
+    }
     
     /**
      * Returns the events for which serialEvent(SerialPortEvent) will be called
@@ -34,13 +55,22 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
      */
     @Override
     public void serialEvent(SerialPortEvent event) {
+        try {
         int size = event.getSerialPort().bytesAvailable();
         byte[] message = new byte[size];
         event.getSerialPort().readBytes(message, size);
 
         eventBytesHandler(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
+    public void tcpEvent(TCPCommPort tcp) throws IOException {
+        byte[] message = tcp.getBytesAvailable();
+        eventBytesHandler(message);
+    }
+
     /**
      * Processes bytes from a serial port listening event that may contain an incomplete or multiple messages
      * @param message the bytes to process
@@ -52,7 +82,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 //Handle valid escape sequences
                 if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicationUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
                     messageStore.write(b);
-                
+
                 //No longer escaped
                 parseEscaped = false;
             }
@@ -74,7 +104,6 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                     }
                     catch (IllegalArgumentException e) {
                         //Catches any exceptions thrown from destructMessage such as invalid CRC
-                        //System.out.println(e.getMessage());
                         //Invalid message so restarts parse
                         parseStarted = false;
                     }
@@ -122,6 +151,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             
             //Remove message ID of received message
             byte[] strippedMessage = Arrays.copyOfRange(message, 2, message.length);
+            //System.out.println("GET MESSAGE: " + Arrays.toString(strippedMessage));
 
             if (ByteArrayUtility.startsWith(strippedMessage, WATCHDOG_STATUS.getBytes())) {
                 if (strippedMessage[4] == (byte)0)
@@ -129,9 +159,50 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 else if (strippedMessage[4] == (byte)1)
                     WatchDogStatus.getInstance().setWatchDogKill(false);
             }
+            else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
+                ByteBuffer buffer = ByteBuffer.wrap(data);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                float num = buffer.getFloat();
+                depths.depth.enqueue(num);
+            }
+            else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
+                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
+                ByteBuffer buffer = ByteBuffer.wrap(data);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+                float num1 = buffer.getFloat();
+                float num2 = buffer.getFloat();
+                float num3 = buffer.getFloat();
+                float num4 = buffer.getFloat();
+                float num5 = buffer.getFloat();
+                float num6 = buffer.getFloat();
+                float num7 = buffer.getFloat();
+
+                imuData.quat_w.enqueue(num1);
+                imuData.quat_x.enqueue(num2);
+                imuData.quat_y.enqueue(num3);
+                imuData.quat_z.enqueue(num4);
+                //imuData.gyrox.enqueue(num5);
+                //imuData.gyrox.enqueue(num6);
+                //imuData.gyrox.enqueue(num7);
+
+
+            }
             else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 //Pushes message onto message stack if acknowledge message
                 MessageStack.getInstance().push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
+            }
+            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
+                // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
+                // FIX LATER 
+                // ISO-8859-1 is ASCII
+                System.out.println(System.currentTimeMillis() + "> DEBUG: " + new String(strippedMessage, StandardCharsets.US_ASCII));
+            }
+            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_RAW.getBytes())) {
+                // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
+                // FIX LATER 
+                System.out.println("DEBUG_RAW: " + Arrays.toString(strippedMessage));
             }
             else {
                 //Received message is not a watchdog or acknowledgement message, it is ignored
@@ -144,8 +215,36 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
             System.out.println(e.getMessage());
         }
     }
-}
 
- //Messages to implement:
-    // BNO055 Data Status
-    // MS5837 Data Status
+    /**
+     * Returns the current depth and gyrox 
+     */
+    public float getDepth(){
+        return depths.depth.getCurrentValue();
+    }
+
+    public double[] getGyroData(){
+        double quat_w = imuData.quat_w.getCurrentValue();
+        double quat_x = imuData.quat_x.getCurrentValue();
+        double quat_y = imuData.quat_y.getCurrentValue();
+        double quat_z = imuData.quat_z.getCurrentValue();
+        
+        double pitch, roll, roll_denom, roll_numer, yaw, yaw_denom, yaw_numer;
+
+        pitch = 180.0 * Math.asin(2.0 * (quat_y*quat_z + quat_w*quat_x)) / Math.PI;
+        if ( Math.abs(90 - Math.abs(pitch)) < 0.1 ) {
+            yaw = 2.0 * 180.0 * Math.atan2(quat_y, quat_w) / Math.PI;
+            roll = 0.0;
+        } else {
+            roll_numer = 2.0 * (quat_w*quat_y - quat_x*quat_z);
+            roll_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_y*quat_y);
+            roll = 180.0 * Math.atan2(roll_numer, roll_denom) / Math.PI;
+            
+            yaw_numer = -2.0 * (quat_x*quat_y - quat_w*quat_z);
+            yaw_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_z*quat_z);
+            yaw = 180.0 * Math.atan2(yaw_numer, yaw_denom) / Math.PI;
+        }
+
+        return new double[]{quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw};
+    }
+}

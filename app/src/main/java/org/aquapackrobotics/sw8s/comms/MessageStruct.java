@@ -7,10 +7,11 @@ package org.aquapackrobotics.sw8s.comms;
 public class MessageStruct {
     public short id;
     public byte[] message;
+
 }
 
 
-// Black board for all sensor data
 // Make sure everything works
 // Cameras
-// Mission
+// Mission(Includes acoustics)
+// Need to make a place to put data from acknowledge messages

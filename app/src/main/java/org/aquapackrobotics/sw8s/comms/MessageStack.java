@@ -1,5 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import java.io.IOException;
+
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -7,15 +9,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import java.util.Enumeration;
+import java.util.logging.*;
+
 /**
  * A singleton {@link ConcurrentHashMap} of message IDs and their corresponding acknowledgements.
  */
 public class MessageStack {
     private static MessageStack ms;
     private ConcurrentHashMap<Short, byte[]> messages;
+    private Logger logger;
 
     private MessageStack() {
         messages = new ConcurrentHashMap<Short, byte[]>();
+
+        logger = Logger.getLogger("Comms_In");
+        logger.setUseParentHandlers(false);
+        for (var h : logger.getHandlers()) logger.removeHandler(h);
+        try {
+            FileHandler fHandle = new FileHandler("%t/Comms_In.log", true);
+            fHandle.setFormatter(new SimpleFormatter());
+            logger.addHandler(fHandle);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -27,6 +44,10 @@ public class MessageStack {
             ms = new MessageStack();
         }
         return ms;
+    }
+
+    private void logResponse(short id, byte[] message) {
+        logger.info(id + " | " + Arrays.toString(message));
     }
     
     /**
@@ -46,13 +67,15 @@ public class MessageStack {
         // Data
         byte[] data = Arrays.copyOfRange(message, 3, message.length);
 
+        logResponse(id, message);
+
         // If there's an error, exit
         if (errorCode != (byte) 0) {
-            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " ;
+            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " + Arrays.toString(message);
             for (var c : data) {
                 errorMsg += (byte) c + " ";
             }
-            System.out.print(errorMsg);
+            System.out.println(errorMsg);
             return;
         }
 
@@ -67,8 +90,11 @@ public class MessageStack {
      */
     public byte[] getMsgById(short id) throws InterruptedException {
         //Returns the first message stored in the map
-        Thread.sleep(250);
         byte[] msg;
+        Enumeration enu = messages.keys();
+        //while (enu.hasMoreElements()) {
+            //System.out.println("STACK ENTRY: " + enu.nextElement());
+        //}
         while ((msg = messages.remove(id)) == null)  {
             Thread.sleep(1);
         }

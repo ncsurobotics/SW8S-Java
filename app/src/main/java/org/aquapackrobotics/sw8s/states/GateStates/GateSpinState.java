@@ -4,14 +4,14 @@ import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.*;
 import java.util.concurrent.*;
 
-public class GateForwardState extends State {
+public class GateSpinState extends State {
 
     long startTime;
     long endTime;
     boolean recoverDepth;
     ScheduledFuture<byte[]> depthRead;
 
-    public GateForwardState(ControlBoardThreadManager manager) {
+    public GateSpinState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
@@ -44,7 +44,7 @@ public class GateForwardState extends State {
                 return true;
             }
 
-            manager.setGlobalSpeeds(0.3, 0, ySpeed, 0, 0, 0);
+            manager.setGlobalSpeeds(0, 0, ySpeed, 0, 0, 0.3);
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,6 +57,6 @@ public class GateForwardState extends State {
     }
 
     public State nextState() {
-        return new GateSpinState(manager);
+        return null;
     }
 }

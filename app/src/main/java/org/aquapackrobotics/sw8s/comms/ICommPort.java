@@ -1,5 +1,7 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import java.io.IOException;
+
 public interface ICommPort {
     /**
      * Opens the port for reading and writing.

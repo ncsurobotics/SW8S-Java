@@ -23,3 +23,5 @@ build
 
 app/.sw8_ssh_identity
 app/.sw8_password
+
+.idea

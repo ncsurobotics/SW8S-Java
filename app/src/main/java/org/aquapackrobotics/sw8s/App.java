@@ -3,6 +3,7 @@
  */
 package org.aquapackrobotics.sw8s;
 
+import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
@@ -12,13 +13,20 @@ import java.util.concurrent.*;
 
 public class App {
 
-    static final int POOLSIZE = 16;
+    static {
+        System.setProperty("java.util.logging.SimpleFormatter.format",
+              "%1$tF %1$tT | %4$s | %5$s %n");
+    }
+
+    //static final int POOLSIZE = 16;
+    static final int POOLSIZE = 128;
+    //static final int POOLSIZE = 8;
     
     public String getGreeting() {
         return "Hello World!";
     }
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
         String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
         System.out.println("Basic Format: gradle run --args='_'");        
 
@@ -70,6 +78,15 @@ public class App {
                 case "--local_comms":
                     Mission localComms = (Mission) new LocalComms(manager, 5000);
                     localComms.run();
+                case "--receive_test":
+                    Mission recieveTest = (Mission) new ReceiveTest(manager);
+                    recieveTest.run();
+                case "--gate":
+                    Mission gate = (Mission) new Gate(manager);
+                    gate.run();
+                case "--gate_stability":
+                    Mission stabilityGate = (Mission) new StabilityGate(manager);
+                    stabilityGate.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
@@ -77,5 +94,6 @@ public class App {
 
             }
         }
+        System.exit(0);
     }
 }
