@@ -50,24 +50,16 @@ public class nn_cv2 extends ImagePrep{
         output_description.clear();
         List<Mat> result = new ArrayList<>();
         Mat blob = Dnn.blobFromImage(image, 1/255.0, new Size(640, 640), new Scalar(0), true, false);
-         //System.out.println(this.outBlobNames.toString());
         this.net.setInput(blob);
         this.net.forward(result,this.outBlobNames);
         List<Integer> clsIds = new ArrayList<>();
         List<Float> confs = new ArrayList<>();
         List<Rect2d> rects = new ArrayList<>();
-         //System.out.println(result.get(0));
         for (int i = 0; i < result.size(); i++) {
             Mat level = result.get(i);
             level = level.reshape(1,(int)level.total()/(5+this.numObjects));
-             //level.convertTo(level, CvType.CV_64FC3);
-             //int size = (int)(level.total() * level.channels());
-             //float[] temp = new float[size];
-             //level.get(0,0,temp);
-             //System.out.println("level "+level);
              
             System.out.println("row "+level.row(0).dump());
-             //System.out.println("row "+level.row(100).dump());
             System.out.println("row "+level.row(0).colRange(5,level.cols()).dump());
             System.out.println("row "+level.row(0).get(0,4)[0]);
             for (int j = 0; j < level.rows(); j++) {
@@ -79,16 +71,12 @@ public class nn_cv2 extends ImagePrep{
                 Point classIdPoint = mm.maxLoc;
                 if (confidence > .7)
                 {
-                    int centerX = (int)(row.get(0,0)[0]); //* image.cols()); //scaling for drawing the bounding boxes//
-                    int centerY = (int)(row.get(0,1)[0] / 640 * 480); //* image.rows());
-                    int width   = (int)(row.get(0,2)[0]); //* image.cols());
-                    int height  = (int)(row.get(0,3)[0] / 640 * 480); //* image.rows());
+                    int centerX = (int)(row.get(0,0)[0]); //scaling for drawing the bounding boxes
+                    int centerY = (int)(row.get(0,1)[0] / 640 * 480);
+                    int width   = (int)(row.get(0,2)[0]);
+                    int height  = (int)(row.get(0,3)[0] / 640 * 480);
                     int left    = centerX - width/2;
                     int top     = centerY - height/2;
-                    //System.out.println(scores.dump());
-                    //System.out.println(classIdPoint);
-                    //System.out.println((float)confidence);
-                    //System.out.println(new Rect(left, top, width, height));
                     clsIds.add((int)classIdPoint.x);
                     confs.add((float)confidence);
                     rects.add(new Rect2d(left, top, width, height));
@@ -104,7 +92,7 @@ public class nn_cv2 extends ImagePrep{
         Rect2d[] boxesArray = rects.toArray(new Rect2d[0]);
         MatOfRect2d boxes = new MatOfRect2d(boxesArray);
         MatOfInt indices = new MatOfInt();
-        Dnn.NMSBoxes(boxes, confidences, .5f, .5f, indices); //We draw the bounding boxes for objects here//
+        Dnn.NMSBoxes(boxes, confidences, .5f, .5f, indices); //We draw the bounding boxes for objects here
 
         int [] ind = indices.toArray();
         int j=0;
@@ -115,9 +103,6 @@ public class nn_cv2 extends ImagePrep{
             int clsId = clsIds.get(idx);
             Rect2d box = boxesArray[idx];
             Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0,0,255), clsId+1);
-                    //i=j;
-             //System.out.println(clsIds.get(idx));
-             //System.out.println(classes.get(clsIds.get(i)));
             output.add(clsId);
             output_description.add(box);
         }
@@ -130,7 +115,7 @@ public class nn_cv2 extends ImagePrep{
         List<Integer> outLayers = net.getUnconnectedOutLayers().toList();
         List<String> layersNames = net.getLayerNames();
 
-        outLayers.forEach((item) -> names.add(layersNames.get(item - 1)));//unfold and create R-CNN layers from the loaded YOLO model//
+        outLayers.forEach((item) -> names.add(layersNames.get(item - 1))); //unfold and create R-CNN layers from the loaded YOLO model
         return names;
     }
 }

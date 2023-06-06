@@ -77,7 +77,6 @@ public class Path extends ImagePrep {
             Core.inRange(gray_image, new Scalar(color2), new Scalar(color2), current_bin_image);
             // find the coordinates where the threshold is high
             MatOfPoint on_points = cvtBinaryToPoints(current_bin_image);
-            //System.out.println(on_points.toArray().length);
             // compute the PCA vectors and stuff
             List<Mat> PCA_output = binaryPCA(on_points);
             // convert Mat to double[]
@@ -88,21 +87,13 @@ public class Path extends ImagePrep {
             boolean is_path = pathFilter(color2);
             this.result.add(is_path);
 
-            //System.out.println(PCA_output.get(1).dump());
-            //System.out.println(Arrays.toString(this.vectors));
-            //System.out.println(PCA_output.get(1).dump());
-            //System.out.println(PCA_output.get(2).dump());
-
             // compute & store results
             double[] img_center = {colored_image.cols()/2.,colored_image.rows()/2.};
             double[] offset = computeOffset(img_center);
             double[] properties = {color2, this.values[this.path_width_idx], computeAngle(), offset[0], offset[1]};
             this.results_prop.add(properties);
-            //System.out.println(Arrays.toString(this.results_prop.get(color2))); // print all vectors
 
         }
-        //System.out.println(Collections.frequency(this.result, true)); // number of true (how many vector passed the path filter)
-        //System.out.println(this.result.indexOf(true)); // index of the vectors that is a true path
     }
     /**
      * Same as iteratePathBinaryPCA(), but also returns image with vectors drawn, see drawPCA()
@@ -120,14 +111,11 @@ public class Path extends ImagePrep {
             Mat current_bin_image = new Mat();
             Core.inRange(gray_image, new Scalar(all_colors.get(color)), new Scalar(all_colors.get(color)), current_bin_image);
             MatOfPoint on_points = cvtBinaryToPoints(current_bin_image);
-            //System.out.println(on_points.toArray().length);
             List<Mat> PCA_output = binaryPCA(on_points);
             PCA_output.get(0).get(0,0, this.mean);
             PCA_output.get(1).get(0,0, this.vectors);
             PCA_output.get(2).get(0,0, this.values);
             boolean is_path = pathFilter(all_colors.get(color));
-            //System.out.println(PCA_output.get(1).dump());
-            //System.out.println(PCA_output.get(2).dump());
             draw = drawPCA(draw, is_path);
 
             double[] img_center = {colored_image.cols()/2.,colored_image.rows()/2.};
@@ -135,10 +123,7 @@ public class Path extends ImagePrep {
             double[] properties = {all_colors.get(color), this.values[this.path_width_idx],computeAngle(), offset[0], offset[1]};
             this.results_prop.add(properties);
             this.result.add(is_path);
-            //System.out.println(Arrays.toString(this.results_prop.get(color))); // print all vectors
         }
-        //System.out.println(Collections.frequency(this.result, true)); // number of true (how many vector passed the path filter)
-        //System.out.println(this.result.indexOf(true)); // index of the vectors that is a true path
         return draw;
     }
 
@@ -161,7 +146,6 @@ public class Path extends ImagePrep {
         Point p2 = new Point(center.x + 0.02 * this.vectors[this.path_width_idx*2]* this.values[this.path_width_idx],
                 center.y + 0.02 * this.vectors[2*this.path_width_idx+1]* this.values[this.path_width_idx]);
         Imgproc.arrowedLine(output, center, p1, new Scalar(255,255,255));
-        //Imgproc.arrowedLine(output, center, p2, new Scalar(0,255,0));
         return output;
     }
     /**
@@ -205,8 +189,6 @@ public class Path extends ImagePrep {
      * @return
      */
     private boolean isPath(int color) {
-        //System.out.println(color);
-        //System.out.println(this.values[this.path_width_idx]);
         if (color > this.PATH_COLOR_HIGH || color < this.PATH_COLOR_LOW || this.values[this.path_width_idx] > this.PATH_WIDTH_HIGH || this.values[this.path_width_idx] < this.PATH_WIDTH_LOW) {
             return false;
         }

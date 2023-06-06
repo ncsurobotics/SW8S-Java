@@ -48,7 +48,6 @@ public class ImagePrep {
      */
     public ImagePrep(int scale) {
         this.SCALE = scale;
-        //this.inputImg = new Mat(ImageSize,CvType.);
     }
     /**
      * Default constructor
@@ -79,25 +78,20 @@ public class ImagePrep {
             this.IMG_HEIGHT = frame.height();
             this.IMG_WIDTH = frame.width();
         }
-        //System.out.println('1');
         try {
             if (!resized) {
                 this.IMG_HEIGHT = (int) (frame.height()*SCALE);
                 this.IMG_WIDTH = (int) (frame.width()*SCALE);
                 resized = true;
             }
-            //System.out.println((int)frame.width());
             Imgproc.resize(frame, this.inputImg, new Size(this.IMG_WIDTH, this.IMG_HEIGHT));
         } catch (Exception e){
             e.printStackTrace();
         }
-        //
         this.image_size = this.inputImg.size();
-        //System.out.println(this.image_size);
     }
 
     private boolean checkBounds() {
-        //System.out.println('1');
         if (max_width_id < id_width || max_height_id < id_height) {
             return false;
         }
@@ -106,18 +100,12 @@ public class ImagePrep {
 
     private void set_block() {
         if (checkBounds()) {
-            //System.out.printf("x:%d, y:%d, w:%d, h:%d\n", block_width*id_width, block_height*id_height, block_width, block_height);
-            //System.out.printf("size:%dx%d\n", this.IMG_WIDTH, this.IMG_HEIGHT);
             this.ROI = new Rect(block_width*id_width,block_height*id_height,block_width,block_height);
             this.block = new Mat(this.inputImg, this.ROI).clone();
-            //System.out.println('3');
         } else {
             System.out.println("ImagePrep:set_block(): Block out of bounds");
         }
     }
-    //private void replace_block(Mat small_img) {
-    //  small_img.copyTo(this.processImg .ROI);
-    //}
 
     /**
      * Configures the coordinates of the top left corner of each block using number of desired blocks
@@ -143,7 +131,6 @@ public class ImagePrep {
 
         this.block_width = block_width;
         this.block_height = block_height;
-        //System.out.println(this.image_size.width);
         this.max_width_id = (int)(this.image_size.width / this.block_width - 1);
         this.max_height_id = (int)(this.image_size.height / this.block_height - 1);
         this.IMG_WIDTH = (this.max_width_id + 1) * this.block_width;
@@ -196,14 +183,7 @@ public class ImagePrep {
             for (int col = 0; col <= this.max_width_id; col++) {
                 this.id_width = col;
                 set_block();
-                //Mat submat = this.processImg.submat(this.ROI);
-                // contMat = submat.clone();
                 kmeans(intermediate_k, this.block).copyTo(this.processImg.submat(this.ROI));
-                //this.processImg = submat.clone();
-                //System.out.println(submat);
-                //System.out.println(this.max_width_id);
-                //System.out.println(this.max_height_id);
-                //System.out.printf("row:%d, col:%d\n", row, col);
 
             }
         }
@@ -253,7 +233,6 @@ public class ImagePrep {
             for (int w = 0; w< binary_image.width(); w++) {
                 if ((int)binary_image.get(h, w)[0] == 255) {
                     on_points.add(new Point(w,h));
-                    //System.out.printf("%d, %d\n",h,w);
                 }
             }
         }
@@ -273,7 +252,6 @@ public class ImagePrep {
                 double[] color = gray_image.get(h, w);
                 if (!unique_colors.contains((int)color[0])) {
                     unique_colors.add((int)color[0]);
-                    //System.out.println((int)color[0]);
                 }
             }
         }
@@ -281,7 +259,6 @@ public class ImagePrep {
     }
 
     public void debug() {
-        //System.out.printf("\nImagePrep:debug(): %d, %d",this.max_height_id, this.block_height);
         System.out.println("done processing\n");
     }
 }
