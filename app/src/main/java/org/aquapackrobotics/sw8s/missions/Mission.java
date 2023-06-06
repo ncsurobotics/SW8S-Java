@@ -1,8 +1,10 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import org.aquapackrobotics.sw8s.states.State;
+
+import java.util.concurrent.*;
 
 /**
  * Robot behavior interface.
@@ -11,24 +13,24 @@ import org.aquapackrobotics.sw8s.states.State;
  */
 public abstract class Mission {
     /**
-     * Processing thread pool.
+     * Processing thread manager.
      * <p>
      * Repeated tasks are Runnables, submitted with FixedRate.
      * <p>
      * Single tasks with a return value are Callables, submitted with schedule
      */
-    protected ScheduledThreadPoolExecutor pool;
+    protected ControlBoardThreadManager manager;
 
     /**
      * Generic Mission constructor.
      * <p>
      * Extension isn't expected.
-     * Guarantees all Mission objects use a thread pool.
+     * Guarantees all Mission objects use a thread manager.
      *
-     * @param pool A non-filled thread pool
+     * @param manager A non-filled thread manager
      */
-    public Mission(ScheduledThreadPoolExecutor pool) {
-        this.pool = pool;
+    public Mission(ControlBoardThreadManager manager) {
+        this.manager = manager;
     }
 
     /**
@@ -36,10 +38,12 @@ public abstract class Mission {
      * <p>
      * Proceeds through all states in graph.
      */
-    public void run() {
+    public void run() throws ExecutionException, InterruptedException {
         State currentState = initialState();
         while (currentState != null) {
+            currentState.onEnter();
             executeState(currentState);
+            currentState.onExit();
             currentState = nextState(currentState);
         }
     }
@@ -56,7 +60,7 @@ public abstract class Mission {
      *
      * @param state current machine state
      */
-    protected abstract void executeState(State state);
+    protected abstract void executeState(State state) throws ExecutionException, InterruptedException  ;
 
     /**
      * Computes the next machine state.

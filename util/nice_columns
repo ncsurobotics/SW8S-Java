@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+column -L -s '|' -t

@@ -1,6 +1,8 @@
 package org.aquapackrobotics.sw8s.states;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.*;
+
+import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * One step of machine execution.
@@ -9,23 +11,22 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * Each task has start conditions, execution logic, and end conditions
  */
 public abstract class State {
-    protected ScheduledThreadPoolExecutor pool;
-
+    protected ControlBoardThreadManager manager;
     /**
      * Creates a state instance.
      * <p>
      * Do not preserve State instances, create new ones when a task repeats.
      *
-     * @param pool the Missions' pool for task submission
+     * @param manager the Missions' manager for task submission
      */
-    public State(ScheduledThreadPoolExecutor pool) {
-        this.pool = pool;
+    public State(ControlBoardThreadManager manager) {
+        this.manager = manager;
     }
 
     /**
      * Enforce starting conditions.
      */
-    abstract public void onEnter();
+    abstract public void onEnter() throws ExecutionException, InterruptedException;
 
     /**
      * Repeatedly called by state machine.
@@ -36,15 +37,15 @@ public abstract class State {
      *
      * @return if exit conditions are met
      */
-    abstract public boolean onPeriodic();
+    abstract public boolean onPeriodic() throws ExecutionException, InterruptedException;
 
     /**
      * Cleans up state effects and threads.
      * <p>
-     * After onExit, the robot and thread pool state should be identical to
+     * After onExit, the robot and thread manager state should be identical to
      * before onEnter.
      */
-    abstract public void onExit();
+    abstract public void onExit() throws ExecutionException, InterruptedException;
 
     /**
      * Recommends the next state.

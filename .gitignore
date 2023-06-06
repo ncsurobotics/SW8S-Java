@@ -1,6 +1,8 @@
 .gradle
 /build/
 
+*.class
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -15,3 +17,11 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 build
+/app/build/
+
+*.hprof
+
+app/.sw8_ssh_identity
+app/.sw8_password
+
+.idea
