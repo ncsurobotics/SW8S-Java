@@ -39,8 +39,7 @@ public class PathReadState extends State {
     public boolean onPeriodic() {
         Mat frame = new Mat();
         if ( cap.read(frame) ) {
-            target.processFrame(frame);
-            Imgcodecs.imwrite("/tmp/data/" + Instant.now().toString() + ".jpeg", frame);
+            Imgcodecs.imwrite("/tmp/data/" + Instant.now().toString() + ".jpeg", target.processFrame(frame));
         }
         return true;
     }
