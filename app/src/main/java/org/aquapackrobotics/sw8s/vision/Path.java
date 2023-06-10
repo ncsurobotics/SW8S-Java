@@ -209,4 +209,27 @@ public class Path extends ImagePrep {
         double[] offset = {this.mean[0] - img_center[0], this.mean[1] - img_center[1]};
         return offset;
     }
+
+    public void processFrame(Mat frame) {
+        setFrame(frame);                    // set input for preprocess
+        sliceSize(25, 25);              // preprocess (prepare for kmeans)
+        localKmeans(2,4);                   // preprocess (compute kmeans)
+        
+        iteratePathBinaryPCA(resultImg);    // no image output
+        // or
+        //Mat pca_draw = iteratePathBinaryPCAAndDraw(resultImg); // draw image with drawn vectors
+        
+        // grab the output for first path (see results and results_prop below)
+        if (result.indexOf(true) >= 0) {
+            System.out.println(Arrays.toString(results_prop.get(result.indexOf(true))));
+        }
+    }
+
+    public VisualObject relativePosition(Mat frame) {
+        processFrame(frame);
+        if (result.indexOf(true) >= 0) {
+            return new VisualObject(results_prop.get(result.indexOf(true)));
+        }
+        return new VisualObject(new double[]{0.0, 0.0, 0.0, 0.0, 0.0});
+    }
 }
