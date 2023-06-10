@@ -20,20 +20,17 @@ public class Path extends Mission {
         cap = CameraFeedSender.openCapture();
     }
 
-    // TODO: implement
     @Override
     protected State initialState() {
         return new PathSubmergeState(manager, cap);
     }
 
-    // TODO: implement
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException  {
         while (! state.onPeriodic()) {
         }
     }
 
-    // TODO: implement
     @Override
     protected State nextState(State state) {
         return state.nextState();

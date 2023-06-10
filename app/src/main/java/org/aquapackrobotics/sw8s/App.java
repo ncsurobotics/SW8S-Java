@@ -87,6 +87,9 @@ public class App {
                 case "--gate_stability":
                     Mission stabilityGate = (Mission) new StabilityGate(manager);
                     stabilityGate.run();
+                case "--path":
+                    Mission path = (Mission) new Path(manager);
+                    path.run();
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
