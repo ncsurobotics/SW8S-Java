@@ -1,6 +1,7 @@
 package org.aquapackrobotics.sw8s.states.PathStates;
 
 import java.util.concurrent.*;
+import java.time.Instant;
 
 import org.opencv.videoio.VideoCapture;
 import org.opencv.core.Mat;
@@ -9,6 +10,8 @@ import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Path;
+
+import org.opencv.imgcodecs.Imgcodecs;
 
 public class PathReadState extends State {
 
@@ -37,6 +40,7 @@ public class PathReadState extends State {
         Mat frame = new Mat();
         if ( cap.read(frame) ) {
             target.processFrame(frame);
+            Imgcodecs.imwrite("/tmp/data/" + Instant.now().toString() + ".jpeg", frame);
         }
         return true;
     }
