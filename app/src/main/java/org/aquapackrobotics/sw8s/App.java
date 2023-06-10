@@ -45,11 +45,16 @@ public class App {
             public void run() {
                 for (int i = 0; i < 20; ++i) {
                     try {
-                        manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0).wait();
+                        manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
                         Thread.sleep(50);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
          });
