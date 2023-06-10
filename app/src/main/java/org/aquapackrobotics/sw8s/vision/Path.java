@@ -225,11 +225,11 @@ public class Path extends ImagePrep {
         }
     }
 
-    public VisualObject relativePosition(Mat frame) {
+    public VisualObject relativePosition(Mat frame) throws Exception {
         processFrame(frame);
         if (result.indexOf(true) >= 0) {
             return new VisualObject(results_prop.get(result.indexOf(true)));
         }
-        return new VisualObject(new double[]{0.0, 0.0, 0.0, 0.0, 0.0});
+        throw new Exception("Not yet updated.");
     }
 }
