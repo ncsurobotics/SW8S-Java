@@ -103,6 +103,15 @@ public class App {
                 case "--path":
                     Mission path = (Mission) new Path(manager);
                     path.run();
+                case "--kill-confirm":
+                    while(true) {
+                        try {
+                            manager.setMotorSpeeds((float)0.3, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0).wait();
+                            while(true);
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 default:
                     Mission missionAuto = (Mission) new AutoMission(manager);
                     missionAuto.run();
