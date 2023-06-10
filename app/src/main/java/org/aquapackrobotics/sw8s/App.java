@@ -41,6 +41,19 @@ public class App {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
 
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                for (int i = 0; i < 20; ++i) {
+                    try {
+                        manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0).wait();
+                        Thread.sleep(50);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+         });
+
         for (String str: args) {
             switch (str) {
                 case "--test":
