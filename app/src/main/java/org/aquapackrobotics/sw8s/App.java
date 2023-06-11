@@ -45,14 +45,14 @@ public class App {
             public void run() {
                 for (int i = 0; i < 20; ++i) {
                     try {
-                        manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
-                        Thread.sleep(50);
+                        //manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
+                        //Thread.sleep(50);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 try {
-                    Thread.sleep(500);
+                    //Thread.sleep(500);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -96,18 +96,23 @@ public class App {
                 case "--local_comms":
                     Mission localComms = (Mission) new LocalComms(manager, 5000);
                     localComms.run();
+                    break;
                 case "--receive_test":
                     Mission recieveTest = (Mission) new ReceiveTest(manager);
                     recieveTest.run();
+                    break;
                 case "--gate":
                     Mission gate = (Mission) new Gate(manager);
                     gate.run();
+                    break;
                 case "--gate_stability":
                     Mission stabilityGate = (Mission) new StabilityGate(manager);
                     stabilityGate.run();
+                    break;
                 case "--path":
                     Mission path = (Mission) new Path(manager);
                     path.run();
+                    break;
                 case "--kill-confirm":
                     while(true) {
                         try {

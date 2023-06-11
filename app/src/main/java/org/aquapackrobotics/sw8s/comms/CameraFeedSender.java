@@ -14,7 +14,8 @@ public class CameraFeedSender {
     static{
         try{
             // /path/to/opencv-VERSION.jar
-            final File cvjarpath = new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            //final File cvjarpath = new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            final File cvjarpath = new File("/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar");
             final String cvdir = cvjarpath.getParent();
             final String cvjarfile = cvjarpath.getName();
             final String cvsofile = cvjarfile.replace("opencv-", "libopencv_java").replace(".jar", ".so");

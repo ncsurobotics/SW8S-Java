@@ -28,7 +28,7 @@ public class PathReadState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.1);
             while (! mreturn.isDone());
         }
         catch (Exception e) {
@@ -40,8 +40,13 @@ public class PathReadState extends State {
         Mat frame = new Mat();
         if ( cap.read(frame) ) {
             Imgcodecs.imwrite("/tmp/data/" + Instant.now().toString() + ".jpeg", target.processFrame(frame));
+            try {
+                System.out.println(target.relativePosition(frame));
+                System.out.println("Updated");
+            } catch (Exception e) {
+            }
         }
-        return true;
+        return false;
     }
 
     public void onExit() throws ExecutionException, InterruptedException {}

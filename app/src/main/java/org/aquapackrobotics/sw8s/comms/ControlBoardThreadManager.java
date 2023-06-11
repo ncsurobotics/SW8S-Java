@@ -41,7 +41,7 @@ public class ControlBoardThreadManager {
             System.out.println("GET IMU");
             setMotorSpeeds(0,0,0,0,0,0,0,0);
             startWatchDog();
-            Thread.sleep(2000);
+            Thread.sleep(3000);
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -61,9 +61,9 @@ public class ControlBoardThreadManager {
             matrixSet(motor_num6,0,0,-1,1,1,0).get();
             matrixUpdate().get(); // ADDED, MISSING FROM SPEC
             
-            stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, true).get();
-            stabAssistPID('Y', 0.3, 0.0, 0.0, 0.2, false).get();
-            stabAssistPID('Z', 0.08, 0.0, 0.0, 0.2, false).get();
+            stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, false).get();
+            stabAssistPID('Y', 0.15, 0.0, 0.0, 0.1, false).get();
+            stabAssistPID('Z', 1.6, 1e-10, 0.0, 0.8, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
 
             setDofSpeeds((float)0.7071, (float)0.7071, (float)1.0,

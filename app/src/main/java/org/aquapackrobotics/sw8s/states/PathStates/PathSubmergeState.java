@@ -21,7 +21,7 @@ public class PathSubmergeState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.1);
             while (! mreturn.isDone());
         }
         catch (Exception e) {
@@ -32,7 +32,7 @@ public class PathSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if ( depthRead.isDone() ) {
-                if ( manager.getDepth() < -1.4 ) {
+                if ( manager.getDepth() < -1.8 ) {
                     return true;
                 }
             }
