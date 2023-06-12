@@ -14,7 +14,8 @@ public class CameraFeedSender {
     static{
         try{
             // /path/to/opencv-VERSION.jar
-            final File cvjarpath = new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            //final File cvjarpath = new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            final File cvjarpath = new File("/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar");
             final String cvdir = cvjarpath.getParent();
             final String cvjarfile = cvjarpath.getName();
             final String cvsofile = cvjarfile.replace("opencv-", "libopencv_java").replace(".jar", ".so");
@@ -82,5 +83,17 @@ public class CameraFeedSender {
                 Imgcodecs.imwrite("test.jpeg", frame);
             }
         }
+    }
+
+    public static VideoCapture openCapture(){
+        // NOTE: tee splits one src to multiple sinks
+        String capPl = openPipeline(0, 800, 600, 30) + " ! tee name=t " + 
+            "t. ! queue ! jpegdec ! videoconvert ! " + h264encPipeline(2048000) + " ! rtspclientsink location=rtsp://127.0.0.1:8554/cam0 " +
+            "t. ! queue ! rtspclientsink location=rtsp://127.0.0.1:8554/cam0jpeg " +
+            "t. ! queue ! jpegdec ! videoconvert ! appsink ";
+        
+        System.out.println(capPl);
+
+        return new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
     }
 }

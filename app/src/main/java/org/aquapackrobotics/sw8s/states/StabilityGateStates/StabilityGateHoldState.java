@@ -10,17 +10,19 @@ public class StabilityGateHoldState extends State {
     ScheduledFuture<byte[]> depthRead;
 
     // in milliseconds
-    private static long DELAY = 5000;
+    private static long DELAY = 2000;
     private long startTime;
+    double yaw;
 
-    public StabilityGateHoldState(ControlBoardThreadManager manager) {
+    public StabilityGateHoldState(ControlBoardThreadManager manager, double yaw) {
         super(manager);
+        this.yaw = yaw;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             //var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, -2.1);
             while (! mreturn.isDone());
             startTime = System.currentTimeMillis();
         }
@@ -47,6 +49,6 @@ public class StabilityGateHoldState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateForwardState(manager);
+        return new StabilityGateForwardState(manager, yaw);
     }
 }

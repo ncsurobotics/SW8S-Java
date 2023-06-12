@@ -39,7 +39,7 @@ public class StabilityGateSpinState extends State {
     }
 
     public void onExit() throws ExecutionException, InterruptedException{
-        manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+        //manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
     }
 
     public State nextState() {

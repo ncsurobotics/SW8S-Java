@@ -10,6 +10,7 @@ import java.lang.Double;
 public class StabilityGateSubmergeState extends State {
 
     ScheduledFuture<byte[]> depthRead;
+    double yaw;
 
     public StabilityGateSubmergeState(ControlBoardThreadManager manager) {
         super(manager);
@@ -18,8 +19,9 @@ public class StabilityGateSubmergeState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte)1);
+            yaw = manager.getYaw();
             //var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.5);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, -2.1);
             while (! mreturn.isDone());
             System.out.println("DONE");
             System.out.println(Arrays.toString(mreturn.get()));
@@ -33,7 +35,7 @@ public class StabilityGateSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if ( depthRead.isDone() ) {
-                if ( manager.getDepth() < -1.4 ) {
+                if ( manager.getDepth() < -1.8 ) {
                     return true;
                 }
             }
@@ -50,6 +52,6 @@ public class StabilityGateSubmergeState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateHoldState(manager);
+        return new StabilityGateHoldState(manager, yaw);
     }
 }
