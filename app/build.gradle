@@ -12,6 +12,8 @@ plugins {
     // Support for generating project metadata
     id 'eclipse'
     id 'org.hidetake.ssh' version '2.10.1'
+    // Interactive shell
+    id 'com.github.mrsarm.jshell.plugin' version '1.2.1'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
@@ -22,6 +24,10 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(11))
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.release = 11
 }
 
 run {
