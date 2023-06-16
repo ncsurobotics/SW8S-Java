@@ -39,10 +39,10 @@ import org.opencv.imgproc.Imgproc;
  */
 
 public class Path extends ImagePrep {
-    private final int PATH_COLOR_LOW = 60;
-    private final int PATH_COLOR_HIGH = 85;
-    private final int PATH_WIDTH_LOW = 60;
-    private final int PATH_WIDTH_HIGH = 400;
+    private final int PATH_COLOR_LOW;
+    private final int PATH_COLOR_HIGH;
+    private final int PATH_WIDTH_LOW;
+    private final int PATH_WIDTH_HIGH ;
     private final double[] FORWARD = {0,-1};
 
     private int path_width_idx = 0;
@@ -58,6 +58,24 @@ public class Path extends ImagePrep {
     // positive angle means path is sloped right(positive)
     public ArrayList<double[]> results_prop = new ArrayList<>(); //array with each element containing [color, width, angle, hori_offset, vert_offset]
     public ArrayList<Boolean> result = new ArrayList<>(); // array containing boolean values where true = path, false = not path
+
+    /**
+     * Constructs a new Path with given color and width targets
+     */
+    public Path(int color_low, int color_high, int width_low, int width_high) {
+        PATH_COLOR_LOW = color_low;
+        PATH_COLOR_HIGH = color_high;
+        PATH_WIDTH_LOW = width_low;
+        PATH_WIDTH_HIGH = width_high;
+    }
+
+    /**
+     * Constructs a new Path using default parameters
+     */
+    public Path() {
+        /* color low, color high, width low, width high */
+        this(100, 170, 30, 400);
+    }
 
     /**
      * finds the vectors of each color in the image (converted to gray scale), output are stored in results_prop and results
