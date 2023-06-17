@@ -49,6 +49,6 @@ public class StabilityGateHoldState extends State {
     }
 
     public State nextState() {
-        return new StabilityGateForwardState(manager, yaw);
+        return new StabilityGateVisionState(manager, yaw);
     }
 }

@@ -7,7 +7,7 @@ import org.opencv.videoio.Videoio;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
-
+import java.util.ArrayList;
 
 public class CameraFeedSender {
     
@@ -85,15 +85,27 @@ public class CameraFeedSender {
         }
     }
 
-    public static VideoCapture openCapture(){
-        // NOTE: tee splits one src to multiple sinks
-        String capPl = openPipeline(0, 800, 600, 30) + " ! tee name=t " + 
-            "t. ! queue ! jpegdec ! videoconvert ! " + h264encPipeline(2048000) + " ! rtspclientsink location=rtsp://127.0.0.1:8554/cam0 " +
-            "t. ! queue ! rtspclientsink location=rtsp://127.0.0.1:8554/cam0jpeg " +
-            "t. ! queue ! jpegdec ! videoconvert ! appsink ";
-        
-        System.out.println(capPl);
+    private static ArrayList<VideoCapture> heldCaptures = new ArrayList<>();
 
-        return new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
+    public static VideoCapture openCapture(int id){
+        try {
+            return heldCaptures.get(id);
+        } catch (IndexOutOfBoundsException e) {
+            // NOTE: tee splits one src to multiple sinks
+            String capPl = openPipeline(id, 800, 600, 30) + " ! tee name=t " + 
+                "t. ! queue ! jpegdec ! videoconvert ! " + h264encPipeline(2048000) + " ! rtspclientsink location=rtsp://127.0.0.1:8554/cam" + Integer.toString(id) + " " +
+                "t. ! queue ! rtspclientsink location=rtsp://127.0.0.1:8554/cam" + Integer.toString(id) + "jpeg " +
+                "t. ! queue ! jpegdec ! videoconvert ! appsink ";
+            
+            System.out.println(capPl);
+
+            var cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
+            heldCaptures.add(id, cap);
+            return cap;
+        }
+    }
+
+    public static VideoCapture openCapture() {
+        return openCapture(0);
     }
 }

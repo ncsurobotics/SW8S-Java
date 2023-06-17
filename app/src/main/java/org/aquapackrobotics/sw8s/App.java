@@ -113,6 +113,10 @@ public class App {
                     Mission path = (Mission) new Path(manager);
                     path.run();
                     break;
+                case "--path-test":
+                    Mission pathtest = (Mission) new PathVisionTest(manager);
+                    pathtest.run();
+                    break;
                 case "--kill-confirm":
                     while(true) {
                         try {

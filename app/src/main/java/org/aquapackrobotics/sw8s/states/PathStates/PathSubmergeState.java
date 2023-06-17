@@ -48,7 +48,7 @@ public class PathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new PathReadState(manager, cap);
-        //return new PathFollowState(manager, cap);
+        //return new PathReadState(manager, cap);
+        return new PathFollowState(manager, cap);
     }
 }

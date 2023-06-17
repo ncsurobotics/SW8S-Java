@@ -8,7 +8,6 @@ import org.opencv.core.Mat;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.*;
 
 public class PathFollowState extends State {
@@ -46,7 +45,7 @@ public class PathFollowState extends State {
             }
             catch (Exception e) {}
         }
-        return true;
+        return false;
     }
 
     public void onExit() throws ExecutionException, InterruptedException {}
