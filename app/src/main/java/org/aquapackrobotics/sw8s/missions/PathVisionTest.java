@@ -37,6 +37,6 @@ public class PathVisionTest extends Mission {
         if (state instanceof PathSubmergeState) {
             return new PathReadState(manager, cap);
         }
-        return null;
+        return state.nextState();
     }
 }
