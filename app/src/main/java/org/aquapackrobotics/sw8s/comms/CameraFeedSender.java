@@ -8,6 +8,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CameraFeedSender {
     
@@ -85,12 +86,12 @@ public class CameraFeedSender {
         }
     }
 
-    private static ArrayList<VideoCapture> heldCaptures = new ArrayList<>();
+    private static HashMap<Integer, VideoCapture> heldCaptures = new HashMap<>();
 
     public static VideoCapture openCapture(int id){
-        try {
+        if(heldCaptures.containsKey(id)){
             return heldCaptures.get(id);
-        } catch (IndexOutOfBoundsException e) {
+        }else{
             // NOTE: tee splits one src to multiple sinks
             String capPl = openPipeline(id, 800, 600, 30) + " ! tee name=t " + 
                 "t. ! queue ! jpegdec ! videoconvert ! " + h264encPipeline(2048000) + " ! rtspclientsink location=rtsp://127.0.0.1:8554/cam" + Integer.toString(id) + " " +
@@ -100,12 +101,12 @@ public class CameraFeedSender {
             System.out.println(capPl);
 
             var cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
-            heldCaptures.add(id, cap);
+            heldCaptures.put(id, cap);
             return cap;
         }
     }
 
-    public static VideoCapture openCapture() {
+    public static VideoCapture openCapture(){
         return openCapture(0);
     }
 }
