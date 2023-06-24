@@ -25,3 +25,6 @@ app/.sw8_ssh_identity
 app/.sw8_password
 
 .idea
+perf.data*
+/*.png
+*.svg

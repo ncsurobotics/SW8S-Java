@@ -27,19 +27,19 @@ public class PathReadState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte)1);
+            depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.1);
-            while (! mreturn.isDone());
-        }
-        catch (Exception e) {
+            while (!mreturn.isDone())
+                ;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public boolean onPeriodic() {
         Mat frame = new Mat();
-        if ( cap.read(frame) ) {
-            Imgcodecs.imwrite("/tmp/data/" + Instant.now().toString() + ".jpeg", target.processFrame(frame));
+        if (cap.read(frame)) {
+            target.processFrame(frame, "/tmp/data/" + Instant.now().toString() + ".jpeg");
             try {
                 System.out.println(target.relativePosition(frame));
                 System.out.println("Updated");
@@ -49,7 +49,8 @@ public class PathReadState extends State {
         return false;
     }
 
-    public void onExit() throws ExecutionException, InterruptedException {}
+    public void onExit() throws ExecutionException, InterruptedException {
+    }
 
     public State nextState() {
         return null;

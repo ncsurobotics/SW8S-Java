@@ -11,6 +11,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgcodecs.Imgcodecs;
 
 /**
  * Code for "Path" task
@@ -251,21 +252,26 @@ public class Path extends ImagePrep {
         return offset;
     }
 
-    public Mat processFrame(Mat frame) {
+    public void processFrame(Mat frame) {
+        processFrame(frame, null);
+    }
+
+    public void processFrame(Mat frame, String saveFile) {
         setFrame(frame); // set input for preprocess
         sliceSize(25, 25); // preprocess (prepare for kmeans)
         localKmeans(2, 4); // preprocess (compute kmeans)
 
-        // iteratePathBinaryPCA(resultImg); // no image output
-        // or
-        Mat pca_draw = iteratePathBinaryPCAAndDraw(resultImg); // draw image with drawn vectors
+        if (saveFile != null) {
+            Mat pca_draw = iteratePathBinaryPCAAndDraw(resultImg); // draw image with drawn vectors
+            Imgcodecs.imwrite(saveFile, pca_draw);
+        } else {
+            iteratePathBinaryPCA(resultImg); // draw image with drawn vectors
+        }
 
         // grab the output for first path (see results and results_prop below)
         if (result.indexOf(true) >= 0) {
-            System.out.println(Arrays.toString(results_prop.get(result.indexOf(true))));
+            // System.out.println(Arrays.toString(results_prop.get(result.indexOf(true))));
         }
-
-        return pca_draw;
     }
 
     public VisualObject relativePosition(Mat frame) throws Exception {
@@ -281,7 +287,8 @@ public class Path extends ImagePrep {
         if (result.indexOf(true) >= 0) {
             ArrayList<VisualObject> paths = new ArrayList<>();
             for (int i = 0; i < result.size(); ++i) {
-                if (result.get(i) == true) paths.add(new VisualObject(results_prop.get(i)));
+                if (result.get(i) == true)
+                    paths.add(new VisualObject(results_prop.get(i)));
             }
             return paths.toArray(VisualObject[]::new);
         }

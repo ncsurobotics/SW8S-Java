@@ -19,15 +19,15 @@ plugins {
 mainClassName = "org.aquapackrobotics.sw8s.App"
 
 java {
-    // Set Java version to 11
+    // Set Java version to 17
     // https://docs.gradle.org/current/userguide/toolchains.html
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 11
+    options.release = 17
 }
 
 run {
@@ -54,6 +54,10 @@ task fatJar(type: Jar) {
         exclude "META-INF/*.RSA"
     }
     with jar
+}
+
+task perfJar(type: Jar) {
+    dependsOn build
 }
 
 remotes {
@@ -94,11 +98,44 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
 
+    implementation 'org.openpnp:opencv:4.6.0-0'
+
      if(System.properties['os.name'].toLowerCase().contains('win')){
         implementation files(cv_win)
     }else{
         implementation files(cv_lin)
     }
+}
+
+// ChatGPT and search engine, lol
+task testPath(type: Jar) {
+    classifier = 'tests'
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE) // https://stackoverflow.com/questions/67265308/gradle-entry-classpath-is-a-duplicate-but-no-duplicate-handling-strategy-has-b
+
+    //dependsOn test
+
+    manifest {
+        attributes 'Main-Class': 'org.aquapackrobotics.sw8s.TestRunner'
+    }
+
+    from(sourceSets.test.output) {
+        include 'org/aquapackrobotics/sw8s/TestRunner.class'
+        include 'org/aquapackrobotics/sw8s/vision/BaseMatrix.class'
+    }
+
+    classifier = 'all'
+    from {
+        configurations.testRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+
+    // Set the destination directory and JAR file name
+    destinationDir = file("$buildDir/libs")
+    archiveFileName = "test-jar-path.jar"
 }
 
 application {
