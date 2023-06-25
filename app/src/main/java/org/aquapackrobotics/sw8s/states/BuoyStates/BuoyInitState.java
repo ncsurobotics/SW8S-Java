@@ -26,18 +26,21 @@ public class BuoyInitState extends State {
     }
 
     public boolean onPeriodic() {
-        try {
-            if (depthRead.isDone()) {
-                if (manager.getDepth() < -0.9) {
-                    return true;
-                }
-            }
-
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return true;
+        /*
+         * try {
+         * if (depthRead.isDone()) {
+         * if (manager.getDepth() < -0.1) {
+         * return true;
+         * }
+         * }
+         * 
+         * return false;
+         * } catch (Exception e) {
+         * e.printStackTrace();
+         * return false;
+         * }
+         */
     }
 
     public void onExit() throws ExecutionException, InterruptedException {

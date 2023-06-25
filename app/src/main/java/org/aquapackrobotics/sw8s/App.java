@@ -123,6 +123,10 @@ public class App {
                     Mission pathtest = (Mission) new PathVisionTest(manager);
                     pathtest.run();
                     break;
+                case "--buoy":
+                    Mission buoytest = (Mission) new Buoys(manager);
+                    buoytest.run();
+                    break;
                 case "--kill-confirm":
                     while (true) {
                         try {

@@ -1,7 +1,9 @@
 package org.aquapackrobotics.sw8s.states.BuoyStates;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
@@ -23,7 +25,7 @@ public class BuoyReadState extends State {
     public BuoyReadState(ControlBoardThreadManager manager) {
         super(manager);
         this.cap = CameraFeedSender.openCapture(1);
-        target = new Buoy();
+        target = new Buoy(true);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "buoy");
         Dir.mkdir();
     }
@@ -31,7 +33,9 @@ public class BuoyReadState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.0);
+            // var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
+            // -1.0);
+            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -43,7 +47,15 @@ public class BuoyReadState extends State {
         Mat frame = new Mat();
         if (cap.read(frame)) {
             Mat yoloout = target.detectYoloV5(frame);
-            Imgcodecs.imwrite(Dir.toString() + Instant.now().toString() + ".jpeg", yoloout);
+            target.transAlign();
+            try {
+                PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
+                printWriter.print(Arrays.toString(target.translation));
+                printWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
         }
         return true;
     }

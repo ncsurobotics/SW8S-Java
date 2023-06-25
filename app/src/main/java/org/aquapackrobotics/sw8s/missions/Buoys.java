@@ -17,7 +17,7 @@ public class Buoys extends Mission {
 
     @Override
     protected State initialState() {
-        return new BuoyInitState(manager);
+        return new BuoyReadState(manager);
     }
 
     @Override

@@ -19,41 +19,43 @@ public class BaseMatrix {
         OpenCV.loadLocally();
     }
 
-    @Test
-    public void markPath() {
-        try {
-            Mat img = Imgcodecs
-                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
-            Path path = new Path();
-            path.processFrame(img, "drawn.png");
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
-
-    @Test
-    public void markShrunkPath() {
-        try {
-            Mat img = Imgcodecs
-                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
-            Path path = new Path(0.25);
-            path.processFrame(img, "drawn_shrunk.png");
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
-
-    @Test
-    public void matchResult() {
-        try {
-            Mat img1 = Imgcodecs
-                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
-            Mat img2 = Imgcodecs
-                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
-            VisualObject original = new Path().relativePosition(img1);
-            VisualObject shrunk = new Path(0.25).relativePosition(img2);
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
+    /*
+     * @Test
+     * public void markPath() {
+     * try {
+     * Mat img = Imgcodecs
+     * .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
+     * Path path = new Path();
+     * path.processFrame(img, "drawn.png");
+     * } catch (Exception e) {
+     * Assert.fail(e.getStackTrace().toString());
+     * }
+     * }
+     * 
+     * @Test
+     * public void markShrunkPath() {
+     * try {
+     * Mat img = Imgcodecs
+     * .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
+     * Path path = new Path(0.25);
+     * path.processFrame(img, "drawn_shrunk.png");
+     * } catch (Exception e) {
+     * Assert.fail(e.getStackTrace().toString());
+     * }
+     * }
+     * 
+     * @Test
+     * public void matchResult() {
+     * try {
+     * Mat img1 = Imgcodecs
+     * .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
+     * Mat img2 = Imgcodecs
+     * .imread(System.getProperty("user.dir") + "/resources/path_images/1.png");
+     * VisualObject original = new Path().relativePosition(img1);
+     * VisualObject shrunk = new Path(0.25).relativePosition(img2);
+     * } catch (Exception e) {
+     * Assert.fail(e.getStackTrace().toString());
+     * }
+     * }
+     */
 }

@@ -30,6 +30,7 @@ package org.aquapackrobotics.sw8s.vision;
 
 public class Buoy extends nn_cv2 {
     private static String model_path = "buoy.onnx";
+    private static String larger_model_path = "buoy_large.onnx";
     private final int first_classid = 0;
     private final int second_classid = 1;
     public boolean first = true;
@@ -41,6 +42,19 @@ public class Buoy extends nn_cv2 {
     public double[] translation = { 0, 0, 0 };
 
     public double[] rotation = { 0, 0, 0 };
+
+    public Buoy() {
+        load_buoy_model();
+    }
+
+    public Buoy(boolean larger) {
+        if (larger) {
+            super.loadModel(larger_model_path, 640, 1);
+        } else {
+            super.loadModel(model_path);
+        }
+        super.numObjects = 2; // left and right buoy
+    }
 
     // load buoy specific network
     public void load_buoy_model() {

@@ -271,6 +271,7 @@ public class Path extends ImagePrep {
         localKmeans(2, 4); // preprocess (compute kmeans)
                             //
         if (saveFile != null) {
+            System.out.println("SAVING FILE: " + saveFile);
             Mat pca_draw = iteratePathBinaryPCAAndDraw(resultImg); // draw image with drawn vectors
             Imgcodecs.imwrite(saveFile, pca_draw);
         } else {

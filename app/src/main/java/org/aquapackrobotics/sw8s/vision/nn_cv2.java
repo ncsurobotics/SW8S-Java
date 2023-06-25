@@ -28,6 +28,9 @@ public class nn_cv2 extends ImagePrep {
     public List<Integer> output = new ArrayList<>();
     public List<Rect2d> output_description = new ArrayList<>();
 
+    private int modelSize;
+    private int factor;
+
     /**
      * load a Yolov5 model
      * 
@@ -38,6 +41,14 @@ public class nn_cv2 extends ImagePrep {
         this.outBlobNames = getOutputNames(net);
         this.net.setPreferableBackend(Dnn.DNN_BACKEND_OPENCV);
         this.net.setPreferableTarget(Dnn.DNN_TARGET_CPU);
+        modelSize = 320;
+        factor = 2;
+    }
+
+    public void loadModel(String model, int modelSize, int factor) {
+        loadModel(model);
+        this.modelSize = modelSize;
+        this.factor = factor;
     }
 
     /**
@@ -51,7 +62,7 @@ public class nn_cv2 extends ImagePrep {
         output.clear();
         output_description.clear();
         List<Mat> result = new ArrayList<>();
-        Mat blob = Dnn.blobFromImage(image, 1 / 255.0, new Size(320, 320), new Scalar(0), true, false);
+        Mat blob = Dnn.blobFromImage(image, 1 / 255.0, new Size(modelSize, modelSize), new Scalar(0), true, false);
         this.net.setInput(blob);
         this.net.forward(result, this.outBlobNames);
         List<Integer> clsIds = new ArrayList<>();
@@ -72,10 +83,10 @@ public class nn_cv2 extends ImagePrep {
 
                 Point classIdPoint = mm.maxLoc;
                 if (confidence > .7) {
-                    int centerX = (int) (row.get(0, 0)[0]) * 2; // scaling for drawing the bounding boxes
-                    int centerY = (int) ((row.get(0, 1)[0] * 2) / 640 * 480);
-                    int width = (int) (row.get(0, 2)[0]) * 2;
-                    int height = (int) ((row.get(0, 3)[0] * 2) / 640 * 480);
+                    int centerX = (int) (row.get(0, 0)[0]) * factor; // scaling for drawing the bounding boxes
+                    int centerY = (int) ((row.get(0, 1)[0] * factor) / 640 * 480);
+                    int width = (int) (row.get(0, 2)[0]) * factor;
+                    int height = (int) ((row.get(0, 3)[0] * factor) / 640 * 480);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
                     clsIds.add((int) classIdPoint.x);
