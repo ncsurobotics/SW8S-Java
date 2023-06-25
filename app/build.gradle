@@ -21,15 +21,15 @@ plugins {
 mainClassName = "org.aquapackrobotics.sw8s.App"
 
 java {
-    // Set Java version to 17
+    // Set Java version to 11
     // https://docs.gradle.org/current/userguide/toolchains.html
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 17
+    options.release = 11
 }
 
 run {
@@ -77,7 +77,7 @@ task deploy {
         ssh.run {
             session(remotes.orangePi) {
                 execute "sudo -S mount -o remount,rw /", inputStream: remotes.orangePi.password
-                put from: "$buildDir/libs/app-all.jar", into: 'app-all.jar'
+                put from: "$buildDir/libs/app.jar", into: 'app.jar'
                 execute "sudo -S mount -o remount,ro /", inputStream: remotes.orangePi.password
             }
         }

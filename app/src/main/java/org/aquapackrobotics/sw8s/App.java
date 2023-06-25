@@ -11,14 +11,14 @@ import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
 
-import nu.pattern.OpenCV;
+//import nu.pattern.OpenCV;
 
 public class App {
 
     static {
         System.setProperty("java.util.logging.SimpleFormatter.format",
                 "%1$tF %1$tT | %4$s | %5$s %n");
-        OpenCV.loadLocally(); // Load OpenCV
+        // OpenCV.loadLocally(); // Load OpenCV
     }
 
     // static final int POOLSIZE = 16;
@@ -30,7 +30,8 @@ public class App {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
-        String helpFlag[] = { "\nBasic Utility:", "\n'test' -- The Command Flag used in Testing",
+        String helpFlag[] = { "\nBasic Utility:",
+                "\n'test' -- The Command Flag used in Testing",
                 "'help' or 'h' -- displays list of command flags", "\nStates:", "\n" };
         System.out.println("Basic Format: gradle run --args='_'");
 
@@ -125,7 +126,8 @@ public class App {
                 case "--kill-confirm":
                     while (true) {
                         try {
-                            manager.setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0, (float) 0.0,
+                            manager.setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
+                                    (float) 0.0,
                                     (float) 0.0, (float) 0.0, (float) 0.0).wait();
                             while (true)
                                 ;

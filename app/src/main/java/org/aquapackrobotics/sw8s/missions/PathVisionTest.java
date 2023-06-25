@@ -26,9 +26,9 @@ public class PathVisionTest extends Mission {
     }
 
     @Override
-    protected void executeState(State state) throws ExecutionException, InterruptedException  {
-        while (! state.onPeriodic()) {
-            System.out.println("State: " + state.getClass().getName());
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
+        while (!state.onPeriodic()) {
+            // System.out.println("State: " + state.getClass().getName());
         }
     }
 
