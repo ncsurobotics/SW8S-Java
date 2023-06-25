@@ -66,11 +66,20 @@ public class Path extends ImagePrep {
     /**
      * Constructs a new Path with given color and width targets
      */
-    public Path(int color_low, int color_high, int width_low, int width_high) {
+    public Path(int color_low, int color_high, int width_low, int width_high, double scale) {
+        super(scale);
         PATH_COLOR_LOW = color_low;
         PATH_COLOR_HIGH = color_high;
         PATH_WIDTH_LOW = width_low;
         PATH_WIDTH_HIGH = width_high;
+    }
+
+    public Path(int color_low, int color_high, int width_low, int width_high) {
+        this(color_low, color_high, width_low, width_high, 0.5);
+    }
+
+    public Path(double scale) {
+        this(100, 170, 30, 400, scale);
     }
 
     /**
@@ -260,17 +269,12 @@ public class Path extends ImagePrep {
         setFrame(frame); // set input for preprocess
         sliceSize(25, 25); // preprocess (prepare for kmeans)
         localKmeans(2, 4); // preprocess (compute kmeans)
-
+                            //
         if (saveFile != null) {
             Mat pca_draw = iteratePathBinaryPCAAndDraw(resultImg); // draw image with drawn vectors
             Imgcodecs.imwrite(saveFile, pca_draw);
         } else {
             iteratePathBinaryPCA(resultImg); // draw image with drawn vectors
-        }
-
-        // grab the output for first path (see results and results_prop below)
-        if (result.indexOf(true) >= 0) {
-            // System.out.println(Arrays.toString(results_prop.get(result.indexOf(true))));
         }
     }
 
