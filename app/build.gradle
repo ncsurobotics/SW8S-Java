@@ -14,6 +14,8 @@ plugins {
     id 'org.hidetake.ssh' version '2.10.1'
     // Interactive shell
     id 'com.github.mrsarm.jshell.plugin' version '1.2.1'
+    // Benchmarking
+    id 'me.champeau.jmh' version '0.7.1'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
@@ -45,7 +47,7 @@ jar {
 task fatJar(type: Jar) {
     dependsOn build
     manifest.from jar.manifest
-    classifier = 'all'
+    //classifier = 'all'
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     } {
@@ -87,8 +89,8 @@ repositories {
     mavenCentral()
 }
 
-def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
-def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
+//def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
+//def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
 
 dependencies {
     // Use JUnit test framework.
@@ -99,20 +101,20 @@ dependencies {
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
 
     implementation 'org.openpnp:opencv:4.6.0-0'
-
+    /*
      if(System.properties['os.name'].toLowerCase().contains('win')){
         implementation files(cv_win)
     }else{
         implementation files(cv_lin)
     }
+    */
 }
 
 // ChatGPT and search engine, lol
 task testPath(type: Jar) {
-    classifier = 'tests'
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE) // https://stackoverflow.com/questions/67265308/gradle-entry-classpath-is-a-duplicate-but-no-duplicate-handling-strategy-has-b
 
-    //dependsOn test
+    dependsOn test
 
     manifest {
         attributes 'Main-Class': 'org.aquapackrobotics.sw8s.TestRunner'
@@ -123,7 +125,7 @@ task testPath(type: Jar) {
         include 'org/aquapackrobotics/sw8s/vision/BaseMatrix.class'
     }
 
-    classifier = 'all'
+    //classifier = 'all'
     from {
         configurations.testRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     } {
@@ -134,7 +136,7 @@ task testPath(type: Jar) {
     with jar
 
     // Set the destination directory and JAR file name
-    destinationDir = file("$buildDir/libs")
+    destinationDirectory = file("$buildDir/libs")
     archiveFileName = "test-jar-path.jar"
 }
 

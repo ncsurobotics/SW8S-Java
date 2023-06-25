@@ -28,3 +28,4 @@ app/.sw8_password
 perf.data*
 /*.png
 *.svg
+app/*.png
