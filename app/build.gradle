@@ -16,6 +16,31 @@ plugins {
     id 'com.github.mrsarm.jshell.plugin' version '1.2.1'
     // Benchmarking
     id 'me.champeau.jmh' version '0.7.1'
+    // Offline dependencies
+    id 'com.dimaslanjaka.gradle.offline_dependencies' version '1.0.15'
+    //id 'gov.chesapeaketechnology.offline-dependencies' version '0.3.4'
+    id 'org.ysb33r.ivypot' version '1.0.0'
+}
+
+//def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
+//def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
+
+dependencies {
+    // Use JUnit test framework.
+    testImplementation 'junit:junit:4.13.2'
+
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+
+    implementation 'org.openpnp:opencv:4.6.0-0'
+    /*
+     if(System.properties['os.name'].toLowerCase().contains('win')){
+        implementation files(cv_win)
+    }else{
+        implementation files(cv_lin)
+    }
+    */
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
@@ -47,7 +72,6 @@ jar {
 task fatJar(type: Jar) {
     dependsOn build
     manifest.from jar.manifest
-    //classifier = 'all'
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     } {
@@ -78,36 +102,74 @@ task deploy {
             session(remotes.orangePi) {
                 execute "sudo -S mount -o remount,rw /", inputStream: remotes.orangePi.password
                 put from: "$buildDir/libs/app.jar", into: 'app.jar'
-                execute "sudo -S mount -o remount,ro /", inputStream: remotes.orangePi.password
-            }
+                execute "sudo -S mount -o remount,ro /", inputStream: remotes.orangePi.password }
         }
     }
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
+    if (gradle.startParameter.offline) {
+        // Use local ivy repo
+        ivy {
+            url "file://${projectDir}/../dependencies"
+            layout 'gradle'
+        }
+        mavenLocal()
+    } else {
+        // Use Maven Central for resolving dependencies.
+        mavenCentral()
+    }
 }
 
-//def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
-//def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
+syncRemoteRepositories {
+  repoDetails{
+    root = "${projectDir}/../dependencies"
+  }
 
-dependencies {
-    // Use JUnit test framework.
-    testImplementation 'junit:junit:4.13.2'
-
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:31.0.1-jre'
-    implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
-
-    implementation 'org.openpnp:opencv:4.6.0-0'
-    /*
-     if(System.properties['os.name'].toLowerCase().contains('win')){
-        implementation files(cv_win)
-    }else{
-        implementation files(cv_lin)
+  repositories {
+    mavenCentral()
+    maven {
+        url 'https://plugins.gradle.org/m2'
     }
-    */
+  }
+
+  includeBuildScriptDependencies = true
+}
+
+
+task sync(type:Exec) {
+    workingDir = "${projectDir}/../ivypot"
+    executable = 'sh'
+    args = ['-c', './gradlew syncRemoteRepositories']
+}
+
+task push {
+    doLast {
+        ssh.run {
+            session(remotes.orangePi) {
+                execute "sudo -S mount -o remount,rw /", inputStream: remotes.orangePi.password
+                execute "mkdir -p SW8S-Java/app/build/distributions/"
+            }
+        }
+        exec {
+            executable = 'ssh'
+            args = ['-i', '.sw8_ssh_identity', 'sw8@192.168.2.5', 'sudo date --set @$(date -u +%s)']
+        }
+        exec {
+            executable = 'rsync'
+            args = ['-ae', 'ssh -i .sw8_ssh_identity', '--exclude', '/.git', '--filter', ':- .gitignore', '../', 'sw8@192.168.2.5:SW8S-Java']
+        }
+        exec {
+            executable = 'rsync'
+            args = ['-ae', 'ssh -i .sw8_ssh_identity', '../dependencies', 'sw8@192.168.2.5:SW8S-Java']
+        }
+        ssh.run {
+            session(remotes.orangePi) {
+                execute "cd SW8S-Java && ./gradlew --offline --no-daemon build"
+                execute "sudo -S mount -o remount,ro / || true", inputStream: remotes.orangePi.password
+            }
+        }
+    }
 }
 
 // ChatGPT and search engine, lol
