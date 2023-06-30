@@ -22,8 +22,8 @@ plugins {
     id 'org.ysb33r.ivypot' version '1.0.0'
 }
 
-//def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
-//def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
+def cv_win = 'C:/opencv-4.6.0/java/opencv-460.jar'
+def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
 
 dependencies {
     // Use JUnit test framework.
@@ -33,14 +33,12 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
 
-    implementation 'org.openpnp:opencv:4.6.0-0'
-    /*
-     if(System.properties['os.name'].toLowerCase().contains('win')){
+    if(System.properties['os.name'].toLowerCase().contains('win')){
         implementation files(cv_win)
     }else{
         implementation files(cv_lin)
     }
-    */
+    implementation 'org.openpnp:opencv:4.6.0-0'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
@@ -121,6 +119,11 @@ repositories {
     }
 }
 
+jmh {
+    failOnError = true
+    warmup = '5s'
+}
+
 syncRemoteRepositories {
   repoDetails{
     root = "${projectDir}/../dependencies"
@@ -165,8 +168,7 @@ task push {
         }
         ssh.run {
             session(remotes.orangePi) {
-                execute "cd SW8S-Java && ./gradlew --offline --no-daemon build"
-                execute "sudo -S mount -o remount,ro / || true", inputStream: remotes.orangePi.password
+                execute "cd SW8S-Java && ./gradlew --offline -x test build"
             }
         }
     }

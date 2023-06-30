@@ -72,9 +72,11 @@ public class nn_cv2 extends ImagePrep {
             Mat level = result.get(i);
             level = level.reshape(1, (int) level.total() / (5 + this.numObjects));
 
-            System.out.println("row " + level.row(0).dump());
-            System.out.println("row " + level.row(0).colRange(5, level.cols()).dump());
-            System.out.println("row " + level.row(0).get(0, 4)[0]);
+            /*
+             * System.out.println("row " + level.row(0).dump());
+             * System.out.println("row " + level.row(0).colRange(5, level.cols()).dump());
+             * System.out.println("row " + level.row(0).get(0, 4)[0]);
+             */
             for (int j = 0; j < level.rows(); j++) {
                 Mat row = level.row(j);
                 Mat scores = row.colRange(5, level.cols());
@@ -97,7 +99,7 @@ public class nn_cv2 extends ImagePrep {
             }
         }
         if (confs.size() == 0) {
-            System.out.println("Nothing");
+            // System.out.println("Nothing");
             return image;
         }
         MatOfFloat confidences = new MatOfFloat(Converters.vector_float_to_Mat(confs));

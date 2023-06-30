@@ -67,8 +67,8 @@ public class Buoy extends nn_cv2 {
         // aiming for Bootlegger, and Bootlegger detected
         if (first && super.output.indexOf(first_classid) >= 0) {
             // middle coordinate, top left + width or height
-            System.out.println(super.output);
-            System.out.println(super.output_description);
+            // System.out.println(super.output);
+            // System.out.println(super.output_description);
             double x = super.output_description.get(super.output.indexOf(first_classid)).x +
                     super.output_description.get(super.output.indexOf(first_classid)).width / 2;
             double y = super.output_description.get(super.output.indexOf(first_classid)).y +
@@ -101,7 +101,11 @@ public class Buoy extends nn_cv2 {
         // transform the target with respect to the center of image, within [-1,1]
         this.translation[0] = (this.translation[0] - super.processImg.cols() / 2) / (super.processImg.cols() / 2);
         this.translation[1] = -(this.translation[1] - super.processImg.rows() / 2) / (super.processImg.rows() / 2);
-        System.out.printf("Translation to Target Buoy: \n\t x: %.2f \n\t y: %.2f \n\t distance: %.2f\n",
-                this.translation[0], this.translation[1], this.translation[2]);
+        /*
+         * System.out.
+         * printf("Translation to Target Buoy: \n\t x: %.2f \n\t y: %.2f \n\t distance: %.2f\n"
+         * ,
+         * this.translation[0], this.translation[1], this.translation[2]);
+         */
     }
 }

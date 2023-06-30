@@ -29,4 +29,5 @@ perf.data*
 /*.png
 *.svg
 app/*.png
+app/*.jpeg
 dependencies

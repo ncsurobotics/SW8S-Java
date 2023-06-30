@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.aquapackrobotics.sw8s.CV;
+
 final class FilenameComparator implements Comparator<String> {
     private static final Pattern NUMBERS = Pattern.compile("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
 
@@ -75,34 +77,7 @@ final class FilenameComparator implements Comparator<String> {
 public class CameraFeedSender {
 
     static {
-        try {
-            // /path/to/opencv-VERSION.jar
-            final File cvjarpath = new File("/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar");
-            final String cvdir = cvjarpath.getParent();
-            final String cvjarfile = cvjarpath.getName();
-            final String cvsofile = cvjarfile.replace("opencv-", "libopencv_java").replace(".jar", ".so");
-            final String cvdllfile = cvjarfile.replace("opencv-", "opencv_java").replace(".jar", ".dll");
-
-            String cvlibpath;
-            if (System.getProperty("os.name").toLowerCase().contains("win")) {
-                String arch = System.getProperty("os.arch");
-                if (arch.equals("amd64")) {
-                    cvlibpath = new File(new File(cvdir, "x64").getPath(), cvdllfile).getPath();
-                } else {
-                    throw new Exception("Windows is not supported for unknown architecture '" + arch + "'.");
-                }
-            } else {
-                cvlibpath = new File(cvdir, cvsofile).getPath();
-            }
-            System.out.println("OpenCV Java Library:   " + cvjarpath);
-            System.out.println("OpenCV Native Library: " + cvlibpath);
-            System.load(cvlibpath);
-
-        } catch (Exception e) {
-            System.err.println("Unable to locate and load OpenCV native library!");
-            e.printStackTrace(System.err);
-            System.exit(1);
-        }
+        CV.open();
     }
 
     /*

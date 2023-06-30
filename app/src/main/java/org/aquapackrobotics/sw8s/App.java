@@ -11,14 +11,11 @@ import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
 
-//import nu.pattern.OpenCV;
-
 public class App {
 
     static {
         System.setProperty("java.util.logging.SimpleFormatter.format",
                 "%1$tF %1$tT | %4$s | %5$s %n");
-        // OpenCV.loadLocally(); // Load OpenCV
     }
 
     // static final int POOLSIZE = 16;
