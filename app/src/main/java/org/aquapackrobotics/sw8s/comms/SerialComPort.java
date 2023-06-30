@@ -15,7 +15,7 @@ public class SerialComPort implements ICommPort {
         serialPort.addDataListener((ControlBoardListener) listener);
     }
 
-    public synchronized void writeBytes(byte[] data, long length) {
+    public synchronized void writeBytes(byte[] data, int length) {
         serialPort.writeBytes(data, length);
     }
 

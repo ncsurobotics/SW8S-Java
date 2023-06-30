@@ -23,10 +23,11 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
         simSocket = socket;
         buffer = new byte[64];
     }
+
     @Override
     public void openPort(ICommPortListener listener) {
         try {
-            //simSocket = new Socket(endPoint, port);
+            // simSocket = new Socket(endPoint, port);
             socketIn = simSocket.getInputStream();
             socketOut = simSocket.getOutputStream();
             this.listener = (ControlBoardListener) listener;
@@ -65,7 +66,7 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
     }
 
     @Override
-    public synchronized void writeBytes(byte[] bytes, long length) {
+    public synchronized void writeBytes(byte[] bytes, int length) {
         try {
             socketOut.write(bytes, 0, (int) length);
         } catch (IOException e) {
@@ -74,7 +75,7 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
     }
 
     @Override
-    public void closePort()  {
+    public void closePort() {
         try {
             socketIn.close();
             socketOut.close();

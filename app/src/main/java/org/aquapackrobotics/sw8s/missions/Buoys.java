@@ -11,21 +11,19 @@ import org.opencv.videoio.VideoCapture;
 import java.util.concurrent.*;
 
 public class Buoys extends Mission {
-    private final VideoCapture cap;
-
-    public Buoys (ControlBoardThreadManager manager) {
-       super(manager); 
-        cap = CameraFeedSender.openCapture();
+    public Buoys(ControlBoardThreadManager manager) {
+        super(manager);
     }
 
     @Override
     protected State initialState() {
-        return new BuoyInitState(manager, cap);
+        return new BuoyReadState(manager);
     }
 
     @Override
-    protected void executeState(State state)  throws ExecutionException, InterruptedException  {
-        while (state.onPeriodic()) {}
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
+        while (state.onPeriodic()) {
+        }
     }
 
     @Override

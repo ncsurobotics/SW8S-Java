@@ -15,20 +15,22 @@ public class App {
 
     static {
         System.setProperty("java.util.logging.SimpleFormatter.format",
-              "%1$tF %1$tT | %4$s | %5$s %n");
+                "%1$tF %1$tT | %4$s | %5$s %n");
     }
 
-    //static final int POOLSIZE = 16;
+    // static final int POOLSIZE = 16;
     static final int POOLSIZE = 128;
-    //static final int POOLSIZE = 8;
-    
+    // static final int POOLSIZE = 8;
+
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
-        String helpFlag[] = {"\nBasic Utility:", "\n'test' -- The Command Flag used in Testing", "'help' or 'h' -- displays list of command flags", "\nStates:", "\n"};
-        System.out.println("Basic Format: gradle run --args='_'");        
+        String helpFlag[] = { "\nBasic Utility:",
+                "\n'test' -- The Command Flag used in Testing",
+                "'help' or 'h' -- displays list of command flags", "\nStates:", "\n" };
+        System.out.println("Basic Format: gradle run --args='_'");
 
         /* Special case for testing without control board connection */
         if (args.length == 1 && args[0].equals("--local_comm_test")) {
@@ -45,31 +47,32 @@ public class App {
             public void run() {
                 for (int i = 0; i < 20; ++i) {
                     try {
-                        //manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0);
-                        //Thread.sleep(50);
+                        // manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0,
+                        // (float)0.0, (float)0.0, (float)0.0, (float)0.0);
+                        // Thread.sleep(50);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 try {
-                    //Thread.sleep(500);
+                    // Thread.sleep(500);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-         });
+        });
 
-        for (String str: args) {
+        for (String str : args) {
             switch (str) {
                 case "--test":
                     System.out.println("Yay! it worked!");
                     break;
                 case "-h":
-                    for(int i = 0; i < helpFlag.length; i++){
+                    for (int i = 0; i < helpFlag.length; i++) {
                         System.out.println(helpFlag[i]);
                     }
                 case "--help":
-                    for(int i = 0; i < helpFlag.length; i++){
+                    for (int i = 0; i < helpFlag.length; i++) {
                         System.out.println(helpFlag[i]);
                     }
                     break;
@@ -113,12 +116,23 @@ public class App {
                     Mission path = (Mission) new Path(manager);
                     path.run();
                     break;
+                case "--path-test":
+                    Mission pathtest = (Mission) new PathVisionTest(manager);
+                    pathtest.run();
+                    break;
+                case "--buoy":
+                    Mission buoytest = (Mission) new Buoys(manager);
+                    buoytest.run();
+                    break;
                 case "--kill-confirm":
-                    while(true) {
+                    while (true) {
                         try {
-                            manager.setMotorSpeeds((float)0.3, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0, (float)0.0).wait();
-                            while(true);
-                        } catch(Exception e) {
+                            manager.setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
+                                    (float) 0.0,
+                                    (float) 0.0, (float) 0.0, (float) 0.0).wait();
+                            while (true)
+                                ;
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

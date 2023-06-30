@@ -37,7 +37,7 @@ public class TestComPort implements ICommPort {
         portListener = listener;
     }
 
-    public void writeBytes(byte[] bytes, long length) {
+    public void writeBytes(byte[] bytes, int length) {
         verifyPortOpened();
         
         // Load message in
