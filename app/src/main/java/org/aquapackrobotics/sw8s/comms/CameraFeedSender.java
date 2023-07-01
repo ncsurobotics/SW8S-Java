@@ -116,9 +116,9 @@ public class CameraFeedSender {
             // Record to writable USB on SW8 Jetson if present
             File f = new File("/mnt/data/");
             if (f.exists() && f.isDirectory() && f.canWrite())
-                dirPath = "/mnt/data/";
+                dirPath = "/mnt/data";
         }
-        dirPath += "/camtest-recordings/";
+        dirPath += "/camtest-recordings";
         File dir = new File(dirPath);
 
         // Create recording directory if it does not exist
@@ -194,13 +194,10 @@ public class CameraFeedSender {
         System.out.println();
 
         VideoCapture cap0 = new VideoCapture(cap0Pl, Videoio.CAP_GSTREAMER);
-        VideoCapture cap1 = new VideoCapture(cap1Pl, Videoio.CAP_GSTREAMER);
+        // VideoCapture cap1 = new VideoCapture(cap1Pl, Videoio.CAP_GSTREAMER);
 
         heldCaptures.put(0, cap0);
-        heldCaptures.put(1, cap1);
-
-        Mat frame0 = new Mat();
-        Mat frame1 = new Mat();
+        // heldCaptures.put(1, cap1);
     }
 
     public static VideoCapture openCapture(int id) {

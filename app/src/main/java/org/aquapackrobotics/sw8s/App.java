@@ -12,6 +12,8 @@ import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
 
+import org.opencv.core.Mat;
+
 public class App {
 
     static {
@@ -110,6 +112,8 @@ public class App {
                     break;
                 case "--cam_test":
                     VideoCapture cap = CameraFeedSender.openCapture();
+                    // while (true)
+                    // cap.read(frame);
                     Thread.sleep(60_000);
                 case "--kill-confirm":
                     while (true) {
