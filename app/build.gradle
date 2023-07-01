@@ -44,15 +44,15 @@ dependencies {
 mainClassName = "org.aquapackrobotics.sw8s.App"
 
 java {
-    // Set Java version to 11
+    // Set Java version to 17
     // https://docs.gradle.org/current/userguide/toolchains.html
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 11
+    options.release = 17
 }
 
 run {
