@@ -46,6 +46,9 @@ public class App {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         ControlBoardThreadManager manager;
 
+        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(1);
+
         for (String str : args) {
             Mission mission;
             switch (str) {
@@ -111,9 +114,8 @@ public class App {
                     mission = (Mission) new Buoys(manager);
                     break;
                 case "--cam_test":
-                    VideoCapture cap = CameraFeedSender.openCapture();
-                    // while (true)
-                    // cap.read(frame);
+                    CameraFeedSender.openCapture(0);
+                    // CameraFeedSender.openCapture(1);
                     Thread.sleep(60_000);
                 case "--kill-confirm":
                     while (true) {

@@ -17,14 +17,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 public class PathReadState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
-    private final VideoCapture cap;
     private final File Dir;
     private final double[] candidates = { 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 };
     private File[] cand_files = new File[9];
 
-    public PathReadState(ControlBoardThreadManager manager, VideoCapture cap) {
+    public PathReadState(ControlBoardThreadManager manager) {
         super(manager);
-        this.cap = cap;
+        CameraFeedSender.openCapture(0);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
         Dir.mkdir();
         for (int i = 0; i < candidates.length; i++) {
@@ -48,15 +47,13 @@ public class PathReadState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = new Mat();
-        if (cap.read(frame)) {
-            for (int i = 0; i < candidates.length; i++) {
-                Path target = new Path(candidates[i]);
-                target.processFrame(frame, cand_files[i].toString() + "/" + Instant.now().toString() + ".jpeg");
-                try {
-                    System.out.println(target.relativePosition(frame));
-                } catch (Exception e) {
-                }
+        Mat frame = CameraFeedSender.getFrame(0);
+        for (int i = 0; i < candidates.length; i++) {
+            Path target = new Path(candidates[i]);
+            target.processFrame(frame, cand_files[i].toString() + "/" + Instant.now().toString() + ".jpeg");
+            try {
+                System.out.println(target.relativePosition(frame));
+            } catch (Exception e) {
             }
         }
         return false;

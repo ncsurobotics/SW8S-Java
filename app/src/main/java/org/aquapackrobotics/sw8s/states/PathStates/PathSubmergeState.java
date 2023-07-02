@@ -11,11 +11,9 @@ import org.aquapackrobotics.sw8s.states.PathStates.*;
 public class PathSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
-    private final VideoCapture cap;
 
-    public PathSubmergeState(ControlBoardThreadManager manager, VideoCapture cap) {
+    public PathSubmergeState(ControlBoardThreadManager manager) {
         super(manager);
-        this.cap = cap;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -54,7 +52,7 @@ public class PathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new PathReadState(manager, cap);
-        // return new PathFollowState(manager, cap);
+        return new PathReadState(manager);
+        // return new PathFollowState(manager);
     }
 }
