@@ -23,7 +23,7 @@ public class nn_cv2 extends ImagePrep {
     private Net net;
     private List<String> outBlobNames = new ArrayList<>();
 
-    public int numObjects = 2;
+    public int numObjects = 4;
 
     public List<Integer> output = new ArrayList<>();
     public List<Rect2d> output_description = new ArrayList<>();

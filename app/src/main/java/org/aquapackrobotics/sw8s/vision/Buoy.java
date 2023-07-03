@@ -53,13 +53,13 @@ public class Buoy extends nn_cv2 {
         } else {
             super.loadModel(model_path);
         }
-        super.numObjects = 2; // left and right buoy
+        super.numObjects = 4; // left and right buoy
     }
 
     // load buoy specific network
     public void load_buoy_model() {
         super.loadModel(model_path);
-        super.numObjects = 2; // left and right buoy
+        super.numObjects = 4; // left and right buoy
     }
 
     // turn the detected buoys into a translation vector

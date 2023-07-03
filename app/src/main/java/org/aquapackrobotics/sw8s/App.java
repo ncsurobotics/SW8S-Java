@@ -47,7 +47,9 @@ public class App {
         ControlBoardThreadManager manager;
 
         CameraFeedSender.openCapture(0);
+        System.out.println("POST FEED 1");
         CameraFeedSender.openCapture(1);
+        System.out.println("POST FEEDS");
 
         for (String str : args) {
             Mission mission;
@@ -78,6 +80,7 @@ public class App {
                     mission = (Mission) new ManualMission(manager, 5000);
                     break;
                 case "--motor_test":
+                    System.out.println("REGISTER MOTOR TEST");
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new MotorTest(manager);
                     break;
@@ -117,6 +120,10 @@ public class App {
                     CameraFeedSender.openCapture(0);
                     // CameraFeedSender.openCapture(1);
                     Thread.sleep(60_000);
+                case "--octagon":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Octagon(manager);
+                    break;
                 case "--kill-confirm":
                     while (true) {
                         try {
@@ -136,6 +143,7 @@ public class App {
                     break;
 
             }
+            System.out.println("RUN TEST");
             mission.run();
         }
         System.exit(0);

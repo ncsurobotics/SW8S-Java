@@ -18,22 +18,25 @@ public class BuoyReadState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private final Buoy target;
+    private final Buoy targetLarge;
     private final File Dir;
 
     public BuoyReadState(ControlBoardThreadManager manager) {
         super(manager);
-        CameraFeedSender.openCapture(1);
-        target = new Buoy(true);
+        CameraFeedSender.openCapture(0);
+        target = new Buoy(false);
+        targetLarge = new Buoy(true);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "buoy");
         Dir.mkdir();
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
+            System.out.println("ENTER READ STATE");
             depthRead = manager.MSPeriodicRead((byte) 1);
             // var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-            // -1.0);
-            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
+            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0,
+                    -1.3);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -42,12 +45,13 @@ public class BuoyReadState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(1);
+        Mat frame = CameraFeedSender.getFrame(0);
         Mat yoloout = target.detectYoloV5(frame);
         target.transAlign();
         try {
             PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
             printWriter.print(Arrays.toString(target.translation));
+            System.out.println(Arrays.toString(target.translation));
             printWriter.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -159,11 +159,12 @@ public class CameraFeedSender {
     }
 
     private static ConcurrentHashMap<Integer, Mat> heldCaptures = new ConcurrentHashMap<>();
+    private static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void openCapture(int id) {
         if (!heldCaptures.containsKey(id)) {
             String savefile = saveFile("cam" + String.valueOf(id));
-            String capPl = openPipeline(0, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
+            String capPl = openPipeline(id, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
                     "raw. ! queue  ! videoconvert ! appsink " +
                     "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
                     "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
@@ -185,7 +186,10 @@ public class CameraFeedSender {
                     }
                 }
             };
-            videoPoll.run();
+            Thread videoThread = new Thread(videoPoll);
+            threads.add(videoThread);
+            videoThread.start();
+            System.out.println("HELLO");
         }
     }
 

@@ -287,6 +287,14 @@ public class Path extends ImagePrep {
         throw new Exception("Not yet updated.");
     }
 
+    public VisualObject relativePosition(Mat frame, String saveFile) throws Exception {
+        processFrame(frame, saveFile);
+        if (result.indexOf(true) >= 0) {
+            return new VisualObject(results_prop.get(result.indexOf(true)));
+        }
+        throw new Exception("Not yet updated.");
+    }
+
     public VisualObject[] relativePositions(Mat frame) throws Exception {
         processFrame(frame);
         if (result.indexOf(true) >= 0) {

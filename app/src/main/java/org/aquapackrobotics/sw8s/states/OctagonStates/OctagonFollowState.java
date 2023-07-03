@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.states.PathStates;
+package org.aquapackrobotics.sw8s.states.OctagonStates;
 
 import java.util.concurrent.*;
 import java.io.File;
@@ -12,15 +12,17 @@ import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.*;
 
-public class PathFollowState extends State {
+public class OctagonFollowState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private final Path target;
     private final File Dir;
+    private double depth = -1.7;
 
-    public PathFollowState(ControlBoardThreadManager manager) {
+    public OctagonFollowState(ControlBoardThreadManager manager) {
         super(manager);
-        target = new Path(70, 230, 30, 400, 0.25);
+        // target = new Path(70, 230, 30, 100, 0.15);
+        target = new Path(70, 230, 30, 200, 0.2);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
         Dir.mkdir();
     }
@@ -46,7 +48,11 @@ public class PathFollowState extends State {
             double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
                     0.2;
             System.out.println("Y: " + String.valueOf(y));
-            var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw(), -1.0);
+            // depth += 0.05;
+            // if (depth >= -0.3)
+            // return true;
+            System.out.println("Depth: " + String.valueOf(depth));
+            var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw(), depth);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

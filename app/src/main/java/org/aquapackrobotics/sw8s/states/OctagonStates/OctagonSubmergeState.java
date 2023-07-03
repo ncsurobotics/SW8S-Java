@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.states.PathStates;
+package org.aquapackrobotics.sw8s.states.OctagonStates;
 
 import java.util.concurrent.*;
 
@@ -6,13 +6,13 @@ import org.opencv.videoio.VideoCapture;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.PathStates.*;
+import org.aquapackrobotics.sw8s.states.OctagonStates.*;
 
-public class PathSubmergeState extends State {
+public class OctagonSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
 
-    public PathSubmergeState(ControlBoardThreadManager manager) {
+    public OctagonSubmergeState(ControlBoardThreadManager manager) {
         super(manager);
     }
 
@@ -20,7 +20,7 @@ public class PathSubmergeState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -1.0);
+                    -1.7);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -31,7 +31,7 @@ public class PathSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() < -0.5) {
+                if (manager.getDepth() < -1.2) {
                     return true;
                 }
             }
@@ -47,6 +47,6 @@ public class PathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new PathFollowState(manager);
+        return new OctagonFollowState(manager);
     }
 }
