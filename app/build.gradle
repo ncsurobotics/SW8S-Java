@@ -169,7 +169,7 @@ task push {
         }
         ssh.run {
             session(remotes.orangePi) {
-                execute "cd SW8S-Java && ./gradlew --offline -x test build"
+                execute "cd SW8S-Java && ./gradlew --offline -x test classes"
             }
         }
     }
