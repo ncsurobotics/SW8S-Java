@@ -39,7 +39,7 @@ dependencies {
     }
     implementation 'org.openpnp:opencv:4.6.0-0'
 
-	implementation 'org.tensorflow:tensorflow-core-platform-gpu:0.4.0'
+	//implementation 'org.tensorflow:tensorflow-core-platform-gpu:0.4.0'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
