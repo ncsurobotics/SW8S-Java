@@ -18,10 +18,10 @@ public class PathYUVFollowState extends State {
     private final PathYUV target;
     private final File Dir;
 
-    public PathYUVFollowState(ControlBoardThreadManager manager) {
+    public PathYUVFollowState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         target = new PathYUV(0.25);
-        Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
+        Dir = new File("/mnt/data/" + missionName + "/pathYUV");
         Dir.mkdir();
     }
 
@@ -46,6 +46,7 @@ public class PathYUVFollowState extends State {
             double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
                     0.2;
             System.out.println("Y: " + String.valueOf(y));
+            System.out.println("Angle: " + String.valueOf(footage.angle));
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw(), -1.0);
             while (!mreturn.isDone())
                 ;

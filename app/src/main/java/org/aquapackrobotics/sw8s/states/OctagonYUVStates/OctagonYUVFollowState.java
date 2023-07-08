@@ -19,11 +19,11 @@ public class OctagonYUVFollowState extends State {
     private final File Dir;
     private double depth = -1.7;
 
-    public OctagonYUVFollowState(ControlBoardThreadManager manager) {
+    public OctagonYUVFollowState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         // target = new PathYUV(70, 230, 30, 100, 0.15);
         target = new PathYUV(0.2);
-        Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
+        Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
     }
 

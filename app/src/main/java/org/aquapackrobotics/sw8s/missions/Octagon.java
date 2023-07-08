@@ -13,14 +13,17 @@ import org.aquapackrobotics.sw8s.states.OctagonStates.*;
  * Mission for navigating gates
  */
 public class Octagon extends Mission {
-    public Octagon(ControlBoardThreadManager manager) {
+    private String missionName;
+
+    public Octagon(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new OctagonSubmergeState(manager);
+        return new OctagonSubmergeState(manager, missionName);
     }
 
     @Override

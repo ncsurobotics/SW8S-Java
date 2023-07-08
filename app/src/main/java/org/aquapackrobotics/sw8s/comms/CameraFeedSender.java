@@ -111,7 +111,11 @@ public class CameraFeedSender {
         }
     }
 
-    static String saveFile(String basename) {
+    private static String saveFile(String basename) {
+        return saveFile(basename, "camtest-recordings");
+    }
+
+    public static String saveFile(String basename, String dirname) {
         String dirPath = System.getProperty("user.home");
         if (new File("/etc/nv_tegra_release").exists()) {
             // Record to writable USB on SW8 Jetson if present
@@ -119,7 +123,7 @@ public class CameraFeedSender {
             if (f.exists() && f.isDirectory() && f.canWrite())
                 dirPath = "/mnt/data";
         }
-        dirPath += "/camtest-recordings";
+        dirPath += "/" + dirname;
         File dir = new File(dirPath);
 
         // Create recording directory if it does not exist
@@ -164,6 +168,38 @@ public class CameraFeedSender {
     public static void openCapture(int id) {
         if (!heldCaptures.containsKey(id)) {
             String savefile = saveFile("cam" + String.valueOf(id));
+            String capPl = openPipeline(id, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
+                    "raw. ! queue  ! videoconvert ! appsink " +
+                    "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
+                    "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
+                    + String.valueOf(id) + " "
+                    +
+                    "h264. ! queue ! mpegtsmux ! filesink location=\"" + savefile + "\" ";
+            System.out.println();
+            System.out.println("------------------------------");
+            System.out.print("Cap" + String.valueOf(id) + " Pipeline: ");
+            System.out.println(capPl);
+            System.out.print("Savefile" + String.valueOf(id) + ": ");
+            System.out.println(savefile);
+            VideoCapture cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
+            Runnable videoPoll = () -> {
+                while (true) {
+                    Mat frame = new Mat();
+                    if (cap.read(frame)) {
+                        heldCaptures.put(id, frame);
+                    }
+                }
+            };
+            Thread videoThread = new Thread(videoPoll);
+            threads.add(videoThread);
+            videoThread.start();
+            System.out.println("HELLO");
+        }
+    }
+
+    public static void openCapture(int id, String missionName) {
+        if (!heldCaptures.containsKey(id)) {
+            String savefile = saveFile("cam" + String.valueOf(id), missionName + "/camtest-recordings");
             String capPl = openPipeline(id, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
                     "raw. ! queue  ! videoconvert ! appsink " +
                     "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +

@@ -19,11 +19,11 @@ public class OctagonFollowState extends State {
     private final File Dir;
     private double depth = -1.7;
 
-    public OctagonFollowState(ControlBoardThreadManager manager) {
+    public OctagonFollowState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         // target = new Path(70, 230, 30, 100, 0.15);
         target = new Path(70, 230, 30, 200, 0.2);
-        Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
+        Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
     }
 

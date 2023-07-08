@@ -13,14 +13,17 @@ import org.aquapackrobotics.sw8s.states.PathStates.*;
  * Mission for navigating gates
  */
 public class Path extends Mission {
-    public Path(ControlBoardThreadManager manager) {
+    private String missionName;
+
+    public Path(ControlBoardThreadManager manager, String missionName) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(0, missionName);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new PathSubmergeState(manager);
+        return new PathSubmergeState(manager, missionName);
     }
 
     @Override

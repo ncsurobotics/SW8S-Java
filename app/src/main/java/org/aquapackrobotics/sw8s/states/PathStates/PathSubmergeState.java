@@ -11,9 +11,11 @@ import org.aquapackrobotics.sw8s.states.PathStates.*;
 public class PathSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
+    private String missionName;
 
-    public PathSubmergeState(ControlBoardThreadManager manager) {
+    public PathSubmergeState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -47,6 +49,6 @@ public class PathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new PathFollowState(manager);
+        return new PathFollowState(manager, missionName);
     }
 }

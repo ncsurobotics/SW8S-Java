@@ -11,9 +11,11 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.*;
 public class OctagonYUVSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
+    private String missionName;
 
-    public OctagonYUVSubmergeState(ControlBoardThreadManager manager) {
+    public OctagonYUVSubmergeState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -47,6 +49,6 @@ public class OctagonYUVSubmergeState extends State {
     }
 
     public State nextState() {
-        return new OctagonYUVFollowState(manager);
+        return new OctagonYUVFollowState(manager, missionName);
     }
 }

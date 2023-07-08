@@ -11,9 +11,11 @@ import org.aquapackrobotics.sw8s.states.OctagonStates.*;
 public class OctagonSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
+    private String missionName;
 
-    public OctagonSubmergeState(ControlBoardThreadManager manager) {
+    public OctagonSubmergeState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -47,6 +49,6 @@ public class OctagonSubmergeState extends State {
     }
 
     public State nextState() {
-        return new OctagonFollowState(manager);
+        return new OctagonFollowState(manager, missionName);
     }
 }

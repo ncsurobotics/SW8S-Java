@@ -13,14 +13,17 @@ import org.aquapackrobotics.sw8s.states.PathYUVStates.*;
  * Mission for navigating gates
  */
 public class PathYUV extends Mission {
-    public PathYUV(ControlBoardThreadManager manager) {
+    private String missionName;
+
+    public PathYUV(ControlBoardThreadManager manager, String missionName) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(0, missionName);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new PathYUVSubmergeState(manager);
+        return new PathYUVSubmergeState(manager, missionName);
     }
 
     @Override

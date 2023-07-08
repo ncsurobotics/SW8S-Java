@@ -13,14 +13,17 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.*;
  * Mission for navigating gates
  */
 public class OctagonYUV extends Mission {
-    public OctagonYUV(ControlBoardThreadManager manager) {
+    private String missionName;
+
+    public OctagonYUV(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new OctagonYUVSubmergeState(manager);
+        return new OctagonYUVSubmergeState(manager, missionName);
     }
 
     @Override

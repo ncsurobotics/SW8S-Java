@@ -7,12 +7,9 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
-import org.opencv.videoio.VideoCapture;
 import org.aquapackrobotics.sw8s.comms.*;
 
 import java.util.concurrent.*;
-
-import org.opencv.core.Mat;
 
 public class App {
 
@@ -46,13 +43,18 @@ public class App {
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
         ControlBoardThreadManager manager;
 
-        CameraFeedSender.openCapture(0);
-        System.out.println("POST FEED 1");
-        CameraFeedSender.openCapture(1);
-        System.out.println("POST FEEDS");
+        String missionName = null;
 
         for (String str : args) {
+            if (!str.contains("-")) {
+                missionName = str;
+                continue;
+            }
+
             Mission mission;
+            CameraFeedSender.openCapture(0, missionName);
+            CameraFeedSender.openCapture(1, missionName);
+
             switch (str) {
                 case "--test":
                     System.out.println("Yay! it worked!");
@@ -106,15 +108,15 @@ public class App {
                     break;
                 case "--path":
                     manager = new ControlBoardThreadManager(pool);
-                    mission = (Mission) new Path(manager);
+                    mission = (Mission) new Path(manager, missionName);
                     break;
                 case "--path_test":
                     manager = new ControlBoardThreadManager(pool);
-                    mission = (Mission) new PathVisionTest(manager);
+                    mission = (Mission) new PathVisionTest(manager, missionName);
                     break;
                 case "--path_yuv":
                     manager = new ControlBoardThreadManager(pool);
-                    mission = (Mission) new PathYUV(manager);
+                    mission = (Mission) new PathYUV(manager, missionName);
                     break;
                 case "--buoy":
                     manager = new ControlBoardThreadManager(pool);
@@ -126,11 +128,11 @@ public class App {
                     Thread.sleep(60_000);
                 case "--octagon":
                     manager = new ControlBoardThreadManager(pool);
-                    mission = (Mission) new Octagon(manager);
+                    mission = (Mission) new Octagon(manager, missionName);
                     break;
                 case "--octagon_yuv":
                     manager = new ControlBoardThreadManager(pool);
-                    mission = (Mission) new OctagonYUV(manager);
+                    mission = (Mission) new OctagonYUV(manager, missionName);
                     break;
                 case "--kill-confirm":
                     while (true) {

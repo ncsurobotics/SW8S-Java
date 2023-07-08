@@ -18,10 +18,10 @@ public class PathFollowState extends State {
     private final Path target;
     private final File Dir;
 
-    public PathFollowState(ControlBoardThreadManager manager) {
+    public PathFollowState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         target = new Path(70, 230, 30, 400, 0.25);
-        Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
+        Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
     }
 
