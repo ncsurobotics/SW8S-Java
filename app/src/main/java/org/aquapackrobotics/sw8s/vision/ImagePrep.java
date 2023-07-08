@@ -1,7 +1,10 @@
 package org.aquapackrobotics.sw8s.vision;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -13,6 +16,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
+
+import org.javatuples.Pair;
+import org.aquapackrobotics.sw8s.vision.IntPair;
 
 /**
  * Base for all image processing modules
@@ -273,6 +279,25 @@ public class ImagePrep {
             }
         }
         return unique_colors;
+    }
+
+    /**
+     * obtain an arraylist of unique colors
+     * 
+     * @param gray_image
+     * @return arraylist
+     */
+    protected Set<IntPair> uniqueColor_YUV(Mat yuv_image) {
+        Set<IntPair> unique_colors = new HashSet<>();
+        for (int h = 0; h < yuv_image.height(); h++) {
+            for (int w = 0; w < yuv_image.width(); w++) {
+                double[] color = yuv_image.get(h, w);
+                IntPair color_set = new IntPair((int) color[1], (int) color[2]);
+                unique_colors.add(color_set);
+            }
+        }
+        return unique_colors;
+
     }
 
     public void debug() {

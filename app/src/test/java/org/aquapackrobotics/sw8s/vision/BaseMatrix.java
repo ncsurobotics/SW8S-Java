@@ -12,6 +12,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.aquapackrobotics.sw8s.CV;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.vision.Path;
+import org.aquapackrobotics.sw8s.vision.PathYUV;
 
 import nu.pattern.OpenCV;
 
@@ -40,6 +41,45 @@ public class BaseMatrix {
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             Path path = new Path(0.25);
             path.processFrame(img, "drawn_shrunk.jpeg");
+            path.relativePosition(img);
+        } catch (Exception e) {
+            Assert.fail(e.getStackTrace().toString());
+        }
+    }
+
+    @Test
+    public void markYUVPath() {
+        try {
+            Mat img = Imgcodecs
+                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
+            PathYUV path = new PathYUV();
+            path.processFrame(img, "drawn_YUV.jpeg");
+            path.relativePosition(img);
+        } catch (Exception e) {
+            Assert.fail(e.getStackTrace().toString());
+        }
+    }
+
+    @Test
+    public void markShrunkYUVPath() {
+        try {
+            Mat img = Imgcodecs
+                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
+            PathYUV path = new PathYUV(0.25);
+            path.processFrame(img, "drawn_shrunk_YUV.jpeg");
+            path.relativePosition(img);
+        } catch (Exception e) {
+            Assert.fail(e.getStackTrace().toString());
+        }
+    }
+
+    @Test
+    public void markDecimatedYUVPath() {
+        try {
+            Mat img = Imgcodecs
+                    .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
+            PathYUV path = new PathYUV(0.20);
+            path.processFrame(img, "drawn_decimated_YUV.jpeg");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());

@@ -108,9 +108,13 @@ public class App {
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new Path(manager);
                     break;
-                case "--path-test":
+                case "--path_test":
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new PathVisionTest(manager);
+                    break;
+                case "--path_yuv":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new PathYUV(manager);
                     break;
                 case "--buoy":
                     manager = new ControlBoardThreadManager(pool);
@@ -123,6 +127,10 @@ public class App {
                 case "--octagon":
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new Octagon(manager);
+                    break;
+                case "--octagon_yuv":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new OctagonYUV(manager);
                     break;
                 case "--kill-confirm":
                     while (true) {
