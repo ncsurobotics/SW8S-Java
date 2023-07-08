@@ -120,8 +120,11 @@ public class CameraFeedSender {
         if (new File("/etc/nv_tegra_release").exists()) {
             // Record to writable USB on SW8 Jetson if present
             File f = new File("/mnt/data/");
-            if (f.exists() && f.isDirectory() && f.canWrite())
+            if (f.exists() && f.isDirectory() && f.canWrite()) {
                 dirPath = "/mnt/data";
+                System.out.println("DATA MOUNT!");
+            } else
+                System.out.println("No data mount");
         }
         dirPath += "/" + dirname;
         File dir = new File(dirPath);

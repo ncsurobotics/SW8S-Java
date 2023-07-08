@@ -48,6 +48,7 @@ public class App {
         for (String str : args) {
             if (!str.contains("-")) {
                 missionName = str;
+                System.out.println("Mission name: " + missionName);
                 continue;
             }
 

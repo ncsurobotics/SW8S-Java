@@ -33,7 +33,9 @@ public class PathYUVSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
+                System.out.println("Depth: " + String.valueOf(manager.getDepth()));
                 if (manager.getDepth() < -0.5) {
+                    Thread.sleep(2000); // sleep two seconds
                     return true;
                 }
             }
@@ -49,6 +51,8 @@ public class PathYUVSubmergeState extends State {
     }
 
     public State nextState() {
-        return new PathYUVFollowState(manager, missionName);
+        // return new PathYUVFollowState(manager, missionName);
+        // return new PathYUVThroughState(manager, missionName);
+        return new PathYUVDetectState(manager, missionName);
     }
 }

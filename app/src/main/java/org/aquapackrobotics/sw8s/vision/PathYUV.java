@@ -74,14 +74,16 @@ public class PathYUV extends ImagePrep {
         super(scale);
         PATH_COLOR_LOW = color_low;
         PATH_COLOR_HIGH = color_high;
-        PATH_WIDTH_LOW = width_low;
-        PATH_WIDTH_HIGH = width_high;
+        // PATH_WIDTH_LOW = width_low;
+        // PATH_WIDTH_HIGH = width_high;
+        PATH_WIDTH_LOW = (int) (width_low * scale);
+        PATH_WIDTH_HIGH = (int) (width_high * scale);
     }
 
     public PathYUV(double scale) {
         // OpenCV uses range [0, 255] for colors, so 127 is halfway on the axis
-        this(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE), 30,
-                400, scale);
+        this(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE), 20,
+                800, scale);
     }
 
     /**
@@ -204,15 +206,6 @@ public class PathYUV extends ImagePrep {
      * @return
      */
     private boolean isPath(IntPair color) {
-        System.out.println("");
-        System.out.println(String.valueOf(color.x) + " <= " + String.valueOf(this.PATH_COLOR_HIGH.x));
-        System.out.println(String.valueOf(color.y) + " <= " + String.valueOf(this.PATH_COLOR_HIGH.y));
-        System.out.println(String.valueOf(color.x) + " >= " + String.valueOf(this.PATH_COLOR_LOW.x));
-        System.out.println(String.valueOf(color.y) + " >= " + String.valueOf(this.PATH_COLOR_LOW.y));
-        System.out.println(
-                String.valueOf(this.values[this.path_width_idx]) + " <= " + String.valueOf(this.PATH_WIDTH_HIGH));
-        System.out.println(
-                String.valueOf(this.values[this.path_width_idx]) + " >= " + String.valueOf(this.PATH_WIDTH_LOW));
         return color.x <= this.PATH_COLOR_HIGH.x && color.y <= this.PATH_COLOR_HIGH.y &&
                 color.x >= this.PATH_COLOR_LOW.x && color.y >= this.PATH_COLOR_LOW.y &&
                 this.values[this.path_width_idx] <= this.PATH_WIDTH_HIGH &&

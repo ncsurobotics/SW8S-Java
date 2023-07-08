@@ -78,7 +78,7 @@ public class BaseMatrix {
         try {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
-            PathYUV path = new PathYUV(0.20);
+            PathYUV path = new PathYUV(0.10);
             path.processFrame(img, "drawn_decimated_YUV.jpeg");
             path.relativePosition(img);
         } catch (Exception e) {

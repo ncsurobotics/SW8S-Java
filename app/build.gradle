@@ -28,7 +28,7 @@ dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13.2'
 
-	implementation 'org.javatuples:javatuples:1.2'
+	//implementation 'org.javatuples:javatuples:1.2'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
@@ -171,7 +171,7 @@ task push {
         }
         ssh.run {
             session(remotes.orangePi) {
-                execute "cd SW8S-Java && ./gradlew --offline -x test classes"
+                execute "cd SW8S-Java && ./gradlew --offline -x test jar"
             }
         }
     }
