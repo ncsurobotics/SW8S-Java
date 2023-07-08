@@ -20,16 +20,17 @@ public class PathYUVThroughState extends State {
 
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
-    private int noDetectCount;
+    private int inAngleCount;
+    private String missionName;
 
     public PathYUVThroughState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
-        // target = new PathYUV(0.25);
+        this.missionName = missionName;
         Dir = new File("/mnt/data/" + missionName + "/pathYUV");
         Dir.mkdir();
-        noDetectCount = 0;
+        inAngleCount = 0;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -48,12 +49,12 @@ public class PathYUVThroughState extends State {
         try {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString() + ".jpeg");
-            this.noDetectCount = 0;
 
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
             double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
                     0.2;
+            System.out.println("Y: " + String.valueOf(y));
 
             double angle = Math.toDegrees(footage.angle);
             System.out.println("Angle: " + String.valueOf(angle));
@@ -65,8 +66,12 @@ public class PathYUVThroughState extends State {
                 combined_angle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
 
-            y = Math.abs(angle) <= 20 ? 0.6 : y;
-            System.out.println("Y: " + String.valueOf(y));
+            if (Math.abs(angle) < 15) {
+                if (++this.inAngleCount >= 10)
+                    return true;
+                System.out.println("IN ANGLE: " + String.valueOf(this.inAngleCount));
+            }
+
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
                     -1.5);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
@@ -76,9 +81,6 @@ public class PathYUVThroughState extends State {
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
-            if (++this.noDetectCount > 30)
-                return true;
-            System.out.println("NO DETECT: " + String.valueOf(this.noDetectCount));
         }
         return false;
     }
@@ -88,6 +90,6 @@ public class PathYUVThroughState extends State {
     }
 
     public State nextState() {
-        return null;
+        return new PathYUVPastState(manager, missionName);
     }
 }

@@ -17,9 +17,9 @@ public class BuoyInitState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            // var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-            // -1.0);
-            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
+                    -1.5);
+            // var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -28,21 +28,18 @@ public class BuoyInitState extends State {
     }
 
     public boolean onPeriodic() {
-        return true;
-        /*
-         * try {
-         * if (depthRead.isDone()) {
-         * if (manager.getDepth() < -0.5) {
-         * return true;
-         * }
-         * }
-         * 
-         * return false;
-         * } catch (Exception e) {
-         * e.printStackTrace();
-         * return false;
-         * }
-         */
+        try {
+            if (depthRead.isDone()) {
+                if (manager.getDepth() < -0.5) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void onExit() throws ExecutionException, InterruptedException {

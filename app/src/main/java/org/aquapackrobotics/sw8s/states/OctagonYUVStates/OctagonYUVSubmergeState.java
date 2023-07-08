@@ -49,6 +49,6 @@ public class OctagonYUVSubmergeState extends State {
     }
 
     public State nextState() {
-        return new OctagonYUVFollowState(manager, missionName);
+        return new OctagonYUVForwardState(manager, missionName);
     }
 }

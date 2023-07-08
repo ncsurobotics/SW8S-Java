@@ -125,6 +125,8 @@ public class PathYUV extends ImagePrep {
             PCA_output.get(1).get(0, 0, this.vectors);
             PCA_output.get(2).get(0, 0, this.values);
             boolean is_path = pathFilter(color);
+            if (is_path)
+                System.out.println("Path (U,V): (" + String.valueOf(color.x) + ", " + String.valueOf(color.y));
             draw = drawPCA(draw, is_path);
 
             double[] img_center = { colored_image.cols() / 2., colored_image.rows() / 2. };
