@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.states.PathYUVStates;
+package org.aquapackrobotics.sw8s.states.GatePathStates;
 
 import java.util.concurrent.*;
 import java.io.File;
@@ -9,35 +9,29 @@ import org.opencv.core.Mat;
 
 import org.aquapackrobotics.sw8s.comms.*;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.PathYUV;
+import org.aquapackrobotics.sw8s.vision.*;
 
 import org.opencv.imgcodecs.Imgcodecs;
 
-public class PathYUVReadState extends State {
+public class GatePathReadState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private final File Dir;
-    // private final double[] candidates = { 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4,
-    // 0.45, 0.5 };
-    // private File[] cand_files = new File[9];
+    private final PathY target;
 
-    public PathYUVReadState(ControlBoardThreadManager manager) {
+    public GatePathReadState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(1);
+        target = new PathY();
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
         Dir.mkdir();
-        // for (int i = 0; i < candidates.length; i++) {
-        // cand_files[i] = new File(Dir, "/" + String.valueOf(i));
-        // cand_files[i].mkdir();
-        // }
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -1.0);
+                    -1.5);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -47,14 +41,13 @@ public class PathYUVReadState extends State {
 
     public boolean onPeriodic() {
         Mat frame = CameraFeedSender.getFrame(1);
-        // for (int i = 0; i < candidates.length; i++) {
-        // PathYUV target = new PathYUV(candidates[i]);
-        PathYUV target = new PathYUV(0.25);
-        // target.processFrame(frame, cand_files[i].toString() + "/" +
-        target.processFrame(frame, Dir.toString() + "/" + Instant.now().toString());
         try {
-            System.out.println(target.relativePosition(frame));
+                        VisualObject footage = target.relativePosition(frame,
+                    Dir.toString() + "/" + Instant.now().toString() + ".jpeg");
+            double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
+            System.out.println("X: " + String.valueOf(x));
         } catch (Exception e) {
+            System.out.println("No gate seen.");
         }
         // }
         return false;

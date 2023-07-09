@@ -30,4 +30,6 @@ perf.data*
 *.svg
 app/*.png
 app/*.jpeg
+app/*/*.jpeg
+app/*/*/*.jpeg
 dependencies

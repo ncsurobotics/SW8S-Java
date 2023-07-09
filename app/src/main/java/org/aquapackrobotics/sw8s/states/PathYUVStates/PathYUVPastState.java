@@ -47,7 +47,7 @@ public class PathYUVPastState extends State {
         Mat frame = CameraFeedSender.getFrame(0);
         try {
             VisualObject footage = target.relativePosition(frame,
-                    Dir.toString() + "/" + Instant.now().toString() + ".jpeg");
+                    Dir.toString() + "/" + Instant.now().toString());
             this.noDetectCount = 0;
 
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;

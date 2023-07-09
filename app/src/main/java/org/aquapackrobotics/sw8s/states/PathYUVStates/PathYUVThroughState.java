@@ -48,7 +48,7 @@ public class PathYUVThroughState extends State {
         Mat frame = CameraFeedSender.getFrame(0);
         try {
             VisualObject footage = target.relativePosition(frame,
-                    Dir.toString() + "/" + Instant.now().toString() + ".jpeg");
+                    Dir.toString() + "/" + Instant.now().toString());
 
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
