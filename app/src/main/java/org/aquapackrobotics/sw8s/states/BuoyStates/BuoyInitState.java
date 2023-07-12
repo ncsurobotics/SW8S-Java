@@ -30,7 +30,7 @@ public class BuoyInitState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() < -0.5) {
+                if (manager.getDepth() < -1.0 && manager.getDepth() > -2.0) {
                     return true;
                 }
             }

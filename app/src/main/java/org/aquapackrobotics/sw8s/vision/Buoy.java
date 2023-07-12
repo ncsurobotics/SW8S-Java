@@ -62,6 +62,11 @@ public class Buoy extends nn_cv2 {
         super.numObjects = 4; // left and right buoy
     }
 
+    public boolean detected() {
+        return (first && super.output.indexOf(first_classid) >= 0)
+                || (second && super.output.indexOf(second_classid) >= 0);
+    }
+
     // turn the detected buoys into a translation vector
     public void transAlign() {
         // aiming for Bootlegger, and Bootlegger detected
