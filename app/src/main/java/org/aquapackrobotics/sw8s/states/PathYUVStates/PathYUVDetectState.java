@@ -21,20 +21,22 @@ public class PathYUVDetectState extends State {
     private double[] PathYUVOpts = { 0.5, 0.4, 0.35, 0.3, 0.2 };
     private int PathYUVidx = 0;
     private String missionName;
+    private double initialYaw;
 
-    public PathYUVDetectState(ControlBoardThreadManager manager, String missionName) {
+    public PathYUVDetectState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
         Dir = new File("/mnt/data/" + missionName + "/pathYUV");
         Dir.mkdir();
         this.missionName = missionName;
+        this.initialYaw = initialYaw;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.4, 20, 0, manager.getYaw(), -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0.4, 20, 0, initialYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

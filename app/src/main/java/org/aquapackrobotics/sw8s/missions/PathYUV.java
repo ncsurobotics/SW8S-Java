@@ -14,16 +14,18 @@ import org.aquapackrobotics.sw8s.states.PathYUVStates.*;
  */
 public class PathYUV extends Mission {
     private String missionName;
+    private double initialYaw;
 
     public PathYUV(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0, missionName);
         this.missionName = missionName;
+        this.initialYaw = manager.getYaw();
     }
 
     @Override
     protected State initialState() {
-        return new PathYUVSubmergeState(manager, missionName);
+        return new PathYUVSubmergeState(manager, missionName, initialYaw);
     }
 
     @Override
