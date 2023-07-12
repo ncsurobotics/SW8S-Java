@@ -50,10 +50,22 @@ public class PathYUVThroughState extends State {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());
 
-            double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
+            // double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset))
+            // * 0.2;
+            double x = 0;
+            if (Math.abs(footage.horizontal_offset) > 0.2) {
+                x = footage.horizontal_offset > 0 ? 0.1 : -0.1;
+            }
+            System.out.println("Horizontal Offset: " + String.valueOf(footage.horizontal_offset));
             System.out.println("X: " + String.valueOf(x));
-            double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
-                    0.2;
+
+            // double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
+            // 0.2;
+            double y = 0;
+            if (Math.abs(footage.vertical_offset) > 0.2) {
+                y = footage.vertical_offset > 0 ? 0.1 : -0.1;
+            }
+            System.out.println("Vertical Offset: " + String.valueOf(footage.vertical_offset));
             System.out.println("Y: " + String.valueOf(y));
 
             double angle = Math.toDegrees(footage.angle);

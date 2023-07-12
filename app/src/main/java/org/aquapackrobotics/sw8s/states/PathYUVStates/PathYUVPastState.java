@@ -51,7 +51,12 @@ public class PathYUVPastState extends State {
                     Dir.toString() + "/" + Instant.now().toString());
             this.noDetectCount = 0;
 
-            double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
+            // double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset))
+            // * 0.2;
+            double x = 0;
+            if (Math.abs(footage.horizontal_offset) > 0.2) {
+                x = footage.horizontal_offset > 0 ? 0.1 : -0.1;
+            }
             System.out.println("X: " + String.valueOf(x));
 
             double angle = Math.toDegrees(footage.angle);
