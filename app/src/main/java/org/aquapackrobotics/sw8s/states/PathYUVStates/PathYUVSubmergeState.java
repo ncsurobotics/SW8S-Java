@@ -22,7 +22,7 @@ public class PathYUVSubmergeState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -0.5);
+                    -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class PathYUVSubmergeState extends State {
         try {
             if (depthRead.isDone()) {
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
-                if (manager.getDepth() < -0.2) {
+                if (manager.getDepth() < -1.5) {
                     Thread.sleep(2000); // sleep two seconds
                     return true;
                 }

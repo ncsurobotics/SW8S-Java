@@ -21,6 +21,7 @@ public class PathYUVPastState extends State {
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
     private int noDetectCount;
+    private double curAngle;
 
     public PathYUVPastState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
@@ -62,6 +63,7 @@ public class PathYUVPastState extends State {
             else if (angle < -10)
                 combined_angle += 2.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
+            this.curAngle = combined_angle;
 
             System.out.println("Y: FORWARD");
             var mreturn = manager.setStability2Speeds(x, 0.6, 0, 0, combined_angle,
@@ -76,6 +78,13 @@ public class PathYUVPastState extends State {
             // this.PathYUVidx = this.PathYUVOpts.length / 2;
             if (++this.noDetectCount > 30)
                 return true;
+            try {
+                var mreturn = manager.setStability2Speeds(0, 0.6, 0, 0, this.curAngle,
+                        -1.5);
+            } catch (Exception e2) {
+                e2.printStackTrace();
+                System.exit(1);
+            }
             System.out.println("NO DETECT: " + String.valueOf(this.noDetectCount));
         }
         return false;

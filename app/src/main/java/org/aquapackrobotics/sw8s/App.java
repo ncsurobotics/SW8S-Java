@@ -107,6 +107,10 @@ public class App {
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new StabilityGate(manager);
                     break;
+                case "--gate_path":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new GatePath(manager, missionName);
+                    break;
                 case "--path":
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new Path(manager, missionName);

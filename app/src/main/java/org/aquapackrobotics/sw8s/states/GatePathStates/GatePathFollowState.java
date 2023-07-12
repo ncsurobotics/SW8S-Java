@@ -18,6 +18,7 @@ public class GatePathFollowState extends State {
     private final PathY target;
     private final File Dir;
     private int countUnseen;
+    private final double startYaw;
 
     public GatePathFollowState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
@@ -26,12 +27,14 @@ public class GatePathFollowState extends State {
         Dir = new File("/mnt/data/" + missionName + "/gate");
         Dir.mkdir();
         countUnseen = 0;
+        startYaw = manager.getYaw() - 6.0;
+        System.out.println("startYaw: " + String.valueOf(startYaw));
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, this.startYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -47,7 +50,7 @@ public class GatePathFollowState extends State {
             countUnseen = 0;
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
-            var mreturn = manager.setStability2Speeds(x, 0.2, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(x, 0.4, 0, 0, this.startYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

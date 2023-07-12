@@ -22,7 +22,7 @@ public class GatePathSubmergeState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -1.5);
+                    -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class GatePathSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() < -1.0) {
+                if (manager.getDepth() < -1.5) {
                     return true;
                 }
             }
@@ -49,7 +49,7 @@ public class GatePathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GatePathReadState(manager, missionName);
-        //return new GatePathFollowState(manager, missionName);
+        // return new GatePathReadState(manager, missionName);
+        return new GatePathFollowState(manager, missionName);
     }
 }
