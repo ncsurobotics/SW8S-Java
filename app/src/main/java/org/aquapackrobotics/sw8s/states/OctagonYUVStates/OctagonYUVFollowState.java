@@ -23,7 +23,7 @@ public class OctagonYUVFollowState extends State {
         super(manager);
         // target = new PathYUV(new IntPair(Integer.MIN_VALUE, 127), new
         // IntPair(Integer.MAX_VALUE, Integer.MAX_VALUE), 10,
-        target = new PathYUV(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE), 10,
+        target = new PathYUV(new IntPair(Integer.MIN_VALUE, 178), new IntPair(178, Integer.MAX_VALUE), 10,
                 800, 0.25);
         Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();

@@ -32,7 +32,7 @@ public class PathYUVDetectState extends State {
         Dir.mkdir();
         this.missionName = missionName;
         this.initialYaw = initialYaw;
-        this.curPitch = 20;
+        this.curPitch = 30;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -56,6 +56,7 @@ public class PathYUVDetectState extends State {
             double minPitch = (PathYUVOpts.length - PathYUVidx) * 5;
             if (curPitch > minPitch)
                 curPitch = minPitch;
+            System.out.println("Pitch: " + String.valueOf(curPitch));
 
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
