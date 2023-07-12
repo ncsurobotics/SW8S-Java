@@ -20,6 +20,14 @@ public class PathYUV extends Mission {
         super(manager);
         CameraFeedSender.openCapture(0, missionName);
         this.missionName = missionName;
+        try {
+            var mreturn = manager.BNO055PeriodicRead((byte) 1);
+            while (!mreturn.isDone())
+                ;
+            Thread.sleep(100); // Give sensor time to get itself ready
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.initialYaw = manager.getYaw();
     }
 

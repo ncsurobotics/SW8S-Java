@@ -34,6 +34,8 @@ public class PathYUVSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
+            System.out.println("CUR: " + String.valueOf(manager.getYaw()));
+            System.out.println("Target: " + String.valueOf(initialYaw));
             if (depthRead.isDone()) {
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
                 if (manager.getDepth() < -1.5) {

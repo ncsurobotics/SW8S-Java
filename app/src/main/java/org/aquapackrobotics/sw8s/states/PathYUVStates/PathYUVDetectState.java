@@ -22,6 +22,7 @@ public class PathYUVDetectState extends State {
     private int PathYUVidx = 0;
     private String missionName;
     private double initialYaw;
+    private double curPitch;
 
     public PathYUVDetectState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
         super(manager);
@@ -31,12 +32,13 @@ public class PathYUVDetectState extends State {
         Dir.mkdir();
         this.missionName = missionName;
         this.initialYaw = initialYaw;
+        this.curPitch = 20;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.4, 20, 0, initialYaw, -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0.4, curPitch, 0, initialYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -50,6 +52,11 @@ public class PathYUVDetectState extends State {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());
 
+            // Adjust pitch down, but never bring it back up
+            double minPitch = (PathYUVOpts.length - PathYUVidx) * 5;
+            if (curPitch > minPitch)
+                curPitch = minPitch;
+
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
 
@@ -60,7 +67,7 @@ public class PathYUVDetectState extends State {
             else if (angle < -10)
                 combined_angle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
-            var mreturn = manager.setStability2Speeds(x, 0.2, 20, 0, combined_angle,
+            var mreturn = manager.setStability2Speeds(x, 0.2, curPitch, 0, combined_angle,
                     -2.0);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             System.out.println("DETECT");
@@ -74,7 +81,7 @@ public class PathYUVDetectState extends State {
             this.PathYUVidx = 0;
             System.out.println("NO DETECT");
             try {
-                var mreturn = manager.setStability2Speeds(0, 0.4, 20, 0, manager.getYaw(), -2.0);
+                var mreturn = manager.setStability2Speeds(0, 0.4, curPitch, 0, manager.getYaw(), -2.0);
                 while (!mreturn.isDone())
                     ;
             } catch (Exception e2) {

@@ -54,7 +54,7 @@ public class PathYUVThroughState extends State {
             // * 0.2;
             double x = 0;
             if (Math.abs(footage.horizontal_offset) > 0.2) {
-                x = footage.horizontal_offset > 0 ? 0.1 : -0.1;
+                x = footage.horizontal_offset > 0 ? 0.15 : -0.15;
             }
             System.out.println("Horizontal Offset: " + String.valueOf(footage.horizontal_offset));
             System.out.println("X: " + String.valueOf(x));
@@ -63,7 +63,7 @@ public class PathYUVThroughState extends State {
             // 0.2;
             double y = 0;
             if (Math.abs(footage.vertical_offset) > 0.2) {
-                y = footage.vertical_offset > 0 ? 0.1 : -0.1;
+                y = footage.vertical_offset > 0 ? 0.15 : -0.15;
             }
             System.out.println("Vertical Offset: " + String.valueOf(footage.vertical_offset));
             System.out.println("Y: " + String.valueOf(y));
@@ -79,7 +79,7 @@ public class PathYUVThroughState extends State {
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
 
             if (Math.abs(angle) < 15) {
-                if (++this.inAngleCount >= 10)
+                if (++this.inAngleCount >= 10 && Math.abs(footage.horizontal_offset) < 3)
                     return true;
                 System.out.println("IN ANGLE: " + String.valueOf(this.inAngleCount));
             }
@@ -102,7 +102,7 @@ public class PathYUVThroughState extends State {
     }
 
     public State nextState() {
-        return null;
-        // return new PathYUVPastState(manager, missionName);
+        // return null;
+        return new PathYUVPastState(manager, missionName);
     }
 }
