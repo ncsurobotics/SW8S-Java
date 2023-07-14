@@ -32,4 +32,5 @@ app/*.png
 app/*.jpeg
 app/*/*.jpeg
 app/*/*/*.jpeg
+app/*/*/*/*.jpeg
 dependencies

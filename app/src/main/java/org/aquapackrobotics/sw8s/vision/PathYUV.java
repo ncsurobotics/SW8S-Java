@@ -67,20 +67,23 @@ public class PathYUV extends ImagePrep {
     public ArrayList<Boolean> result = new ArrayList<>(); // array containing boolean values where true = path, false =
                                                             // not path
     private final IntPair kMeans;
+    private final IntPair sliceParams;
 
     /**
      * Constructs a new PathYUV with given color and width targets
      */
     public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale) {
-        this(color_low, color_high, width_low, width_high, scale, new IntPair(2, 4));
+        this(color_low, color_high, width_low, width_high, scale, new IntPair(25, 25), new IntPair(2, 4));
     }
 
-    public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale, IntPair kMeans) {
+    public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale,
+            IntPair sliceParams, IntPair kMeans) {
         super(scale);
         PATH_COLOR_LOW = color_low;
         PATH_COLOR_HIGH = color_high;
         PATH_WIDTH_LOW = (int) (width_low * scale);
         PATH_WIDTH_HIGH = (int) (width_high * scale);
+        this.sliceParams = sliceParams;
         this.kMeans = kMeans;
     }
 
@@ -247,7 +250,7 @@ public class PathYUV extends ImagePrep {
 
     public void processFrame(Mat frame, String saveFile) {
         setFrame(frame); // set input for preprocess
-        sliceSize(25, 25); // preprocess (prepare for kmeans)
+        sliceSize(sliceParams.x, sliceParams.y); // preprocess (prepare for kmeans)
         localKmeans(kMeans.x, kMeans.y); // preprocess (compute kmeans)
 
         ArrayList<Mat> pca_draw = iteratePathBinaryPCAAndDraw(this.resultImg); // draw image with drawn vectors
@@ -256,6 +259,7 @@ public class PathYUV extends ImagePrep {
             File dir = new File(saveFile);
             dir.mkdirs();
             Imgcodecs.imwrite(saveFile + "/orig.jpeg", frame);
+            Imgcodecs.imwrite(saveFile + "/processed.jpeg", this.resultImg);
             Imgcodecs.imwrite(saveFile + "/draw.jpeg", pca_draw.get(0));
             Imgcodecs.imwrite(saveFile + "/y.jpeg", pca_draw.get(1));
             Imgcodecs.imwrite(saveFile + "/u.jpeg", pca_draw.get(2));
