@@ -13,16 +13,17 @@ import org.aquapackrobotics.sw8s.states.PathStates.*;
  * Mission for navigating gates
  */
 public class PathVisionTest extends Mission {
-    private final VideoCapture cap;
+    private String missionName;
 
-    public PathVisionTest(ControlBoardThreadManager manager) {
+    public PathVisionTest(ControlBoardThreadManager manager, String missionName) {
         super(manager);
-        cap = CameraFeedSender.openCapture();
+        CameraFeedSender.openCapture(0, missionName);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new PathSubmergeState(manager, cap);
+        return new PathSubmergeState(manager, missionName);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class PathVisionTest extends Mission {
     @Override
     protected State nextState(State state) {
         if (state instanceof PathSubmergeState) {
-            return new PathReadState(manager, cap);
+            return new PathReadState(manager);
         }
         return state.nextState();
     }

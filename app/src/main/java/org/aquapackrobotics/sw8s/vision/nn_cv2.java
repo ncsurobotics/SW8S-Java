@@ -23,7 +23,7 @@ public class nn_cv2 extends ImagePrep {
     private Net net;
     private List<String> outBlobNames = new ArrayList<>();
 
-    public int numObjects = 2;
+    public int numObjects = 4;
 
     public List<Integer> output = new ArrayList<>();
     public List<Rect2d> output_description = new ArrayList<>();
@@ -34,7 +34,7 @@ public class nn_cv2 extends ImagePrep {
     /**
      * load a Yolov5 model
      * 
-     * @param model, onnx format, 640x640 model input
+     * @param model, onnx format, 800x800 model input
      */
     public void loadModel(String model) {
         this.net = Dnn.readNet(model);
@@ -54,7 +54,7 @@ public class nn_cv2 extends ImagePrep {
     /**
      * inference (process the image)
      * 
-     * @param image, 640x480 RGB image
+     * @param image, 800x600 RGB image
      * @return processed image with drawn bounding boxes
      */
     public Mat detectYoloV5(Mat image) {
@@ -86,9 +86,9 @@ public class nn_cv2 extends ImagePrep {
                 Point classIdPoint = mm.maxLoc;
                 if (confidence > .7) {
                     int centerX = (int) (row.get(0, 0)[0]) * factor; // scaling for drawing the bounding boxes
-                    int centerY = (int) ((row.get(0, 1)[0] * factor) / 640 * 480);
+                    int centerY = (int) ((row.get(0, 1)[0] * factor) / 800 * 600);
                     int width = (int) (row.get(0, 2)[0]) * factor;
-                    int height = (int) ((row.get(0, 3)[0] * factor) / 640 * 480);
+                    int height = (int) ((row.get(0, 3)[0] * factor) / 800 * 600);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
                     clsIds.add((int) classIdPoint.x);

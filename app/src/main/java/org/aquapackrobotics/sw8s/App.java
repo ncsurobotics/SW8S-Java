@@ -41,92 +41,108 @@ public class App {
         }
 
         ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
+        ControlBoardThreadManager manager;
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                for (int i = 0; i < 20; ++i) {
-                    try {
-                        // manager.setMotorSpeeds((float)0.0, (float)0.0, (float)0.0, (float)0.0,
-                        // (float)0.0, (float)0.0, (float)0.0, (float)0.0);
-                        // Thread.sleep(50);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    // Thread.sleep(500);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        String missionName = null;
 
         for (String str : args) {
+            if (!str.contains("-")) {
+                missionName = str;
+                System.out.println("Mission name: " + missionName);
+                continue;
+            }
+
+            Mission mission;
+            CameraFeedSender.openCapture(0, missionName);
+            CameraFeedSender.openCapture(1, missionName);
+
             switch (str) {
                 case "--test":
                     System.out.println("Yay! it worked!");
-                    break;
+                    System.exit(0);
                 case "-h":
                     for (int i = 0; i < helpFlag.length; i++) {
                         System.out.println(helpFlag[i]);
                     }
+                    System.exit(0);
                 case "--help":
                     for (int i = 0; i < helpFlag.length; i++) {
                         System.out.println(helpFlag[i]);
                     }
-                    break;
+                    System.exit(0);
                 case "--raw_test":
-                    Mission missionRaw_Test = (Mission) new Raw_Test(manager);
-                    missionRaw_Test.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Raw_Test(manager);
                     break;
                 case "--local_test":
-                    Mission missionLocal_Test = (Mission) new Local_Test(manager);
-                    missionLocal_Test.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Local_Test(manager);
                     break;
                 case "--manual":
-                    Mission missionManual = (Mission) new ManualMission(manager, 5000);
-                    missionManual.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new ManualMission(manager, 5000);
                     break;
                 case "--motor_test":
-                    Mission motorMission = (Mission) new MotorTest(manager);
-                    motorMission.run();
+                    System.out.println("REGISTER MOTOR TEST");
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new MotorTest(manager);
                     break;
                 case "--submerge_test":
-                    Mission submergeMission = (Mission) new SubmergeTest(manager);
-                    submergeMission.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new SubmergeTest(manager);
                     break;
                 case "--local_comms":
-                    Mission localComms = (Mission) new LocalComms(manager, 5000);
-                    localComms.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new LocalComms(manager, 5000);
                     break;
                 case "--receive_test":
-                    Mission recieveTest = (Mission) new ReceiveTest(manager);
-                    recieveTest.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new ReceiveTest(manager);
                     break;
                 case "--gate":
-                    Mission gate = (Mission) new Gate(manager);
-                    gate.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Gate(manager);
                     break;
                 case "--gate_stability":
-                    Mission stabilityGate = (Mission) new StabilityGate(manager);
-                    stabilityGate.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new StabilityGate(manager);
+                    break;
+                case "--gate_path":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new GatePath(manager, missionName);
                     break;
                 case "--path":
-                    Mission path = (Mission) new Path(manager);
-                    path.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Path(manager, missionName);
                     break;
-                case "--path-test":
-                    Mission pathtest = (Mission) new PathVisionTest(manager);
-                    pathtest.run();
+                case "--path_test":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new PathVisionTest(manager, missionName);
+                    break;
+                case "--path_yuv":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new PathYUV(manager, missionName);
                     break;
                 case "--buoy":
-                    Mission buoytest = (Mission) new Buoys(manager);
-                    buoytest.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Buoys(manager);
+                    break;
+                case "--cam_test":
+                    CameraFeedSender.openCapture(0);
+                    // CameraFeedSender.openCapture(1);
+                    Thread.sleep(60_000);
+                case "--octagon":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Octagon(manager, missionName);
+                    break;
+                case "--octagon_yuv":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new OctagonYUV(manager, missionName);
                     break;
                 case "--kill-confirm":
                     while (true) {
                         try {
+                            manager = new ControlBoardThreadManager(pool);
                             manager.setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
                                     (float) 0.0,
                                     (float) 0.0, (float) 0.0, (float) 0.0).wait();
@@ -137,11 +153,13 @@ public class App {
                         }
                     }
                 default:
-                    Mission missionAuto = (Mission) new AutoMission(manager);
-                    missionAuto.run();
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new AutoMission(manager);
                     break;
 
             }
+            System.out.println("RUN TEST");
+            mission.run();
         }
         System.exit(0);
     }

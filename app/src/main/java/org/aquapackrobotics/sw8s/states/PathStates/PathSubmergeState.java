@@ -11,50 +11,44 @@ import org.aquapackrobotics.sw8s.states.PathStates.*;
 public class PathSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
-    private final VideoCapture cap;
+    private String missionName;
 
-    public PathSubmergeState(ControlBoardThreadManager manager, VideoCapture cap) {
+    public PathSubmergeState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
-        this.cap = cap;
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
-        /*
-         * try {
-         * depthRead = manager.MSPeriodicRead((byte)1);
-         * var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-         * -2.1);
-         * while (! mreturn.isDone());
-         * }
-         * catch (Exception e) {
-         * e.printStackTrace();
-         * }
-         */
+        try {
+            depthRead = manager.MSPeriodicRead((byte) 1);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
+                    -1.0);
+            while (!mreturn.isDone())
+                ;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean onPeriodic() {
-        return true;
-        /*
-         * try {
-         * if ( depthRead.isDone() ) {
-         * if ( manager.getDepth() < -1.8 ) {
-         * return true;
-         * }
-         * }
-         * 
-         * return false;
-         * } catch (Exception e) {
-         * e.printStackTrace();
-         * return false;
-         * }
-         */
+        try {
+            if (depthRead.isDone()) {
+                if (manager.getDepth() < -0.5) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void onExit() throws ExecutionException, InterruptedException {
     }
 
     public State nextState() {
-        return new PathReadState(manager, cap);
-        // return new PathFollowState(manager, cap);
+        return new PathFollowState(manager, missionName);
     }
 }

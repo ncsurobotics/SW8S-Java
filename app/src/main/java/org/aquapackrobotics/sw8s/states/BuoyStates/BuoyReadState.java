@@ -13,29 +13,29 @@ import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Buoy;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
 
 public class BuoyReadState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
-    private final VideoCapture cap;
     private final Buoy target;
+    private final Buoy targetLarge;
     private final File Dir;
+    private double depth = -1;
 
     public BuoyReadState(ControlBoardThreadManager manager) {
         super(manager);
-        this.cap = CameraFeedSender.openCapture(1);
-        target = new Buoy(true);
-        Dir = new File(new File(System.getProperty("java.io.tmpdir")), "buoy");
+        CameraFeedSender.openCapture(0);
+        target = new Buoy(false);
+        targetLarge = new Buoy(true);
+        Dir = new File("/mnt/data/buoy");
         Dir.mkdir();
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
+            System.out.println("ENTER FORWARD STATE");
             depthRead = manager.MSPeriodicRead((byte) 1);
-            // var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-            // -1.0);
-            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), depth);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -44,20 +44,19 @@ public class BuoyReadState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = new Mat();
-        if (cap.read(frame)) {
-            Mat yoloout = target.detectYoloV5(frame);
-            target.transAlign();
-            try {
-                PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
-                printWriter.print(Arrays.toString(target.translation));
-                printWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+        Mat frame = CameraFeedSender.getFrame(1);
+        Mat yoloout = target.detectYoloV5(frame);
+        target.transAlign();
+        try {
+            PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
+            printWriter.print(Arrays.toString(target.translation));
+            System.out.println(Arrays.toString(target.translation));
+            printWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return true;
+        Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+        return false;
     }
 
     public void onExit() throws ExecutionException, InterruptedException {

@@ -15,27 +15,25 @@ public class StabilityGateVisionState extends State {
     private double yaw;
     private final double PITCH = 90;
 
-    private final VideoCapture cap;
     private final Path target;
 
     public StabilityGateVisionState(ControlBoardThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
-        cap = CameraFeedSender.openCapture();
+        CameraFeedSender.openCapture(0);
         /* TODO: Adjust these to see side poles */
         target = new Path(100, 170, 30, 400);
     }
 
     /* Wait until gate is seen */
     public void onEnter() throws ExecutionException, InterruptedException {
-        Mat frame = new Mat();
-        while ( true ) {
-            while ( !cap.read(frame) );
+        while (true) {
             try {
                 yaw += 0.1;
                 System.out.println("Waiting to see gate...");
                 var mreturn = manager.setStability2Speeds(0, 0, PITCH, 0, yaw, -2.1);
-                while (! mreturn.isDone());
+                while (!mreturn.isDone())
+                    ;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -47,26 +45,24 @@ public class StabilityGateVisionState extends State {
         }
     }
 
-
     public boolean onPeriodic() {
-        Mat frame = new Mat();
-        if ( cap.read(frame) ) {
-            try {
-                    VisualObject footage = target.relativePosition(frame);
-                    double x = ( footage.horizontal_offset / Math.abs(footage.horizontal_offset) ) * 0.1;
-                    /* Try to flip camera to face gate with pitch target */
-                    // x may or may not be the right variable to use here
-                    var mreturn = manager.setStability2Speeds(x, 1.0, 90, 0, yaw, -2.1);
-                    while (! mreturn.isDone());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return true;
-            }
+        Mat frame = CameraFeedSender.getFrame(0);
+        try {
+            VisualObject footage = target.relativePosition(frame);
+            double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.1;
+            /* Try to flip camera to face gate with pitch target */
+            // x may or may not be the right variable to use here
+            var mreturn = manager.setStability2Speeds(x, 1.0, 90, 0, yaw, -2.1);
+            while (!mreturn.isDone())
+                ;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
         }
         return false;
     }
 
-    public void onExit() throws ExecutionException, InterruptedException{
+    public void onExit() throws ExecutionException, InterruptedException {
     }
 
     public State nextState() {

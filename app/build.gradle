@@ -18,7 +18,6 @@ plugins {
     id 'me.champeau.jmh' version '0.7.1'
     // Offline dependencies
     id 'com.dimaslanjaka.gradle.offline_dependencies' version '1.0.15'
-    //id 'gov.chesapeaketechnology.offline-dependencies' version '0.3.4'
     id 'org.ysb33r.ivypot' version '1.0.0'
 }
 
@@ -28,6 +27,8 @@ def cv_lin = '/opt/opencv-4.6.0/share/java/opencv4/opencv-460.jar'
 dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13.2'
+
+	//implementation 'org.javatuples:javatuples:1.2'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
@@ -39,20 +40,22 @@ dependencies {
         implementation files(cv_lin)
     }
     implementation 'org.openpnp:opencv:4.6.0-0'
+
+	//implementation 'org.tensorflow:tensorflow-core-platform-gpu:0.4.0'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"
 
 java {
-    // Set Java version to 11
+    // Set Java version to 17
     // https://docs.gradle.org/current/userguide/toolchains.html
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 11
+    options.release = 17
 }
 
 run {
@@ -168,7 +171,7 @@ task push {
         }
         ssh.run {
             session(remotes.orangePi) {
-                execute "cd SW8S-Java && ./gradlew --offline -x test build"
+                execute "cd SW8S-Java && ./gradlew --offline -x test jar"
             }
         }
     }

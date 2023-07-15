@@ -29,6 +29,7 @@ public class CV {
 
         } catch (UnsatisfiedLinkError | Exception e) {
             System.err.println("Unable to locate and load OpenCV native library!");
+            e.printStackTrace();
             OpenCV.loadLocally();
         }
     }

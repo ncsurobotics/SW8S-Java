@@ -22,7 +22,7 @@ public class Buoys extends Mission {
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
-        while (state.onPeriodic()) {
+        while (!state.onPeriodic()) {
         }
     }
 
