@@ -157,8 +157,8 @@ public class BaseMatrix {
                             .imread(System.getProperty("user.dir") + "/resources/path_and_gate_images/"
                                     + String.valueOf(i)
                                     + ".jpeg");
-                    PathYUV path = new PathYUV(new IntPair(Integer.MIN_VALUE, 152), new IntPair(152, Integer.MAX_VALUE),
-                            40, 800, j * 0.01, new IntPair(25, 25), new IntPair(4, 8));
+                    PathYUV path = new PathYUV(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE),
+                            5, 800, j * 0.01, new IntPair(25, 25), new IntPair(2, 4));
                     path.processFrame(img, "gate_path/" + String.valueOf(j) + "/" + String.valueOf(i));
                 }
             }
