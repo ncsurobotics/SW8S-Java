@@ -15,6 +15,13 @@ public class SerialComPort implements ICommPort {
         serialPort.addDataListener((ControlBoardListener) listener);
     }
 
+
+    public void openPortMEB(ICommPortListener listener) {
+        serialPort.openPort();
+        serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0);
+        serialPort.addDataListener((MEBListener) listener);
+    }
+
     public synchronized void writeBytes(byte[] data, int length) {
         serialPort.writeBytes(data, length);
     }

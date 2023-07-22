@@ -139,6 +139,10 @@ public class App {
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new OctagonYUV(manager, missionName);
                     break;
+                case "--dropper_test":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new DropperTest(manager);
+                    break;
                 case "--kill-confirm":
                     while (true) {
                         try {

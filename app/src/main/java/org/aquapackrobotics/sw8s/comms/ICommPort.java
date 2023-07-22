@@ -10,6 +10,8 @@ public interface ICommPort {
      */
     void openPort(ICommPortListener listener);
 
+    void openPortMEB(ICommPortListener listener);
+
     /**
      * Writes the following bytes to the port.
      * 

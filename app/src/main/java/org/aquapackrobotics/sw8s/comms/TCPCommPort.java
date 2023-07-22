@@ -47,6 +47,11 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
 
     }
 
+    @Override
+    public void openPortMEB(ICommPortListener listener) {
+        // TODO
+    }
+
     private void listenForEvents() throws IOException {
         while (true) {
             if (socketIn.available() > 0) {
