@@ -57,6 +57,10 @@ public class BuoyForwardState extends State {
                 printWriter.close();
                 System.out.println("Translation [x, z, distance]: " + Arrays.toString(target.translation));
 
+                if (Math.abs(target.translation[0]) < 0.1 && Math.abs(target.translation[1]) < 0.1) {
+                    return true;
+                }
+
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
                     x = target.translation[0] > 0 ? 0.1 : -0.1;
@@ -77,7 +81,7 @@ public class BuoyForwardState extends State {
         System.out.println("Exiting buoy");
         manager.setStability2Speeds(0, 0, 0, 0, yaw, depth);
         Thread.sleep(500);
-        manager.setStability2Speeds(0, -0.5, 0, 0, yaw, depth);
+        manager.setStability2Speeds(-0.5, -0.5, 0, 0, yaw, depth);
         Thread.sleep(1000);
     }
 

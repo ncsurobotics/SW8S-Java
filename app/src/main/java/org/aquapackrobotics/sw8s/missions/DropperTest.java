@@ -18,8 +18,9 @@ public class DropperTest extends Mission {
     @Override
     protected State initialState() {
         try {
-            while (!manager.resetMSB().isDone())
-                ;
+            manager.resetMSB();
+            System.out.println("Resetting MSB");
+            Thread.sleep(1000);
             for (var handle : manager.fireDroppers()) {
                 while (!handle.isDone())
                     ;

@@ -143,6 +143,10 @@ public class App {
                     manager = new ControlBoardThreadManager(pool);
                     mission = (Mission) new DropperTest(manager);
                     break;
+                case "--bin":
+                    manager = new ControlBoardThreadManager(pool);
+                    mission = (Mission) new Bin(manager, missionName);
+                    break;
                 case "--kill-confirm":
                     while (true) {
                         try {
