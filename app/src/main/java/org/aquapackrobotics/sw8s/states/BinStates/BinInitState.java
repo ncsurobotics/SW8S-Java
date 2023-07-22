@@ -24,7 +24,7 @@ public class BinInitState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw,
-                    -2.0);
+                    -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class BinInitState extends State {
             System.out.println("Target: " + String.valueOf(initialYaw));
             if (depthRead.isDone()) {
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
-                if (manager.getDepth() < -1.5) {
+                if (manager.getDepth() < -0.5) {
                     Thread.sleep(2000); // sleep two seconds
                     return true;
                 }
@@ -55,6 +55,6 @@ public class BinInitState extends State {
     }
 
     public State nextState() {
-        return new BinPathState(manager, missionName);
+        return new BinPathState(manager, missionName, initialYaw);
     }
 }

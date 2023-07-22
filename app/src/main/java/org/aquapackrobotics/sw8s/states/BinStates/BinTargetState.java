@@ -48,9 +48,9 @@ public class BinTargetState extends State {
     public boolean onPeriodic() {
         Mat frame = CameraFeedSender.getFrame(1);
         Mat yoloout = target.detectYoloV5(frame);
-        if (target.detected()) {
-            target.transAlign();
-            try {
+        try {
+            if (target.detected()) {
+                target.transAlign();
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
                 printWriter.print(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
@@ -62,20 +62,31 @@ public class BinTargetState extends State {
                         manager.fireDroppers();
                         Thread.sleep(100);
                     }
-                    return true;
+                    System.out.println("FIRE DROPPERS");
+                    File subDir = new File(Dir.toString() + "/" + "fire");
+                    subDir.mkdir();
+                    Imgcodecs.imwrite(subDir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+                    // return true;
                 }
 
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.1 : -0.1;
+                    x = target.translation[0] > 0 ? 0.2 : -0.2;
                 }
-                manager.setStability2Speeds(x, 0.1, 0, 0, yaw, depth);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                double y = 0;
+                if (Math.abs(target.translation[1]) > 0.1) {
+                    y = target.translation[1] > 0 ? 0.2 : -0.2;
+                }
+
+                manager.setStability2Speeds(x, y, 0, 0, yaw, depth);
+                Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+            } else {
+                manager.setStability2Speeds(0, 0.2, 0, 0, yaw, depth);
+                System.out.println("Not detected");
             }
-            Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
-        } else {
-            System.out.println("Not detected");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
 

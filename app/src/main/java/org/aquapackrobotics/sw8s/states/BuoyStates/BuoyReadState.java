@@ -47,15 +47,17 @@ public class BuoyReadState extends State {
         Mat frame = CameraFeedSender.getFrame(1);
         Mat yoloout = target.detectYoloV5(frame);
         target.transAlign();
-        try {
-            PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
-            printWriter.print(Arrays.toString(target.translation));
-            System.out.println(Arrays.toString(target.translation));
-            printWriter.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (target.detected()) {
+            try {
+                PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
+                printWriter.print(Arrays.toString(target.translation));
+                System.out.println(Arrays.toString(target.translation));
+                printWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
         }
-        Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
         return false;
     }
 

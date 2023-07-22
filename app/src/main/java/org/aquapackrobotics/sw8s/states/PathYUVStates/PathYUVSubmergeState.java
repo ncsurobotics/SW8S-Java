@@ -13,18 +13,20 @@ public class PathYUVSubmergeState extends State {
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
     private double initialYaw;
+    private double prevTime;
 
     public PathYUVSubmergeState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;
+        this.prevTime = System.currentTimeMillis();
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw,
-                    -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
+                    -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -34,11 +36,14 @@ public class PathYUVSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            System.out.println("CUR: " + String.valueOf(manager.getYaw()));
-            System.out.println("Target: " + String.valueOf(initialYaw));
-            if (depthRead.isDone()) {
+            if (System.currentTimeMillis() - this.prevTime > 100) {
+                this.prevTime = System.currentTimeMillis();
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
-                if (manager.getDepth() < -1.5) {
+                System.out.println("Current Angle: " + String.valueOf(manager.getYaw()));
+                System.out.println("Target Angle: " + String.valueOf(initialYaw));
+            }
+            if (depthRead.isDone()) {
+                if (manager.getDepth() < -0.4 && (Math.abs(manager.getYaw() - initialYaw) < 5)) {
                     Thread.sleep(2000); // sleep two seconds
                     return true;
                 }

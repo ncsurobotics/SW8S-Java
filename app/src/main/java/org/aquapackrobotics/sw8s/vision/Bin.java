@@ -53,12 +53,12 @@ public class Bin extends nn_cv2 {
     }
 
     public Bin(boolean larger, boolean[] find) {
+        super.numObjects = 3; // left and right buoy
         if (larger) {
             super.loadModel(larger_model_path, 640, 1);
         } else {
             super.loadModel(model_path);
         }
-        super.numObjects = 2; // left and right buoy
         this.find = find;
     }
 
@@ -77,8 +77,12 @@ public class Bin extends nn_cv2 {
                 // middle coordinate, top left + width or height
                 double x = super.output_description.get(super.output.indexOf(i)).x +
                         super.output_description.get(super.output.indexOf(i)).width / 2;
+                x = x / (super.processImg.width() / 2);
+                x = x < 0.5 ? -x : x - 0.5;
                 double y = super.output_description.get(super.output.indexOf(i)).y +
                         super.output_description.get(super.output.indexOf(i)).height / 2;
+                y = y / (super.processImg.height() / 2);
+                y = y < 0.5 ? -y : y - 0.5;
                 this.translation[0] = x;
                 this.translation[1] = y;
                 // distance is referenced as the ratio of the object height and image height

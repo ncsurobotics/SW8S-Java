@@ -79,8 +79,12 @@ public class Buoy extends nn_cv2 {
                 // System.out.println(super.output_description);
                 double x = super.output_description.get(super.output.indexOf(i)).x +
                         super.output_description.get(super.output.indexOf(i)).width / 2;
+                x = x / (super.processImg.width() / 2);
+                x = x < 0.5 ? -x : x - 0.5;
                 double y = super.output_description.get(super.output.indexOf(i)).y +
                         super.output_description.get(super.output.indexOf(i)).height / 2;
+                y = y / (super.processImg.height() / 2);
+                y = y < 0.5 ? -y : y - 0.5;
                 this.translation[0] = x;
                 this.translation[1] = y;
                 // distance is referenced as the ratio of the object height and image height

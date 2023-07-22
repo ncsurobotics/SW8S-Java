@@ -9,9 +9,11 @@ import org.opencv.videoio.VideoCapture;
 public class BuoyInitState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
+    private String missionName;
 
-    public BuoyInitState(ControlBoardThreadManager manager) {
+    public BuoyInitState(ControlBoardThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -46,6 +48,7 @@ public class BuoyInitState extends State {
     }
 
     public State nextState() {
-        return new BuoyReadState(manager);
+        // return new BuoyReadState(manager);
+        return new BuoyForwardState(manager, missionName);
     }
 }

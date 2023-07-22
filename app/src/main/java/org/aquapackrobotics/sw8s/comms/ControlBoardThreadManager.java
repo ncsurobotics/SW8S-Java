@@ -69,7 +69,7 @@ public class ControlBoardThreadManager {
 
             stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, false).get();
             stabAssistPID('Y', 0.15, 0.0, 0.0, 0.1, false).get();
-            stabAssistPID('Z', 1.6, 1e-10, 0.0, 0.8, false).get();
+            stabAssistPID('Z', 1.6, 1e-6, 0.0, 0.8, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
 
             setDofSpeeds((float) 0.7071, (float) 0.7071, (float) 1.0,

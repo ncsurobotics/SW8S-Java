@@ -11,13 +11,16 @@ import org.opencv.videoio.VideoCapture;
 import java.util.concurrent.*;
 
 public class Buoys extends Mission {
-    public Buoys(ControlBoardThreadManager manager) {
+    String missionName;
+
+    public Buoys(ControlBoardThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new BuoyReadState(manager);
+        return new BuoyInitState(manager, missionName);
     }
 
     @Override

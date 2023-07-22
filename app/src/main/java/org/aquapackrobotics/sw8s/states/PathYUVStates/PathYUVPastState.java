@@ -36,7 +36,7 @@ public class PathYUVPastState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -64,15 +64,15 @@ public class PathYUVPastState extends State {
             System.out.println("System Angle: " + String.valueOf(manager.getYaw()));
             double combined_angle = manager.getYaw();
             if (angle > 10.0)
-                combined_angle -= 2.0;
+                combined_angle -= 1.0;
             else if (angle < -10)
-                combined_angle += 2.0;
+                combined_angle += 1.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
             this.curAngle = combined_angle;
 
             System.out.println("Y: FORWARD");
-            var mreturn = manager.setStability2Speeds(x, 0.4, 0, 0, combined_angle,
-                    -2.0);
+            var mreturn = manager.setStability2Speeds(x, 0.3, 0, 0, combined_angle,
+                    -1.0);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
@@ -81,11 +81,11 @@ public class PathYUVPastState extends State {
                 ;
         } catch (Exception e) {
             // this.PathYUVidx = this.PathYUVOpts.length / 2;
-            if (++this.noDetectCount > 30)
+            if (++this.noDetectCount > 15)
                 return true;
             try {
-                var mreturn = manager.setStability2Speeds(0, 0.6, 0, 0, this.curAngle,
-                        -2.0);
+                var mreturn = manager.setStability2Speeds(0, 0.3, 0, 0, this.curAngle,
+                        -1.0);
             } catch (Exception e2) {
                 e2.printStackTrace();
                 System.exit(1);
