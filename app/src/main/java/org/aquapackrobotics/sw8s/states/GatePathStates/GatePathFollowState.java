@@ -18,23 +18,22 @@ public class GatePathFollowState extends State {
     private final PathY target;
     private final File Dir;
     private int countUnseen;
-    private final double startYaw;
+    private final double initialYaw;
 
-    public GatePathFollowState(ControlBoardThreadManager manager, String missionName) {
+    public GatePathFollowState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         CameraFeedSender.openCapture(1);
         target = new PathY();
         Dir = new File("/mnt/data/" + missionName + "/gate");
         Dir.mkdir();
         countUnseen = 0;
-        startYaw = manager.getYaw() - 6.0;
-        System.out.println("startYaw: " + String.valueOf(startYaw));
+        this.initialYaw = initialYaw;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, this.startYaw, -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -50,7 +49,7 @@ public class GatePathFollowState extends State {
             countUnseen = 0;
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("X: " + String.valueOf(x));
-            var mreturn = manager.setStability2Speeds(x, 0.4, 0, 0, this.startYaw, -2.0);
+            var mreturn = manager.setStability2Speeds(x, 0.4, 0, 0, initialYaw, -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

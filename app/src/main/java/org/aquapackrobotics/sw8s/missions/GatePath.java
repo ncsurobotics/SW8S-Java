@@ -14,16 +14,26 @@ import org.aquapackrobotics.sw8s.states.GatePathStates.*;
  */
 public class GatePath extends Mission {
     private String missionName;
+    private double initialYaw;
 
     public GatePath(ControlBoardThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0, missionName);
         this.missionName = missionName;
+        try {
+            var mreturn = manager.BNO055PeriodicRead((byte) 1);
+            while (!mreturn.isDone())
+                ;
+            Thread.sleep(500); // Give sensor time to get itself ready
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.initialYaw = manager.getYaw();
     }
 
     @Override
     protected State initialState() {
-        return new GatePathSubmergeState(manager, missionName);
+        return new GatePathSubmergeState(manager, missionName, initialYaw);
     }
 
     @Override

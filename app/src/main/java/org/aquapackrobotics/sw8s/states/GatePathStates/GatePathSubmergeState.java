@@ -12,16 +12,18 @@ public class GatePathSubmergeState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
+    private double initialYaw;
 
-    public GatePathSubmergeState(ControlBoardThreadManager manager, String missionName) {
+    public GatePathSubmergeState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.missionName = missionName;
+        this.initialYaw = initialYaw;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw,
                     -2.0);
             while (!mreturn.isDone())
                 ;
@@ -50,6 +52,6 @@ public class GatePathSubmergeState extends State {
 
     public State nextState() {
         // return new GatePathReadState(manager, missionName);
-        return new GatePathFollowState(manager, missionName);
+        return new GatePathFollowState(manager, missionName, initialYaw);
     }
 }
