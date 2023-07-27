@@ -18,12 +18,22 @@ public class App {
                 "%1$tF %1$tT | %4$s | %5$s %n");
     }
 
-    // static final int POOLSIZE = 16;
     static final int POOLSIZE = 128;
-    // static final int POOLSIZE = 8;
+    static ScheduledThreadPoolExecutor pool = null;
+    static ControlBoardThreadManager manager = null;
 
-    public String getGreeting() {
-        return "Hello World!";
+    public static ScheduledThreadPoolExecutor getPool() {
+        return (pool == null) ? pool = new ScheduledThreadPoolExecutor(POOLSIZE) : pool;
+    }
+
+    public static ControlBoardThreadManager getManager() {
+        try {
+            return (manager == null) ? manager = new ControlBoardThreadManager(getPool()) : manager;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(2);
+            return null;
+        }
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
@@ -31,17 +41,6 @@ public class App {
                 "\n'test' -- The Command Flag used in Testing",
                 "'help' or 'h' -- displays list of command flags", "\nStates:", "\n" };
         System.out.println("Basic Format: gradle run --args='_'");
-
-        /* Special case for testing without control board connection */
-        if (args.length == 1 && args[0].equals("--local_comm_test")) {
-            System.out.println("COMM TEST");
-            Mission missionComms = (Mission) new LocalComms(null, 5000);
-            missionComms.run();
-            System.exit(0);
-        }
-
-        ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(POOLSIZE);
-        ControlBoardThreadManager manager = new ControlBoardThreadManager(pool);
 
         String missionName = null;
 
@@ -71,68 +70,68 @@ public class App {
                     }
                     System.exit(0);
                 case "--raw_test":
-                    mission = (Mission) new Raw_Test(manager);
+                    mission = (Mission) new Raw_Test(getManager());
                     break;
                 case "--local_test":
-                    mission = (Mission) new Local_Test(manager);
+                    mission = (Mission) new Local_Test(getManager());
                     break;
                 case "--manual":
-                    mission = (Mission) new ManualMission(manager, 5000);
+                    mission = (Mission) new ManualMission(getManager(), 5000);
                     break;
                 case "--motor_test":
                     System.out.println("REGISTER MOTOR TEST");
-                    mission = (Mission) new MotorTest(manager);
+                    mission = (Mission) new MotorTest(getManager());
                     break;
                 case "--submerge_test":
-                    mission = (Mission) new SubmergeTest(manager);
+                    mission = (Mission) new SubmergeTest(getManager());
                     break;
                 case "--local_comms":
-                    mission = (Mission) new LocalComms(manager, 5000);
+                    mission = (Mission) new LocalComms(getManager(), 5000);
                     break;
                 case "--receive_test":
-                    mission = (Mission) new ReceiveTest(manager);
+                    mission = (Mission) new ReceiveTest(getManager());
                     break;
                 case "--gate":
-                    mission = (Mission) new Gate(manager);
+                    mission = (Mission) new Gate(getManager());
                     break;
                 case "--gate_stability":
-                    mission = (Mission) new StabilityGate(manager);
+                    mission = (Mission) new StabilityGate(getManager());
                     break;
                 case "--gate_path":
-                    mission = (Mission) new GatePath(manager, missionName);
+                    mission = (Mission) new GatePath(getManager(), missionName);
                     break;
                 case "--path":
-                    mission = (Mission) new Path(manager, missionName);
+                    mission = (Mission) new Path(getManager(), missionName);
                     break;
                 case "--path_test":
-                    mission = (Mission) new PathVisionTest(manager, missionName);
+                    mission = (Mission) new PathVisionTest(getManager(), missionName);
                     break;
                 case "--path_yuv":
-                    mission = (Mission) new PathYUV(manager, missionName);
+                    mission = (Mission) new PathYUV(getManager(), missionName);
                     break;
                 case "--buoy":
-                    mission = (Mission) new Buoys(manager, missionName);
+                    mission = (Mission) new Buoys(getManager(), missionName);
                     break;
                 case "--cam_test":
                     CameraFeedSender.openCapture(0);
                     // CameraFeedSender.openCapture(1);
                     Thread.sleep(60_000);
                 case "--octagon":
-                    mission = (Mission) new Octagon(manager, missionName);
+                    mission = (Mission) new Octagon(getManager(), missionName);
                     break;
                 case "--octagon_yuv":
-                    mission = (Mission) new OctagonYUV(manager, missionName);
+                    mission = (Mission) new OctagonYUV(getManager(), missionName);
                     break;
                 case "--dropper_test":
-                    mission = (Mission) new DropperTest(manager);
+                    mission = (Mission) new DropperTest(getManager());
                     break;
                 case "--bin":
-                    mission = (Mission) new Bin(manager, missionName);
+                    mission = (Mission) new Bin(getManager(), missionName);
                     break;
                 case "--kill-confirm":
                     while (true) {
                         try {
-                            manager.setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
+                            getManager().setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
                                     (float) 0.0,
                                     (float) 0.0, (float) 0.0, (float) 0.0).wait();
                             while (true)
@@ -142,7 +141,7 @@ public class App {
                         }
                     }
                 default:
-                    mission = (Mission) new AutoMission(manager);
+                    mission = (Mission) new AutoMission(getManager());
                     break;
 
             }
