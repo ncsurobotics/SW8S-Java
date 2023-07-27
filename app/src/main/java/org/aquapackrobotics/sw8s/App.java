@@ -79,7 +79,6 @@ public class App {
                     mission = (Mission) new ManualMission(getManager(), 5000);
                     break;
                 case "--motor_test":
-                    System.out.println("REGISTER MOTOR TEST");
                     mission = (Mission) new MotorTest(getManager());
                     break;
                 case "--submerge_test":
@@ -91,42 +90,12 @@ public class App {
                 case "--receive_test":
                     mission = (Mission) new ReceiveTest(getManager());
                     break;
-                case "--gate":
-                    mission = (Mission) new Gate(getManager());
-                    break;
-                case "--gate_stability":
-                    mission = (Mission) new StabilityGate(getManager());
-                    break;
-                case "--gate_path":
-                    mission = (Mission) new GatePath(getManager(), missionName);
-                    break;
-                case "--path":
-                    mission = (Mission) new Path(getManager(), missionName);
-                    break;
-                case "--path_test":
-                    mission = (Mission) new PathVisionTest(getManager(), missionName);
-                    break;
-                case "--path_yuv":
-                    mission = (Mission) new PathYUV(getManager(), missionName);
-                    break;
-                case "--buoy":
-                    mission = (Mission) new Buoys(getManager(), missionName);
-                    break;
                 case "--cam_test":
                     CameraFeedSender.openCapture(0);
-                    // CameraFeedSender.openCapture(1);
+                    CameraFeedSender.openCapture(1);
                     Thread.sleep(60_000);
-                case "--octagon":
-                    mission = (Mission) new Octagon(getManager(), missionName);
-                    break;
-                case "--octagon_yuv":
-                    mission = (Mission) new OctagonYUV(getManager(), missionName);
-                    break;
                 case "--dropper_test":
                     mission = (Mission) new DropperTest(getManager());
-                    break;
-                case "--bin":
-                    mission = (Mission) new Bin(getManager(), missionName);
                     break;
                 case "--kill-confirm":
                     while (true) {
@@ -140,12 +109,24 @@ public class App {
                             e.printStackTrace();
                         }
                     }
+
+                case "--path":
+                    mission = (Mission) new PathYUV(getManager(), missionName);
+                    break;
+                case "--buoy":
+                    mission = (Mission) new Buoys(getManager(), missionName);
+                    break;
+                case "--octagon":
+                    mission = (Mission) new OctagonYUV(getManager(), missionName);
+                    break;
+                case "--bin":
+                    mission = (Mission) new Bin(getManager(), missionName);
+                    break;
                 default:
                     mission = (Mission) new AutoMission(getManager());
                     break;
-
             }
-            System.out.println("RUN TEST: " + mission.getClass().getName());
+            System.out.println("RUN MISSION: " + mission.getClass().getName());
             mission.run();
         }
         System.exit(0);
