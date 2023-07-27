@@ -1,15 +1,10 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.states.*;
+import java.util.concurrent.ExecutionException;
 
-import java.util.concurrent.*;
-import java.net.*;
-import java.io.*;
-
-import java.net.*;
-import java.io.*;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.states.MotorTestState;
+import org.aquapackrobotics.sw8s.states.State;
 
 /**
  * State machine for testing motors
@@ -22,7 +17,7 @@ public class MotorTest extends Mission {
     }
 
     @Override
-    protected State initialState(){
+    protected State initialState() {
         try {
             manager.setThrusterInversions(true, true, false, false, true, false, false, true).get();
         } catch (Exception e) {
@@ -32,8 +27,9 @@ public class MotorTest extends Mission {
     }
 
     @Override
-    protected void executeState(State state) throws ExecutionException, InterruptedException  {
-        while (!state.onPeriodic()) {}
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
+        while (!state.onPeriodic()) {
+        }
     }
 
     @Override

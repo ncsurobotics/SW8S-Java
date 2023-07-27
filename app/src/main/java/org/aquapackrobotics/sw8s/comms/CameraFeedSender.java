@@ -1,20 +1,9 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
-import org.opencv.videoio.Videoio;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.core.CvType;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,17 +14,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import java.io.File;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.imageio.ImageIO;
 
 import org.aquapackrobotics.sw8s.CV;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 final class FilenameComparator implements Comparator<String> {
     private static final Pattern NUMBERS = Pattern.compile("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");

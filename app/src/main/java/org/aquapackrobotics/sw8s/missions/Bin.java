@@ -1,13 +1,10 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import org.aquapackrobotics.sw8s.comms.*;
+import java.util.concurrent.ExecutionException;
 
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.BinStates.*;
-
-import org.opencv.videoio.VideoCapture;
-
-import java.util.concurrent.*;
+import org.aquapackrobotics.sw8s.states.BinStates.BinInitState;
 
 public class Bin extends Mission {
     String missionName;

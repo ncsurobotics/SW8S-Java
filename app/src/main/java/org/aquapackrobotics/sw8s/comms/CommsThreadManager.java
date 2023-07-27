@@ -1,19 +1,21 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import com.fazecast.jSerialComm.SerialPort;
-
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.util.concurrent.*;
-import java.util.Arrays;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.BufferUnderflowException;
+import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-import org.aquapackrobotics.sw8s.comms.control.*;
-import org.aquapackrobotics.sw8s.comms.meb.*;
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardCommunication;
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardListener;
+import org.aquapackrobotics.sw8s.comms.meb.MEBCommunication;
+
+import com.fazecast.jSerialComm.SerialPort;
 
 public class CommsThreadManager {
 

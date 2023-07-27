@@ -1,5 +1,4 @@
-package org.aquapackrobotics.sw8s.states;
-
+package org.aquapackrobotics.sw8s.states.ReceiveTestStates;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -26,7 +25,7 @@ public class Depth extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( depthRead.isDone() ) {
+        if (depthRead.isDone()) {
             try {
                 System.out.println("Depth: " + depthRead.get().toString());
                 return true;

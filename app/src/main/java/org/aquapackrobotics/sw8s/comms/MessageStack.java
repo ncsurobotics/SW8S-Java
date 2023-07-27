@@ -1,19 +1,16 @@
 package org.aquapackrobotics.sw8s.comms;
 
 import java.io.IOException;
-
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
-
 import java.util.Enumeration;
-import java.util.logging.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
- * A singleton {@link ConcurrentHashMap} of message IDs and their corresponding acknowledgements.
+ * A singleton {@link ConcurrentHashMap} of message IDs and their corresponding
+ * acknowledgements.
  */
 public class MessageStack {
     private static MessageStack ms;
@@ -25,7 +22,8 @@ public class MessageStack {
 
         logger = Logger.getLogger("Comms_In");
         logger.setUseParentHandlers(false);
-        for (var h : logger.getHandlers()) logger.removeHandler(h);
+        for (var h : logger.getHandlers())
+            logger.removeHandler(h);
         try {
             FileHandler fHandle = new FileHandler("%t/Comms_In.log", true);
             fHandle.setFormatter(new SimpleFormatter());
@@ -37,6 +35,7 @@ public class MessageStack {
 
     /**
      * Singleton pattern.
+     * 
      * @return the global instance of this class.
      */
     public static MessageStack getInstance() {
@@ -49,9 +48,10 @@ public class MessageStack {
     private void logResponse(short id, byte[] message) {
         logger.info(id + " | " + Arrays.toString(message));
     }
-    
+
     /**
      * Puts the given message at the front of the message deque
+     * 
      * @param message message to add
      */
     public void push(byte[] message) {
@@ -82,25 +82,29 @@ public class MessageStack {
         // Payload
         messages.put(id, data);
     }
-    
+
     /**
-     * Removes the first element of the deque and returns it. Also features a timeout if no element is available.
-     * @return the first element of the deque, or null if no element during specified timeout
-     * @throws InterruptedException if interrupted while waiting for element to become available
+     * Removes the first element of the deque and returns it. Also features a
+     * timeout if no element is available.
+     * 
+     * @return the first element of the deque, or null if no element during
+     *         specified timeout
+     * @throws InterruptedException if interrupted while waiting for element to
+     *                              become available
      */
     public byte[] getMsgById(short id) throws InterruptedException {
-        //Returns the first message stored in the map
+        // Returns the first message stored in the map
         byte[] msg;
         Enumeration enu = messages.keys();
-        //while (enu.hasMoreElements()) {
-            //System.out.println("STACK ENTRY: " + enu.nextElement());
-        //}
-        while ((msg = messages.remove(id)) == null)  {
+        // while (enu.hasMoreElements()) {
+        // System.out.println("STACK ENTRY: " + enu.nextElement());
+        // }
+        while ((msg = messages.remove(id)) == null) {
             Thread.sleep(1);
         }
         return msg;
     }
-    
+
     /**
      * Clears the MessageStack by setting the singleton to null.
      */

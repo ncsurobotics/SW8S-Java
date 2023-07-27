@@ -1,5 +1,4 @@
-package org.aquapackrobotics.sw8s.states;
-
+package org.aquapackrobotics.sw8s.states.ReceiveTestStates;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -20,7 +19,7 @@ public class PeriodicDepth extends State {
     // TODO: implement
     public void onEnter() {
         try {
-            depthRead = manager.MSPeriodicRead((byte)1);
+            depthRead = manager.MSPeriodicRead((byte) 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,9 +27,9 @@ public class PeriodicDepth extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( depthRead.isDone() ) {
+        if (depthRead.isDone()) {
             System.out.println("PeriodicDepth: " +
-                Float.toString(manager.getDepth()));
+                    Float.toString(manager.getDepth()));
             if (++loop_runs < 10) {
                 return false;
             }

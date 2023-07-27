@@ -1,11 +1,11 @@
 package org.aquapackrobotics.sw8s.vision;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aquapackrobotics.sw8s.vision.IntPair;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -16,8 +16,6 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
-
-import org.aquapackrobotics.sw8s.vision.IntPair;
 
 /**
  * Base for all image processing modules

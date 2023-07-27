@@ -3,23 +3,19 @@ package org.aquapackrobotics.sw8s.comms.meb;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+
+import org.aquapackrobotics.sw8s.comms.ByteArrayUtility;
+import org.aquapackrobotics.sw8s.comms.ICommPortListener;
+import org.aquapackrobotics.sw8s.comms.SerialCommunicationUtility;
+import org.aquapackrobotics.sw8s.comms.TCPCommPort;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-
-import java.nio.charset.StandardCharsets;
-
-import java.lang.Math;
-
-import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * MEBListener listens for messages from a comm port.

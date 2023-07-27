@@ -1,15 +1,15 @@
 package org.aquapackrobotics.sw8s.comms.control;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.*;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
-import java.lang.Byte;
-import java.lang.Boolean;
-
-import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.ICommPort;
+import org.aquapackrobotics.sw8s.comms.MessageStruct;
+import org.aquapackrobotics.sw8s.comms.SerialCommunicationUtility;
 
 /**
  * Synchronous SW8 control board communication handler.

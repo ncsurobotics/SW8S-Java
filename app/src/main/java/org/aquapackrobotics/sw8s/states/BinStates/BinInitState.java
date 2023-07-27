@@ -1,12 +1,10 @@
 package org.aquapackrobotics.sw8s.states.BinStates;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 
-import org.opencv.videoio.VideoCapture;
-
-import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.BinStates.*;
 
 public class BinInitState extends State {
 

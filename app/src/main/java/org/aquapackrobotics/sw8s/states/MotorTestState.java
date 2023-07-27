@@ -1,10 +1,10 @@
 package org.aquapackrobotics.sw8s.states;
 
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.*;
-
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 
 public class MotorTestState extends State {
 
@@ -38,7 +38,6 @@ public class MotorTestState extends State {
                 speeds[4], speeds[5], speeds[6], speeds[7]);
     }
 
-
     public boolean onPeriodic() throws ExecutionException, InterruptedException {
         endTime = System.currentTimeMillis();
         if (endTime - startTime >= MOTOR_RUN_TIME) {
@@ -49,21 +48,21 @@ public class MotorTestState extends State {
         return false;
     }
 
-    public void onExit() throws ExecutionException, InterruptedException{
-        manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+    public void onExit() throws ExecutionException, InterruptedException {
+        manager.setMotorSpeeds(0, 0, 0, 0, 0, 0, 0, 0);
         startTime = System.currentTimeMillis();
         do {
             endTime = System.currentTimeMillis();
             if (endTime - startTime >= DELAY) {
                 break;
             }
-        } while(true);
+        } while (true);
     }
 
     public State nextState() {
         if (motorNumber > 8) {
             try {
-                manager.setMotorSpeeds(0,0,0,0,0,0,0,0);
+                manager.setMotorSpeeds(0, 0, 0, 0, 0, 0, 0, 0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
