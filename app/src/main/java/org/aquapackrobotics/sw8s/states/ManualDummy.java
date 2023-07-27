@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 
 public class ManualDummy extends State {
 
-    public ManualDummy(ControlBoardThreadManager manager) {
+    public ManualDummy(CommsThreadManager manager) {
         super(manager);
     }
 

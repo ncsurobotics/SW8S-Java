@@ -24,7 +24,7 @@ public class BinPathState extends State {
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
 
-    public BinPathState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
+    public BinPathState(CommsThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);

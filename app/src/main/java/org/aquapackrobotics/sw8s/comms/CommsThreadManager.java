@@ -12,7 +12,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.BufferUnderflowException;
 
-public class ControlBoardThreadManager {
+import org.aquapackrobotics.sw8s.comms.control.*;
+import org.aquapackrobotics.sw8s.comms.meb.*;
+
+public class CommsThreadManager {
 
     // Instance variables
     private ScheduledThreadPoolExecutor pool;
@@ -28,7 +31,7 @@ public class ControlBoardThreadManager {
     };
 
     // Constructor
-    public ControlBoardThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
+    public CommsThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
 
         SerialPort robotPort = SerialPort.getCommPort(

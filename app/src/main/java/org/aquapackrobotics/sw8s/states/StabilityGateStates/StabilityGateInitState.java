@@ -9,7 +9,7 @@ public class StabilityGateInitState extends State {
     ScheduledFuture<byte[]> depthRead;
     ScheduledFuture<byte[]> gyroRead;
 
-    public StabilityGateInitState(ControlBoardThreadManager manager) {
+    public StabilityGateInitState(CommsThreadManager manager) {
         super(manager);
     }
 

@@ -15,7 +15,7 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.*;
 public class OctagonYUV extends Mission {
     private String missionName;
 
-    public OctagonYUV(ControlBoardThreadManager manager, String missionName) {
+    public OctagonYUV(CommsThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0);
         this.missionName = missionName;

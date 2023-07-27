@@ -6,6 +6,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ThreadFactory;
 
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardListener;
+
 public class TCPCommPort implements ICommPort, ThreadFactory {
 
     private static String endPoint = "localhost";

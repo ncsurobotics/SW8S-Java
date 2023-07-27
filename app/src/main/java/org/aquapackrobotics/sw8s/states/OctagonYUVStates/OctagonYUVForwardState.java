@@ -20,7 +20,7 @@ public class OctagonYUVForwardState extends State {
     private double depth = -1.5;
     private String missionName;
 
-    public OctagonYUVForwardState(ControlBoardThreadManager manager, String missionName) {
+    public OctagonYUVForwardState(CommsThreadManager manager, String missionName) {
         super(manager);
         target = new PathYUV(new IntPair(Integer.MIN_VALUE, 178), new IntPair(178, Integer.MAX_VALUE), 10,
                 800, 0.25);

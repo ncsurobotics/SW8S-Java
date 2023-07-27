@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.meb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +18,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import java.nio.charset.StandardCharsets;
 
 import java.lang.Math;
+
+import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * MEBListener listens for messages from a comm port.

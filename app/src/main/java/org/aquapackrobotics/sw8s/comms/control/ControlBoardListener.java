@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.control;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,15 +14,17 @@ import java.nio.charset.StandardCharsets;
 
 import java.lang.Math;
 
+import org.aquapackrobotics.sw8s.comms.*;
+
 /**
  * ControlBoardListener listens for messages from a comm port.
  * See SerialCommunicationUtility for message implementation details.
  */
 public class ControlBoardListener implements SerialPortDataListener, ICommPortListener {
 
-    //Acknowledgements
+    // Acknowledgements
     private static final String ACKNOWLEDGE = "ACK";
-    //Status Messages
+    // Status Messages
     private static final String BNO055_STATUS = "BNO055D";
     private static final String WATCHDOG_STATUS = "WDGS";
     private static final String MS5837_STATUS = "MS5837D";
@@ -41,7 +43,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
     public ControlBoardListener() {
     }
-    
+
     /**
      * Returns the events for which serialEvent(SerialPortEvent) will be called
      */
@@ -49,18 +51,18 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     public int getListeningEvents() {
         return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
     }
-    
+
     /**
      * Run when the specified ListeningEvent is triggered
      */
     @Override
     public void serialEvent(SerialPortEvent event) {
         try {
-        int size = event.getSerialPort().bytesAvailable();
-        byte[] message = new byte[size];
-        event.getSerialPort().readBytes(message, size);
+            int size = event.getSerialPort().bytesAvailable();
+            byte[] message = new byte[size];
+            event.getSerialPort().readBytes(message, size);
 
-        eventBytesHandler(message);
+            eventBytesHandler(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,102 +74,104 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     }
 
     /**
-     * Processes bytes from a serial port listening event that may contain an incomplete or multiple messages
+     * Processes bytes from a serial port listening event that may contain an
+     * incomplete or multiple messages
+     * 
      * @param message the bytes to process
      */
     public void eventBytesHandler(byte[] message) {
         for (byte b : message) {
             if (parseEscaped) {
-                //Currently escaped
-                //Handle valid escape sequences
-                if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicationUtility.isEndOfMessage(b) || SerialCommunicationUtility.isEscape(b))
+                // Currently escaped
+                // Handle valid escape sequences
+                if (SerialCommunicationUtility.isStartOfMessage(b) || SerialCommunicationUtility.isEndOfMessage(b)
+                        || SerialCommunicationUtility.isEscape(b))
                     messageStore.write(b);
 
-                //No longer escaped
+                // No longer escaped
                 parseEscaped = false;
-            }
-            else if (parseStarted) {
+            } else if (parseStarted) {
                 if (SerialCommunicationUtility.isStartOfMessage(b)) {
-                    //Handle start byte (not escaped)
-                    //Discard old data
+                    // Handle start byte (not escaped)
+                    // Discard old data
                     messageStore.reset();
-                }
-                else if (SerialCommunicationUtility.isEndOfMessage(b)) {
-                    //Handle end byte (not escaped)
-                    //messageStore now contains entire message
-                    
+                } else if (SerialCommunicationUtility.isEndOfMessage(b)) {
+                    // Handle end byte (not escaped)
+                    // messageStore now contains entire message
+
                     try {
-                        //Checks CRC using destructMessage()
-                        byte[] destructedMessage = SerialCommunicationUtility.destructMessage(messageStore.toByteArray());
-                        //This is a valid message, sends to serialMessageHandler
+                        // Checks CRC using destructMessage()
+                        byte[] destructedMessage = SerialCommunicationUtility
+                                .destructMessage(messageStore.toByteArray());
+                        // This is a valid message, sends to serialMessageHandler
                         messageHandler(destructedMessage);
-                    }
-                    catch (IllegalArgumentException e) {
-                        //Catches any exceptions thrown from destructMessage such as invalid CRC
-                        //Invalid message so restarts parse
+                    } catch (IllegalArgumentException e) {
+                        // Catches any exceptions thrown from destructMessage such as invalid CRC
+                        // Invalid message so restarts parse
                         parseStarted = false;
                     }
-                }
-                else if (SerialCommunicationUtility.isEscape(b)) {
-                    //Handle escape byte (not escaped)
+                } else if (SerialCommunicationUtility.isEscape(b)) {
+                    // Handle escape byte (not escaped)
                     parseEscaped = true;
-                }
-                else {
+                } else {
                     messageStore.write(b);
                 }
-            }
-            else if (SerialCommunicationUtility.isStartOfMessage(b)){
+            } else if (SerialCommunicationUtility.isStartOfMessage(b)) {
                 parseStarted = true;
                 messageStore.reset();
             }
         }
     }
 
-    private void watchdogDisable(byte [] message){
+    private void watchdogDisable(byte[] message) {
         String m = message.toString();
-        if(m == "WDGK"){
-            // TO DO 
+        if (m == "WDGK") {
+            // TO DO
         }
     }
-    
+
     /**
      * Processes a complete message's payload.
-     * The message is assumed to have had the correct CRC and start and end with the proper bytes
+     * The message is assumed to have had the correct CRC and start and end with the
+     * proper bytes
+     * 
      * @param message The message to process
      */
     public void messageHandler(byte[] message) {
         try {
             /*
-            //If message does not start with start byte or end with end byte, it is ignored
-            if (!SerialCommunicationUtility.isStartOfMessage(message[0]) ||
-                    !SerialCommunicationUtility.isEndOfMessage(message[message.length - 1]))
-                throw new IllegalArgumentException("Message does not start with start byte or end byte: " + Arrays.toString(message));
-                
-            //Remove start and end bytes
-            byte[] strippedMessage = Arrays.copyOfRange(message, 1, message.length - 1);
-            //Will throw IllegalArgumentException if garbage/corrupted
-            byte[] decodedMessage = SerialCommunicationUtility.destructMessage(strippedMessage);
-            */
-            
-            //Remove message ID of received message
+             * //If message does not start with start byte or end with end byte, it is
+             * ignored
+             * if (!SerialCommunicationUtility.isStartOfMessage(message[0]) ||
+             * !SerialCommunicationUtility.isEndOfMessage(message[message.length - 1]))
+             * throw new
+             * IllegalArgumentException("Message does not start with start byte or end byte: "
+             * + Arrays.toString(message));
+             * 
+             * //Remove start and end bytes
+             * byte[] strippedMessage = Arrays.copyOfRange(message, 1, message.length - 1);
+             * //Will throw IllegalArgumentException if garbage/corrupted
+             * byte[] decodedMessage =
+             * SerialCommunicationUtility.destructMessage(strippedMessage);
+             */
+
+            // Remove message ID of received message
             byte[] strippedMessage = Arrays.copyOfRange(message, 2, message.length);
-            //System.out.println("GET MESSAGE: " + Arrays.toString(strippedMessage));
+            // System.out.println("GET MESSAGE: " + Arrays.toString(strippedMessage));
 
             if (ByteArrayUtility.startsWith(strippedMessage, WATCHDOG_STATUS.getBytes())) {
-                if (strippedMessage[4] == (byte)0)
+                if (strippedMessage[4] == (byte) 0)
                     WatchDogStatus.getInstance().setWatchDogKill(true);
-                else if (strippedMessage[4] == (byte)1)
+                else if (strippedMessage[4] == (byte) 1)
                     WatchDogStatus.getInstance().setWatchDogKill(false);
-            }
-            else if(ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
+            } else if (ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 7, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float num = buffer.getFloat();
                 depths.depth.enqueue(num);
-            }
-            else if(ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())){
-                byte [] data = Arrays.copyOfRange(strippedMessage,7,strippedMessage.length);
+            } else if (ByteArrayUtility.startsWith(strippedMessage, BNO055_STATUS.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 7, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -183,68 +187,65 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 imuData.quat_x.enqueue(num2);
                 imuData.quat_y.enqueue(num3);
                 imuData.quat_z.enqueue(num4);
-                //imuData.gyrox.enqueue(num5);
-                //imuData.gyrox.enqueue(num6);
-                //imuData.gyrox.enqueue(num7);
+                // imuData.gyrox.enqueue(num5);
+                // imuData.gyrox.enqueue(num6);
+                // imuData.gyrox.enqueue(num7);
 
-
-            }
-            else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
-                //Pushes message onto message stack if acknowledge message
+            } else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
+                // Pushes message onto message stack if acknowledge message
                 MessageStack.getInstance().push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
-            }
-            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
+            } else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
                 // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
-                // FIX LATER 
+                // FIX LATER
                 // ISO-8859-1 is ASCII
-                System.out.println(System.currentTimeMillis() + "> DEBUG: " + new String(strippedMessage, StandardCharsets.US_ASCII));
-            }
-            else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_RAW.getBytes())) {
+                System.out.println(System.currentTimeMillis() + "> DEBUG: "
+                        + new String(strippedMessage, StandardCharsets.US_ASCII));
+            } else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_RAW.getBytes())) {
                 // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
-                // FIX LATER 
+                // FIX LATER
                 System.out.println("DEBUG_RAW: " + Arrays.toString(strippedMessage));
+            } else {
+                // Received message is not a watchdog or acknowledgement message, it is ignored
+                throw new IllegalArgumentException(
+                        "Received message is not a watchdog status or an acknowledge message: "
+                                + Arrays.toString(strippedMessage));
             }
-            else {
-                //Received message is not a watchdog or acknowledgement message, it is ignored
-                throw new IllegalArgumentException("Received message is not a watchdog status or an acknowledge message: " + Arrays.toString(strippedMessage));
-            }
-            
-        }
-        catch (IllegalArgumentException e) {
+
+        } catch (IllegalArgumentException e) {
             System.out.println("Something went wrong in receiving a message");
             System.out.println(e.getMessage());
         }
     }
 
     /**
-     * Returns the current depth and gyrox 
+     * Returns the current depth and gyrox
      */
-    public float getDepth(){
+    public float getDepth() {
         return depths.depth.getCurrentValue();
     }
 
-    public double[] getGyroData(){
+    public double[] getGyroData() {
         double quat_w = imuData.quat_w.getCurrentValue();
         double quat_x = imuData.quat_x.getCurrentValue();
         double quat_y = imuData.quat_y.getCurrentValue();
         double quat_z = imuData.quat_z.getCurrentValue();
-        
+
         double pitch, roll, roll_denom, roll_numer, yaw, yaw_denom, yaw_numer;
 
-        pitch = 180.0 * Math.asin(2.0 * (quat_y*quat_z + quat_w*quat_x)) / Math.PI;
-        if ( Math.abs(90 - Math.abs(pitch)) < 0.1 ) {
+        pitch = 180.0 * Math.asin(2.0 * (quat_y * quat_z + quat_w * quat_x)) / Math.PI;
+        if (Math.abs(90 - Math.abs(pitch)) < 0.1) {
             yaw = 2.0 * 180.0 * Math.atan2(quat_y, quat_w) / Math.PI;
             roll = 0.0;
         } else {
-            roll_numer = 2.0 * (quat_w*quat_y - quat_x*quat_z);
-            roll_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_y*quat_y);
+            roll_numer = 2.0 * (quat_w * quat_y - quat_x * quat_z);
+            roll_denom = 1.0 - 2.0 * (quat_x * quat_x + quat_y * quat_y);
             roll = 180.0 * Math.atan2(roll_numer, roll_denom) / Math.PI;
-            
-            yaw_numer = -2.0 * (quat_x*quat_y - quat_w*quat_z);
-            yaw_denom = 1.0 - 2.0 * (quat_x*quat_x + quat_z*quat_z);
+
+            yaw_numer = -2.0 * (quat_x * quat_y - quat_w * quat_z);
+            yaw_denom = 1.0 - 2.0 * (quat_x * quat_x + quat_z * quat_z);
             yaw = 180.0 * Math.atan2(yaw_numer, yaw_denom) / Math.PI;
         }
 
-        return new double[]{quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw};
+        return new double[] { quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw };
     }
 }

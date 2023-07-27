@@ -18,7 +18,7 @@ public class LocalComms extends Mission {
     private DataOutputStream out = null;
     int port;
 
-    public LocalComms(ControlBoardThreadManager manager, int port) {
+    public LocalComms(CommsThreadManager manager, int port) {
         super(manager);
         this.port = port;
     }

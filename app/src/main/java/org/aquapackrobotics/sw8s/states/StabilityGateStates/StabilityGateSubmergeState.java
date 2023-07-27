@@ -12,7 +12,7 @@ public class StabilityGateSubmergeState extends State {
     ScheduledFuture<byte[]> depthRead;
     double yaw;
 
-    public StabilityGateSubmergeState(ControlBoardThreadManager manager) {
+    public StabilityGateSubmergeState(CommsThreadManager manager) {
         super(manager);
     }
 

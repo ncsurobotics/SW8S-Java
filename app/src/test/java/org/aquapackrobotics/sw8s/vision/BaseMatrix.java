@@ -87,29 +87,6 @@ public class BaseMatrix {
     }
 
     @Test
-    public void markGate() {
-        try {
-            for (int i = 1; i < 7; i++) {
-                Mat img = Imgcodecs
-                        .imread(System.getProperty("user.dir") + "/resources/gate_images/" + String.valueOf(i)
-                                + ".jpeg");
-                PathYUV path = new PathYUV(new IntPair(0, 125),
-                        new IntPair(125, 255), 0,
-                        70,
-                        0.25,
-                        new IntPair(25, 25),
-                        new IntPair(4, 32));
-                File dir = new File("gate/");
-                dir.mkdirs();
-                path.processFrame(img, "gate/" + String.valueOf(i));
-                // path.relativePosition(img);
-            }
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
-
-    @Test
     public void markGate_BW() {
         try {
             for (int i = 1; i < 7; i++) {
@@ -124,43 +101,6 @@ public class BaseMatrix {
                 dir.mkdirs();
                 path.processFrame(img, "gate_BW/" + String.valueOf(i) + ".jpeg");
                 // path.relativePosition(img);
-            }
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
-
-    @Test
-    public void markGate_OnlyY() {
-        try {
-            for (int i = 1; i < 7; i++) {
-                Mat img = Imgcodecs
-                        .imread(System.getProperty("user.dir") + "/resources/gate_images/" + String.valueOf(i)
-                                + ".jpeg");
-                PathY path = new PathY();
-                File dir = new File("gateY/");
-                dir.mkdirs();
-                path.processFrame(img, "gateY/" + String.valueOf(i));
-                // path.relativePosition(img);
-            }
-        } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
-        }
-    }
-
-    @Test
-    public void markGate_Path() {
-        try {
-            for (int j = 100; j > 0; j -= 10) {
-                for (int i = 1; i < 6; i++) {
-                    Mat img = Imgcodecs
-                            .imread(System.getProperty("user.dir") + "/resources/path_and_gate_images/"
-                                    + String.valueOf(i)
-                                    + ".jpeg");
-                    PathYUV path = new PathYUV(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE),
-                            5, 800, j * 0.01, new IntPair(25, 25), new IntPair(2, 4));
-                    path.processFrame(img, "gate_path/" + String.valueOf(j) + "/" + String.valueOf(i));
-                }
             }
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());

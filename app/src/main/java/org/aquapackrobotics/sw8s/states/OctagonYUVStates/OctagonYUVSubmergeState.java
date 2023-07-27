@@ -13,7 +13,7 @@ public class OctagonYUVSubmergeState extends State {
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
 
-    public OctagonYUVSubmergeState(ControlBoardThreadManager manager, String missionName) {
+    public OctagonYUVSubmergeState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.missionName = missionName;
     }

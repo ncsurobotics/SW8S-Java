@@ -12,7 +12,7 @@ public class PeriodicGyro extends State {
     ScheduledFuture<byte[]> gyroRead;
     int loop_runs;
 
-    public PeriodicGyro(ControlBoardThreadManager manager) {
+    public PeriodicGyro(CommsThreadManager manager) {
         super(manager);
         loop_runs = 0;
     }

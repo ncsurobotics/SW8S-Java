@@ -11,7 +11,7 @@ public class BuoyInitState extends State {
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
 
-    public BuoyInitState(ControlBoardThreadManager manager, String missionName) {
+    public BuoyInitState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.missionName = missionName;
     }

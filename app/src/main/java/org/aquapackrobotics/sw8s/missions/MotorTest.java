@@ -16,7 +16,7 @@ import java.io.*;
  */
 public class MotorTest extends Mission {
 
-    public MotorTest(ControlBoardThreadManager manager) {
+    public MotorTest(CommsThreadManager manager) {
         super(manager);
 
     }

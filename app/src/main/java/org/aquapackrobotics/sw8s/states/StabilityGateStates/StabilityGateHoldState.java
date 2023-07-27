@@ -14,7 +14,7 @@ public class StabilityGateHoldState extends State {
     private long startTime;
     double yaw;
 
-    public StabilityGateHoldState(ControlBoardThreadManager manager, double yaw) {
+    public StabilityGateHoldState(CommsThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
     }

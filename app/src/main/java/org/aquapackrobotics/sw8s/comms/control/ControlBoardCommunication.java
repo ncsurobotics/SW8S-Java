@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.control;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
@@ -9,13 +9,15 @@ import java.io.IOException;
 import java.lang.Byte;
 import java.lang.Boolean;
 
+import org.aquapackrobotics.sw8s.comms.*;
+
 /**
  * Synchronous SW8 control board communication handler.
  * As a general rule:
- *  Setting functions do not block
- *  Getting functions block
+ * Setting functions do not block
+ * Getting functions block
  */
-class ControlBoardCommunication {
+public class ControlBoardCommunication {
     private final ICommPort controlBoardPort;
     private static final byte[] MODE_STRING = "MODE".getBytes();
     private static final byte[] INVERT_STRING = "TINV".getBytes();
@@ -44,7 +46,9 @@ class ControlBoardCommunication {
     private Logger logger;
 
     /**
-     * Construct a new ControlBoardCommunication listening and writing on the given port
+     * Construct a new ControlBoardCommunication listening and writing on the given
+     * port
+     * 
      * @param port The port to listen on
      */
     public ControlBoardCommunication(ICommPort port) {
@@ -53,7 +57,8 @@ class ControlBoardCommunication {
 
         logger = Logger.getLogger("Comms_Out");
         logger.setUseParentHandlers(false);
-        for (var h : logger.getHandlers()) logger.removeHandler(h);
+        for (var h : logger.getHandlers())
+            logger.removeHandler(h);
         try {
             FileHandler fHandle = new FileHandler("%t/Comms_Out.log", true);
             fHandle.setFormatter(new SimpleFormatter());
@@ -71,28 +76,30 @@ class ControlBoardCommunication {
     }
 
     private void logCommand(MessageStruct msg, String code, String data) {
-        logger.info(code + " | " + Short.toString(msg.id) + " | " + data + 
+        logger.info(code + " | " + Short.toString(msg.id) + " | " + data +
                 " | " + Arrays.toString(msg.message));
     }
 
     /**
      * Prompts the control board for the current mode. Blocks until completion.
+     * 
      * @throws InterruptedException If message retrievag takes too long.
      * @return The mode set in the control board.
      */
-    
 
     /**
      * Sets the thruster inversions individually.
      * True is inverted, false is not inverted.
+     * 
      * @return the message ID of the sent message.
      */
-    public short setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4, boolean invert5, boolean invert6, boolean invert7, boolean invert8) throws InterruptedException {
+    public short setThrusterInversions(boolean invert1, boolean invert2, boolean invert3, boolean invert4,
+            boolean invert5, boolean invert6, boolean invert7, boolean invert8) throws InterruptedException {
         ByteArrayOutputStream message = new ByteArrayOutputStream();
 
         message.writeBytes(INVERT_STRING);
         byte inv = 0;
-        
+
         inv = appendInversion(inv, invert8);
         inv = appendInversion(inv, invert7);
         inv = appendInversion(inv, invert6);
@@ -109,30 +116,32 @@ class ControlBoardCommunication {
         short msgID = messageStruct.id;
         controlBoardPort.writeBytes(messageBytes, messageBytes.length);
 
-        logCommand(messageStruct, "setThrusterInversions", 
-                    Arrays.toString(new boolean[]{invert1, invert2, invert3,
-                        invert4, invert5, invert6, invert7, invert8}));
+        logCommand(messageStruct, "setThrusterInversions",
+                Arrays.toString(new boolean[] { invert1, invert2, invert3,
+                        invert4, invert5, invert6, invert7, invert8 }));
         return msgID;
     }
 
-    private byte appendInversion(byte inversion, boolean b){
-        byte value = b ? (byte) 1 : (byte) 0; 
-        inversion <<= (byte) 1 ;
+    private byte appendInversion(byte inversion, boolean b) {
+        byte value = b ? (byte) 1 : (byte) 0;
+        inversion <<= (byte) 1;
         inversion |= value;
         return inversion;
     }
 
     /**
      * Gets the current thruster inversions. Blocks until completion.
+     * 
      * @throws InterruptedException If message retrieval takes too long.
      * @return Array of 8 booleans, each representing an individual thruster.
      */
-     
+
     /**
      * Directly sets the speeds of the thrusters.
      * Each double should be from -1 to 1.
      */
-    public short setRawSpeeds(float speed1, float speed2, float speed3, float speed4, float speed5, float speed6, float speed7, float speed8) {
+    public short setRawSpeeds(float speed1, float speed2, float speed3, float speed4, float speed5, float speed6,
+            float speed7, float speed8) {
         ByteArrayOutputStream rawSpeed = new ByteArrayOutputStream();
         rawSpeed.writeBytes(RAW_STRING);
 
@@ -149,9 +158,9 @@ class ControlBoardCommunication {
         byte[] rawSpeedMessage = messageStruct.message;
         controlBoardPort.writeBytes(rawSpeedMessage, rawSpeedMessage.length);
 
-        logCommand(messageStruct, "setRawSpeeds", 
-                    Arrays.toString(new float[]{speed1, speed2, speed3,
-                        speed4, speed5, speed6, speed7, speed8}));
+        logCommand(messageStruct, "setRawSpeeds",
+                Arrays.toString(new float[] { speed1, speed2, speed3,
+                        speed4, speed5, speed6, speed7, speed8 }));
 
         return messageStruct.id;
     }
@@ -175,12 +184,12 @@ class ControlBoardCommunication {
         byte[] localSpeedMessage = messageStruct.message;
         controlBoardPort.writeBytes(localSpeedMessage, localSpeedMessage.length);
 
-        logCommand(messageStruct, "setLocalSpeeds", 
-                    Arrays.toString(new double[]{x, y, z, xrot, yrot, zrot}));
+        logCommand(messageStruct, "setLocalSpeeds",
+                Arrays.toString(new double[] { x, y, z, xrot, yrot, zrot }));
 
         return messageStruct.id;
     }
-    
+
     /**
      * Sets x, y, z, pitch, roll, and yaw in global mode (in that order).
      * Each double should be from -1 to 1.
@@ -200,13 +209,14 @@ class ControlBoardCommunication {
         byte[] globalSpeedMessage = messageStruct.message;
         controlBoardPort.writeBytes(globalSpeedMessage, globalSpeedMessage.length);
 
-        logCommand(messageStruct, "setGlobalSpeeds", 
-                    Arrays.toString(new double[]{x, y, z, pitchSpd, rollSpd, yawSpd}));
+        logCommand(messageStruct, "setGlobalSpeeds",
+                Arrays.toString(new double[] { x, y, z, pitchSpd, rollSpd, yawSpd }));
 
         return messageStruct.id;
     }
 
-    public short setStabilityAssist1(double x, double y, double yawSpd, double targetPitch, double targetRoll, double targetDepth) {
+    public short setStabilityAssist1(double x, double y, double yawSpd, double targetPitch, double targetRoll,
+            double targetDepth) {
         ByteArrayOutputStream StabilityAssist1 = new ByteArrayOutputStream();
         StabilityAssist1.writeBytes(STABILITY_ASSIST_1);
 
@@ -221,14 +231,15 @@ class ControlBoardCommunication {
         byte[] StabilityAssistMessage1 = messageStruct.message;
         controlBoardPort.writeBytes(StabilityAssistMessage1, StabilityAssistMessage1.length);
 
-        logCommand(messageStruct, "setStabilityAssist_1", 
-                    Arrays.toString(new double[]{x, y, yawSpd, targetPitch,
-                        targetRoll, targetDepth}));
+        logCommand(messageStruct, "setStabilityAssist_1",
+                Arrays.toString(new double[] { x, y, yawSpd, targetPitch,
+                        targetRoll, targetDepth }));
 
         return messageStruct.id;
     }
 
-    public short SetStabilityAssist2(double x, double y, double targetPitch, double targetRoll, double targetYaw, double targetDepth){
+    public short SetStabilityAssist2(double x, double y, double targetPitch, double targetRoll, double targetYaw,
+            double targetDepth) {
         ByteArrayOutputStream StabilityAssist2 = new ByteArrayOutputStream();
         StabilityAssist2.writeBytes(STABILITY_ASSIST_2);
 
@@ -239,14 +250,13 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetYaw);
         SerialCommunicationUtility.writeEncodedFloat(StabilityAssist2, (float) targetDepth);
 
-
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(StabilityAssist2.toByteArray());
-        byte[] StabilityAssistMessage2  = messageStruct.message;
+        byte[] StabilityAssistMessage2 = messageStruct.message;
         controlBoardPort.writeBytes(StabilityAssistMessage2, StabilityAssistMessage2.length);
 
-        logCommand(messageStruct, "setStabilityAssist_2", 
-                    Arrays.toString(new double[]{x, y, targetPitch,
-                        targetRoll, targetYaw, targetDepth}));
+        logCommand(messageStruct, "setStabilityAssist_2",
+                Arrays.toString(new double[] { x, y, targetPitch,
+                        targetRoll, targetYaw, targetDepth }));
 
         return messageStruct.id;
     }
@@ -265,12 +275,13 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short setMotorMatrix(byte thruster_num, double x, double y, double z, double pitch, double roll, double yaw) {
+    public short setMotorMatrix(byte thruster_num, double x, double y, double z, double pitch, double roll,
+            double yaw) {
         ByteArrayOutputStream MotorMatrixSet = new ByteArrayOutputStream();
         MotorMatrixSet.writeBytes(MOTOR_MATRIX_SET);
 
         MotorMatrixSet.write(thruster_num);
-        
+
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) x);
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) y);
         SerialCommunicationUtility.writeEncodedFloat(MotorMatrixSet, (float) z);
@@ -283,21 +294,20 @@ class ControlBoardCommunication {
         byte[] UpdateMessage = messageStruct.message;
         controlBoardPort.writeBytes(UpdateMessage, UpdateMessage.length);
 
-        logCommand(messageStruct, "setMotorMatrix", 
-                    Arrays.toString(new double[]{thruster_num, x, y, z,
-                        pitch, roll, yaw}));
+        logCommand(messageStruct, "setMotorMatrix",
+                Arrays.toString(new double[] { thruster_num, x, y, z,
+                        pitch, roll, yaw }));
 
         return messageStruct.id;
     }
-    
-    
+
     public short ImuAxisConfig(byte config) {
         ByteArrayOutputStream AxisConfig = new ByteArrayOutputStream();
         AxisConfig.writeBytes(IMU_AXIS_CONFIG);
         AxisConfig.write(config);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(AxisConfig.toByteArray());
-        byte [] AxisConfigMessage = messageStruct.message;
+        byte[] AxisConfigMessage = messageStruct.message;
         controlBoardPort.writeBytes(AxisConfigMessage, AxisConfigMessage.length);
 
         logCommand(messageStruct, "ImuAxisConfig", Byte.toString(config));
@@ -305,7 +315,7 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short StabAssistPID(char which, double kp, double ki, double kd, double limit, boolean invert){
+    public short StabAssistPID(char which, double kp, double ki, double kd, double limit, boolean invert) {
         ByteArrayOutputStream StabAssistTuner = new ByteArrayOutputStream();
         StabAssistTuner.writeBytes(STAB_ASSIST_PID_TUNE);
         byte w = (byte) which;
@@ -315,24 +325,24 @@ class ControlBoardCommunication {
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) ki);
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) kd);
         SerialCommunicationUtility.writeEncodedFloat(StabAssistTuner, (float) limit);
-        StabAssistTuner.write(invert ? (byte)1 : (byte)0);
+        StabAssistTuner.write(invert ? (byte) 1 : (byte) 0);
 
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(StabAssistTuner.toByteArray());
-        byte [] StabAssistTunerMessage = messageStruct.message;
+        byte[] StabAssistTunerMessage = messageStruct.message;
         controlBoardPort.writeBytes(StabAssistTunerMessage, StabAssistTunerMessage.length);
 
         logCommand(messageStruct, "stabAssistPID", which + ", " +
-                Arrays.toString(new double[]{kp, ki, kd, limit}) + ", " + Boolean.toString(invert));
+                Arrays.toString(new double[] { kp, ki, kd, limit }) + ", " + Boolean.toString(invert));
 
         return messageStruct.id;
     }
 
-    public short BNO055PeriodicRead(byte enable){
+    public short BNO055PeriodicRead(byte enable) {
         ByteArrayOutputStream PeriodicRead = new ByteArrayOutputStream();
         PeriodicRead.writeBytes(BNO055_PERIODIC_READ);
         PeriodicRead.write(enable);
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(PeriodicRead.toByteArray());
-        byte [] PeriodicReadMessage = messageStruct.message;
+        byte[] PeriodicReadMessage = messageStruct.message;
         controlBoardPort.writeBytes(PeriodicReadMessage, PeriodicReadMessage.length);
 
         logCommand(messageStruct, "BNO055PeriodicRead", Byte.toString(enable));
@@ -340,11 +350,11 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short BNO055Read(){
+    public short BNO055Read() {
         ByteArrayOutputStream Read = new ByteArrayOutputStream();
         Read.writeBytes(BNO055_READ);
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(Read.toByteArray());
-        byte [] ReadMessage = messageStruct.message;
+        byte[] ReadMessage = messageStruct.message;
         controlBoardPort.writeBytes(ReadMessage, ReadMessage.length);
 
         logCommand(messageStruct, "BNO055Read", "");
@@ -352,31 +362,31 @@ class ControlBoardCommunication {
         return messageStruct.id;
     }
 
-    public short MS5837Read(){
+    public short MS5837Read() {
         ByteArrayOutputStream MSRead = new ByteArrayOutputStream();
         MSRead.writeBytes(MS5837_READ);
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MSRead.toByteArray());
-        byte [] MSReadMessage = messageStruct.message;
+        byte[] MSReadMessage = messageStruct.message;
         controlBoardPort.writeBytes(MSReadMessage, MSReadMessage.length);
 
         logCommand(messageStruct, "MS5837Read", "");
 
         return messageStruct.id;
     }
-    
-    public short MSPeriodicRead(byte enable){
+
+    public short MSPeriodicRead(byte enable) {
         ByteArrayOutputStream MSPeriodicRead = new ByteArrayOutputStream();
         MSPeriodicRead.writeBytes(MS5837_PERIODIC_READ);
         MSPeriodicRead.write(enable);
         MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(MSPeriodicRead.toByteArray());
-        byte [] MSPeriodicReadMessage = messageStruct.message;
+        byte[] MSPeriodicReadMessage = messageStruct.message;
         controlBoardPort.writeBytes(MSPeriodicReadMessage, MSPeriodicReadMessage.length);
 
         logCommand(messageStruct, "MSPeriodicRead", Byte.toString(enable));
 
         return messageStruct.id;
     }
-   
+
     /**
      * Sets relative speeds of motion in each degree of freedom.
      * Each double should be from -1 to 1.
@@ -396,8 +406,8 @@ class ControlBoardCommunication {
         byte[] rawDofMessage = messageStruct.message;
         controlBoardPort.writeBytes(rawDofMessage, rawDofMessage.length);
 
-        logCommand(messageStruct, "setDofSpeeds", 
-                    Arrays.toString(new float[]{x, y, z, xrot, yrot, zrot}));
+        logCommand(messageStruct, "setDofSpeeds",
+                Arrays.toString(new float[] { x, y, z, xrot, yrot, zrot }));
 
         return messageStruct.id;
     }

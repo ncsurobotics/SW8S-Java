@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.meb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.aquapackrobotics.sw8s.comms.MEBListener;
+import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * Synchronous SW8 control board communication handler.
@@ -15,7 +15,7 @@ import org.aquapackrobotics.sw8s.comms.MEBListener;
  * Setting functions do not block
  * Getting functions block
  */
-class MEBCommunication {
+public class MEBCommunication {
     private final ICommPort MEBPort;
 
     private static final byte START_BYTE = (byte) 253;

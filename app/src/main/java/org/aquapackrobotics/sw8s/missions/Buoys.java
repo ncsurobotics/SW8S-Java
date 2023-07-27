@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 public class Buoys extends Mission {
     String missionName;
 
-    public Buoys(ControlBoardThreadManager manager, String missionName) {
+    public Buoys(CommsThreadManager manager, String missionName) {
         super(manager);
         this.missionName = missionName;
     }

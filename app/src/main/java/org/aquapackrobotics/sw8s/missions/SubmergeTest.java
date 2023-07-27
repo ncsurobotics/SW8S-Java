@@ -12,7 +12,7 @@ import java.util.concurrent.*;
  */
 public class SubmergeTest extends Mission {
 
-    public SubmergeTest(ControlBoardThreadManager manager) {
+    public SubmergeTest(CommsThreadManager manager) {
         super(manager);
 
     }

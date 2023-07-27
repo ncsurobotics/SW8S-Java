@@ -23,7 +23,7 @@ public class PathYUVPastState extends State {
     private int noDetectCount;
     private double curAngle;
 
-    public PathYUVPastState(ControlBoardThreadManager manager, String missionName) {
+    public PathYUVPastState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);

@@ -21,7 +21,7 @@ public class PathYUVFollowState extends State {
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
 
-    public PathYUVFollowState(ControlBoardThreadManager manager, String missionName) {
+    public PathYUVFollowState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);

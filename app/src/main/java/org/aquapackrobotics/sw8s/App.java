@@ -20,15 +20,15 @@ public class App {
 
     static final int POOLSIZE = 128;
     static ScheduledThreadPoolExecutor pool = null;
-    static ControlBoardThreadManager manager = null;
+    static CommsThreadManager manager = null;
 
     public static ScheduledThreadPoolExecutor getPool() {
         return (pool == null) ? pool = new ScheduledThreadPoolExecutor(POOLSIZE) : pool;
     }
 
-    public static ControlBoardThreadManager getManager() {
+    public static CommsThreadManager getManager() {
         try {
-            return (manager == null) ? manager = new ControlBoardThreadManager(getPool()) : manager;
+            return (manager == null) ? manager = new CommsThreadManager(getPool()) : manager;
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(2);

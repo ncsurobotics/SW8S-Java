@@ -14,7 +14,7 @@ public class BinInitState extends State {
     private String missionName;
     private double initialYaw;
 
-    public BinInitState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
+    public BinInitState(CommsThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;

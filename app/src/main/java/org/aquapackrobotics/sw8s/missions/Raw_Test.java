@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 public class Raw_Test extends Mission {
     Scanner scnr = new Scanner(System.in);
 
-    public Raw_Test(ControlBoardThreadManager manager) {
+    public Raw_Test(CommsThreadManager manager) {
         super(manager);
     }
 

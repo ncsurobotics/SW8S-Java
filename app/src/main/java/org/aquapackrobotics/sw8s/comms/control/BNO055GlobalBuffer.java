@@ -1,6 +1,8 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.control;
 
-public class BNO055GlobalBuffer{
+import org.aquapackrobotics.sw8s.comms.*;
+
+public class BNO055GlobalBuffer {
     DataBuffer quat_w = new DataBuffer();
     DataBuffer quat_x = new DataBuffer();
     DataBuffer quat_y = new DataBuffer();

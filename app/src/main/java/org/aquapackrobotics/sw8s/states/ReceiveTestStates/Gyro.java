@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class Gyro extends State {
     ScheduledFuture<float[]> gyroRead;
 
-    public Gyro(ControlBoardThreadManager manager) {
+    public Gyro(CommsThreadManager manager) {
         super(manager);
     }
 

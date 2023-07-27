@@ -25,7 +25,7 @@ public class PathYUVDetectState extends State {
     private double curPitch;
     private double combinedAngle;
 
-    public PathYUVDetectState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
+    public PathYUVDetectState(CommsThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);

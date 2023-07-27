@@ -15,7 +15,7 @@ public class PathYUVSubmergeState extends State {
     private double initialYaw;
     private double prevTime;
 
-    public PathYUVSubmergeState(ControlBoardThreadManager manager, String missionName, double initialYaw) {
+    public PathYUVSubmergeState(CommsThreadManager manager, String missionName, double initialYaw) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;

@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.comms;
+package org.aquapackrobotics.sw8s.comms.control;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

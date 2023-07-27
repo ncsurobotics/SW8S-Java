@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardMode;
+
 /**
  * Mock serial port.
  * Mimics the SW8E Control Board.

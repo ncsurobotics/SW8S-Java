@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class Depth extends State {
     ScheduledFuture<Float> depthRead;
 
-    public Depth(ControlBoardThreadManager manager) {
+    public Depth(CommsThreadManager manager) {
         super(manager);
     }
 

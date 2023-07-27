@@ -9,7 +9,7 @@ public class SubmergeTestDownState extends State {
     long startTime;
     long endTime;
 
-    public SubmergeTestDownState(ControlBoardThreadManager manager) {
+    public SubmergeTestDownState(CommsThreadManager manager) {
         super(manager);
     }
 

@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Local_Test extends Mission {
-    public Local_Test(ControlBoardThreadManager manager) {
+    public Local_Test(CommsThreadManager manager) {
         super(manager);
     }
 

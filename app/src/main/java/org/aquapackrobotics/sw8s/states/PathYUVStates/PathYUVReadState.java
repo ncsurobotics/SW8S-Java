@@ -22,7 +22,7 @@ public class PathYUVReadState extends State {
     // 0.45, 0.5 };
     // private File[] cand_files = new File[9];
 
-    public PathYUVReadState(ControlBoardThreadManager manager) {
+    public PathYUVReadState(CommsThreadManager manager) {
         super(manager);
         CameraFeedSender.openCapture(0);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");

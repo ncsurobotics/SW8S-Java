@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
-import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Bin;
 import org.opencv.core.Mat;
@@ -23,7 +23,7 @@ public class BinTargetState extends State {
     private double depth = -1.5;
     private double yaw;
 
-    public BinTargetState(ControlBoardThreadManager manager, String testName) {
+    public BinTargetState(CommsThreadManager manager, String testName) {
         super(manager);
         CameraFeedSender.openCapture(0);
         target = new Bin(false);

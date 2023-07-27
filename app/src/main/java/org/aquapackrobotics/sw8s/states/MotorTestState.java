@@ -20,7 +20,7 @@ public class MotorTestState extends State {
     private static long DELAY = 1000;
     private static float TEST_SPEED = (float) 0.3;
 
-    public MotorTestState(ControlBoardThreadManager manager, int motorNumber) {
+    public MotorTestState(CommsThreadManager manager, int motorNumber) {
         super(manager);
         this.motorNumber = motorNumber;
     }

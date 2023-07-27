@@ -13,7 +13,7 @@ public class Bin extends Mission {
     String missionName;
     private double initialYaw;
 
-    public Bin(ControlBoardThreadManager manager, String missionName) {
+    public Bin(CommsThreadManager manager, String missionName) {
         super(manager);
         this.missionName = missionName;
         try {

@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class ReceiveTest extends Mission {
-    public ReceiveTest(ControlBoardThreadManager manager) {
+    public ReceiveTest(CommsThreadManager manager) {
         super(manager);
     }
 

@@ -17,7 +17,7 @@ public class StabilityGateVisionState extends State {
 
     private final Path target;
 
-    public StabilityGateVisionState(ControlBoardThreadManager manager, double yaw) {
+    public StabilityGateVisionState(CommsThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
         CameraFeedSender.openCapture(0);

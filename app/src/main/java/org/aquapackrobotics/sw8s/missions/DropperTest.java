@@ -11,7 +11,7 @@ import java.util.concurrent.*;
  */
 public class DropperTest extends Mission {
 
-    public DropperTest(ControlBoardThreadManager manager) {
+    public DropperTest(CommsThreadManager manager) {
         super(manager);
     }
 

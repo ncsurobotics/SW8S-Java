@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
-import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Buoy;
 import org.opencv.core.Mat;
@@ -22,7 +22,7 @@ public class BuoyReadState extends State {
     private final File Dir;
     private double depth = -1;
 
-    public BuoyReadState(ControlBoardThreadManager manager) {
+    public BuoyReadState(CommsThreadManager manager) {
         super(manager);
         CameraFeedSender.openCapture(0);
         target = new Buoy(false);

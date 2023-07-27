@@ -1,5 +1,6 @@
 package org.aquapackrobotics.sw8s.comms;
 
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardCommunication;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

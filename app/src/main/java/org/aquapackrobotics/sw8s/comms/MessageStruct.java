@@ -2,7 +2,7 @@ package org.aquapackrobotics.sw8s.comms;
 
 /**
  * "Struct" for pairing a Message ID to a fully constructed commboard message.
- * Used in {@link ControlBoardCommunication} to isolate msg ID from a message and return for use in {@link ControlBoardThreadManager}.
+ * Used in {@link ControlBoardCommunication} to isolate msg ID from a message and return for use in {@link CommsThreadManager}.
  * */
 public class MessageStruct {
     public short id;

@@ -6,9 +6,9 @@ import java.util.concurrent.*;
 
 public class SubmergeTestInitState extends State {
 
-    ControlBoardThreadManager manager;
+    CommsThreadManager manager;
 
-    public SubmergeTestInitState(ControlBoardThreadManager manager) {
+    public SubmergeTestInitState(CommsThreadManager manager) {
         super(manager);
     }
 

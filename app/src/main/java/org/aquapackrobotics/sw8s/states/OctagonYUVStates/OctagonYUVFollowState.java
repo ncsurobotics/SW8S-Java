@@ -19,7 +19,7 @@ public class OctagonYUVFollowState extends State {
     private final File Dir;
     private double depth = -1.7;
 
-    public OctagonYUVFollowState(ControlBoardThreadManager manager, String missionName) {
+    public OctagonYUVFollowState(CommsThreadManager manager, String missionName) {
         super(manager);
         // target = new PathYUV(new IntPair(Integer.MIN_VALUE, 127), new
         // IntPair(Integer.MAX_VALUE, Integer.MAX_VALUE), 10,

@@ -12,7 +12,7 @@ public class PeriodicDepth extends State {
     ScheduledFuture<byte[]> depthRead;
     int loop_runs;
 
-    public PeriodicDepth(ControlBoardThreadManager manager) {
+    public PeriodicDepth(CommsThreadManager manager) {
         super(manager);
         loop_runs = 0;
     }

@@ -11,7 +11,7 @@ import java.util.concurrent.*;
  */
 public class AutoMission extends Mission {
 
-    public AutoMission(ControlBoardThreadManager manager) {
+    public AutoMission(CommsThreadManager manager) {
         super(manager);
     }
 

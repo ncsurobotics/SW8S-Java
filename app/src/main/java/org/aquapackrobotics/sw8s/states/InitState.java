@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class InitState extends State {
-    public InitState(ControlBoardThreadManager manager) {
+    public InitState(CommsThreadManager manager) {
         super(manager);
     }
 

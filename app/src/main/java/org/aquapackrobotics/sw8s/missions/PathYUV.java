@@ -16,7 +16,7 @@ public class PathYUV extends Mission {
     private String missionName;
     private double initialYaw;
 
-    public PathYUV(ControlBoardThreadManager manager, String missionName) {
+    public PathYUV(CommsThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0, missionName);
         this.missionName = missionName;
