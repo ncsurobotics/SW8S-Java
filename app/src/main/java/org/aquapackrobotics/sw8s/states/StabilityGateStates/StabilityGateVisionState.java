@@ -1,14 +1,13 @@
 package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.vision.*;
+import java.util.concurrent.ExecutionException;
 
-import org.opencv.videoio.VideoCapture;
+import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.vision.Path;
+import org.aquapackrobotics.sw8s.vision.VisualObject;
 import org.opencv.core.Mat;
-
-import java.util.concurrent.*;
-import java.util.Arrays;
 
 public class StabilityGateVisionState extends State {
 
@@ -17,7 +16,7 @@ public class StabilityGateVisionState extends State {
 
     private final Path target;
 
-    public StabilityGateVisionState(ControlBoardThreadManager manager, double yaw) {
+    public StabilityGateVisionState(CommsThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
         CameraFeedSender.openCapture(0);

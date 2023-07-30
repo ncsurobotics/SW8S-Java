@@ -1,5 +1,4 @@
-package org.aquapackrobotics.sw8s.states;
-
+package org.aquapackrobotics.sw8s.states.ReceiveTestStates;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -11,7 +10,7 @@ import java.util.concurrent.*;
 public class Gyro extends State {
     ScheduledFuture<float[]> gyroRead;
 
-    public Gyro(ControlBoardThreadManager manager) {
+    public Gyro(CommsThreadManager manager) {
         super(manager);
     }
 
@@ -26,10 +25,10 @@ public class Gyro extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( gyroRead.isDone() ) {
+        if (gyroRead.isDone()) {
             try {
                 System.out.println("Gyro: " +
-                    Arrays.toString(gyroRead.get()));
+                        Arrays.toString(gyroRead.get()));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();

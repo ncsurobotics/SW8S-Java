@@ -1,17 +1,19 @@
 package org.aquapackrobotics.sw8s.states.BuoyStates;
 
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.states.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 
-import org.opencv.videoio.VideoCapture;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.states.State;
 
 public class BuoyInitState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
+    private String missionName;
 
-    public BuoyInitState(ControlBoardThreadManager manager) {
+    public BuoyInitState(CommsThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -46,6 +48,7 @@ public class BuoyInitState extends State {
     }
 
     public State nextState() {
-        return new BuoyReadState(manager);
+        // return new BuoyReadState(manager);
+        return new BuoyForwardState(manager, missionName);
     }
 }

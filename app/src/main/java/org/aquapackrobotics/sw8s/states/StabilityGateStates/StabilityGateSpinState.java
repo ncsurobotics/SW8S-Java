@@ -9,7 +9,7 @@ public class StabilityGateSpinState extends State {
     long startTime;
     long endTime;
 
-    public StabilityGateSpinState(ControlBoardThreadManager manager) {
+    public StabilityGateSpinState(CommsThreadManager manager) {
         super(manager);
     }
 

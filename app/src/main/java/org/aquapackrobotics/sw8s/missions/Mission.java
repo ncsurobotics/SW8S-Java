@@ -19,7 +19,7 @@ public abstract class Mission {
      * <p>
      * Single tasks with a return value are Callables, submitted with schedule
      */
-    protected ControlBoardThreadManager manager;
+    protected CommsThreadManager manager;
 
     /**
      * Generic Mission constructor.
@@ -29,7 +29,7 @@ public abstract class Mission {
      *
      * @param manager A non-filled thread manager
      */
-    public Mission(ControlBoardThreadManager manager) {
+    public Mission(CommsThreadManager manager) {
         this.manager = manager;
     }
 

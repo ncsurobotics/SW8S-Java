@@ -1,23 +1,22 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import org.aquapackrobotics.sw8s.comms.*;
+import java.util.concurrent.ExecutionException;
 
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.BuoyStates.*;
 import org.aquapackrobotics.sw8s.states.BuoyStates.BuoyInitState;
 
-import org.opencv.videoio.VideoCapture;
-
-import java.util.concurrent.*;
-
 public class Buoys extends Mission {
-    public Buoys(ControlBoardThreadManager manager) {
+    String missionName;
+
+    public Buoys(CommsThreadManager manager, String missionName) {
         super(manager);
+        this.missionName = missionName;
     }
 
     @Override
     protected State initialState() {
-        return new BuoyReadState(manager);
+        return new BuoyInitState(manager, missionName);
     }
 
     @Override

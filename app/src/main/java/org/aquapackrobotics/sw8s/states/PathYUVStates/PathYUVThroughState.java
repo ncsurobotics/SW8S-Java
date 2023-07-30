@@ -1,16 +1,16 @@
 package org.aquapackrobotics.sw8s.states.PathYUVStates;
 
-import java.util.concurrent.*;
 import java.io.File;
-import java.lang.Math;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 
-import org.opencv.videoio.VideoCapture;
-import org.opencv.core.Mat;
-
-import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.*;
+import org.aquapackrobotics.sw8s.vision.PathYUV;
+import org.aquapackrobotics.sw8s.vision.VisualObject;
+import org.opencv.core.Mat;
 
 public class PathYUVThroughState extends State {
 
@@ -23,7 +23,7 @@ public class PathYUVThroughState extends State {
     private int inAngleCount;
     private String missionName;
 
-    public PathYUVThroughState(ControlBoardThreadManager manager, String missionName) {
+    public PathYUVThroughState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
@@ -36,7 +36,7 @@ public class PathYUVThroughState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class PathYUVThroughState extends State {
             }
 
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
-                    -2.0);
+                    -1.0);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);

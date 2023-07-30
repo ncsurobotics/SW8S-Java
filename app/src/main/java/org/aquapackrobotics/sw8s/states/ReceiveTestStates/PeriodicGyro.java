@@ -1,5 +1,4 @@
-package org.aquapackrobotics.sw8s.states;
-
+package org.aquapackrobotics.sw8s.states.ReceiveTestStates;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -12,7 +11,7 @@ public class PeriodicGyro extends State {
     ScheduledFuture<byte[]> gyroRead;
     int loop_runs;
 
-    public PeriodicGyro(ControlBoardThreadManager manager) {
+    public PeriodicGyro(CommsThreadManager manager) {
         super(manager);
         loop_runs = 0;
     }
@@ -20,7 +19,7 @@ public class PeriodicGyro extends State {
     // TODO: implement
     public void onEnter() {
         try {
-            gyroRead = manager.BNO055PeriodicRead((byte)1);
+            gyroRead = manager.BNO055PeriodicRead((byte) 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,9 +27,9 @@ public class PeriodicGyro extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( gyroRead.isDone() ) {
+        if (gyroRead.isDone()) {
             System.out.println("PeriodicGyro X: " +
-                Arrays.toString(manager.getGyro()));
+                    Arrays.toString(manager.getGyro()));
             if (++loop_runs < 10) {
                 return false;
             }

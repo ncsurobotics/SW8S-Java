@@ -6,10 +6,10 @@ import java.util.concurrent.*;
 
 public class BuoyChooseState extends State {
 
-    ControlBoardThreadManager manager;
+    CommsThreadManager manager;
     private long startTime;
 
-    public BuoyChooseState(ControlBoardThreadManager manager) {
+    public BuoyChooseState(CommsThreadManager manager) {
         super(manager);
     }
 

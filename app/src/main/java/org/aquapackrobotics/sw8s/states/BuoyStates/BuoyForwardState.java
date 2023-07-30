@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
-import org.aquapackrobotics.sw8s.comms.ControlBoardThreadManager;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Buoy;
 import org.opencv.core.Mat;
@@ -22,8 +22,9 @@ public class BuoyForwardState extends State {
     private final File Dir;
     private double depth = -1.5;
     private double yaw;
+    private double noDetectCount;
 
-    public BuoyForwardState(ControlBoardThreadManager manager, String testName) {
+    public BuoyForwardState(CommsThreadManager manager, String testName) {
         super(manager);
         CameraFeedSender.openCapture(0);
         target = new Buoy(false);
@@ -31,6 +32,7 @@ public class BuoyForwardState extends State {
         Dir = new File("/mnt/data/" + testName + "/buoy");
         Dir.mkdir();
         yaw = manager.getYaw();
+        this.noDetectCount = -1;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -49,6 +51,7 @@ public class BuoyForwardState extends State {
         Mat frame = CameraFeedSender.getFrame(1);
         Mat yoloout = target.detectYoloV5(frame);
         if (target.detected()) {
+            noDetectCount = 0;
             target.transAlign();
             try {
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
@@ -57,17 +60,29 @@ public class BuoyForwardState extends State {
                 printWriter.close();
                 System.out.println("Translation [x, z, distance]: " + Arrays.toString(target.translation));
 
+                if (Math.abs(target.translation[2]) < 0.1) {
+                    return true;
+                }
+
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.1 : -0.1;
+                    x = target.translation[0] > 0 ? 0.2 : -0.2;
                 }
-                manager.setStability2Speeds(x, 0.1, 0, 0, yaw, depth);
+
+                double y = Math.abs(target.translation[0]) < 0.5 ? 0.4 : 0;
+                manager.setStability2Speeds(x, y, 0, 0, yaw, depth);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
         } else {
+            if (noDetectCount >= 0)
+                ++noDetectCount;
             System.out.println("Not detected");
+        }
+
+        if (noDetectCount >= 5) {
+            return true;
         }
         return false;
 
@@ -75,10 +90,14 @@ public class BuoyForwardState extends State {
 
     public void onExit() throws ExecutionException, InterruptedException {
         System.out.println("Exiting buoy");
+        manager.setStability2Speeds(0, 1, 0, 0, yaw, depth);
+        Thread.sleep(4000);
+        System.out.println("Stopping motors");
         manager.setStability2Speeds(0, 0, 0, 0, yaw, depth);
-        Thread.sleep(500);
-        manager.setStability2Speeds(0, -0.5, 0, 0, yaw, depth);
         Thread.sleep(1000);
+        System.out.println("Driving back");
+        manager.setStability2Speeds(-0.5, -0.5, 0, 0, yaw, depth);
+        Thread.sleep(6000);
     }
 
     public State nextState() {

@@ -1,13 +1,11 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.util.concurrent.*;
-import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
-import org.opencv.videoio.VideoCapture;
-
-import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.OctagonYUVStates.*;
+import org.aquapackrobotics.sw8s.states.OctagonYUVStates.OctagonYUVSubmergeState;
 
 /**
  * Mission for navigating gates
@@ -15,7 +13,7 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.*;
 public class OctagonYUV extends Mission {
     private String missionName;
 
-    public OctagonYUV(ControlBoardThreadManager manager, String missionName) {
+    public OctagonYUV(CommsThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0);
         this.missionName = missionName;

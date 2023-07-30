@@ -11,7 +11,7 @@ import org.aquapackrobotics.sw8s.comms.*;
  * Each task has start conditions, execution logic, and end conditions
  */
 public abstract class State {
-    protected ControlBoardThreadManager manager;
+    protected CommsThreadManager manager;
     /**
      * Creates a state instance.
      * <p>
@@ -19,7 +19,7 @@ public abstract class State {
      *
      * @param manager the Missions' manager for task submission
      */
-    public State(ControlBoardThreadManager manager) {
+    public State(CommsThreadManager manager) {
         this.manager = manager;
     }
 

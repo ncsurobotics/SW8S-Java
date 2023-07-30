@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardMode;
+
 /**
  * Mock serial port.
  * Mimics the SW8E Control Board.
@@ -37,9 +39,13 @@ public class TestComPort implements ICommPort {
         portListener = listener;
     }
 
+    public void openPortMEB(ICommPortListener listener) {
+        // TODO
+    }
+
     public void writeBytes(byte[] bytes, int length) {
         verifyPortOpened();
-        
+
         // Load message in
         boolean isEscape = false;
         for (int i = 0; i < bytes.length && i < length; i++) {
@@ -53,7 +59,8 @@ public class TestComPort implements ICommPort {
                     received.reset();
                     isStartMessage = false;
                 } else if (SerialCommunicationUtility.isStartOfMessage(b) && !isEscape) {
-                    throw new RuntimeException("Cannot process a start byte after the previous start byte hasn't been closed.");
+                    throw new RuntimeException(
+                            "Cannot process a start byte after the previous start byte hasn't been closed.");
                 } else {
                     received.write(b);
                 }
@@ -70,8 +77,10 @@ public class TestComPort implements ICommPort {
     }
 
     /**
-     * Messages are added to this queue in response to properly processed inputs from writeByte.
+     * Messages are added to this queue in response to properly processed inputs
+     * from writeByte.
      * Possible messages are available from this class.
+     * 
      * @return
      */
     public List<String> getMessages() {
@@ -80,7 +89,7 @@ public class TestComPort implements ICommPort {
 
     private void readBuffer() {
         byte[] receivedAsBytes = received.toByteArray();
-        
+
         receivedAsBytes = SerialCommunicationUtility.destructMessage(receivedAsBytes);
 
         for (byte b : receivedAsBytes) {
@@ -93,12 +102,12 @@ public class TestComPort implements ICommPort {
             System.out.print(" ");
         }
 
-        //Remove message ID
+        // Remove message ID
         byte lowByte = receivedAsBytes[1];
         byte highByte = receivedAsBytes[0];
         short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
         receivedAsBytes = Arrays.copyOfRange(receivedAsBytes, 2, receivedAsBytes.length);
-        
+
         processMessage(receivedAsBytes);
     }
 

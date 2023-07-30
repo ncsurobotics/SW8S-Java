@@ -1,15 +1,9 @@
 package org.aquapackrobotics.sw8s.states;
 
-
-import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.comms.*;
-
-import java.util.Scanner;
-
-import java.util.concurrent.*;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 
 public class InitState extends State {
-    public InitState(ControlBoardThreadManager manager) {
+    public InitState(CommsThreadManager manager) {
         super(manager);
     }
 

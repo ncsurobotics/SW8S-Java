@@ -22,7 +22,7 @@ public class ManualMission extends Mission {
     ScheduledFuture<byte[]> depthRead;
     ScheduledFuture<byte[]> gyroRead;
 
-    public ManualMission(ControlBoardThreadManager manager, int port) {
+    public ManualMission(CommsThreadManager manager, int port) {
         super(manager);
         this.port = port;
     }

@@ -13,7 +13,7 @@ public class StabilityGateForwardState extends State {
 
     private long midTime;
 
-    public StabilityGateForwardState(ControlBoardThreadManager manager, double yaw) {
+    public StabilityGateForwardState(CommsThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
     }

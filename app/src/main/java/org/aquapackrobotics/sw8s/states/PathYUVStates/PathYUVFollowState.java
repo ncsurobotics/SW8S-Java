@@ -1,16 +1,16 @@
 package org.aquapackrobotics.sw8s.states.PathYUVStates;
 
-import java.util.concurrent.*;
 import java.io.File;
-import java.lang.Math;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 
-import org.opencv.videoio.VideoCapture;
-import org.opencv.core.Mat;
-
-import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.*;
+import org.aquapackrobotics.sw8s.vision.PathYUV;
+import org.aquapackrobotics.sw8s.vision.VisualObject;
+import org.opencv.core.Mat;
 
 public class PathYUVFollowState extends State {
 
@@ -21,7 +21,7 @@ public class PathYUVFollowState extends State {
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
 
-    public PathYUVFollowState(ControlBoardThreadManager manager, String missionName) {
+    public PathYUVFollowState(CommsThreadManager manager, String missionName) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
@@ -33,7 +33,7 @@ public class PathYUVFollowState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -63,15 +63,21 @@ public class PathYUVFollowState extends State {
                 combined_angle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
-                    -2.0);
+                    -1.0);
             // var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw() +
-            // footage.angle, -2.0);
+            // footage.angle, -1.0);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
             }
             while (!mreturn.isDone())
                 ;
+
+            if (Math.abs(angle) < 20 && Math.abs(footage.horizontal_offset) < 20
+                    && Math.abs(footage.vertical_offset) < 20) {
+                return true;
+            }
+
         } catch (Exception e) {
         }
         return false;

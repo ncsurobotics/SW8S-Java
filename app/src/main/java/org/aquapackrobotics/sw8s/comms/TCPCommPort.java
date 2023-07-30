@@ -1,10 +1,12 @@
 package org.aquapackrobotics.sw8s.comms;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.ThreadFactory;
+
+import org.aquapackrobotics.sw8s.comms.control.ControlBoardListener;
 
 public class TCPCommPort implements ICommPort, ThreadFactory {
 
@@ -45,6 +47,11 @@ public class TCPCommPort implements ICommPort, ThreadFactory {
 
         }
 
+    }
+
+    @Override
+    public void openPortMEB(ICommPortListener listener) {
+        // TODO
     }
 
     private void listenForEvents() throws IOException {

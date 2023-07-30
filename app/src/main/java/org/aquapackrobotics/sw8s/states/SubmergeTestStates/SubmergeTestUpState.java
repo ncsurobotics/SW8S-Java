@@ -6,11 +6,11 @@ import java.util.concurrent.*;
 
 public class SubmergeTestUpState extends State {
 
-    ControlBoardThreadManager manager;
+    CommsThreadManager manager;
     long startTime;
     long endTime;
 
-    public SubmergeTestUpState(ControlBoardThreadManager manager) {
+    public SubmergeTestUpState(CommsThreadManager manager) {
         super(manager);
     }
 

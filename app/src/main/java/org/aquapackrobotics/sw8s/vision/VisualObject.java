@@ -10,7 +10,7 @@ public class VisualObject {
     /*
      * linear needs to be five values long
      */
-    VisualObject(double[] linear) {
+    public VisualObject(double[] linear) {
         color = linear[0];
         width = linear[1];
         angle = linear[2];

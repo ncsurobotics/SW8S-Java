@@ -1,16 +1,13 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import org.aquapackrobotics.sw8s.comms.*;
+import java.util.concurrent.ExecutionException;
 
-import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.comms.*;
-
-import java.util.Scanner;
-
-import java.util.concurrent.*;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.states.ReceiveTestStates.Depth;
 
 public class ReceiveTest extends Mission {
-    public ReceiveTest(ControlBoardThreadManager manager) {
+    public ReceiveTest(CommsThreadManager manager) {
         super(manager);
     }
 
@@ -22,14 +19,15 @@ public class ReceiveTest extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) throws ExecutionException, InterruptedException  {
-        while ( !state.onPeriodic() ) {
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
+        while (!state.onPeriodic()) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        };
+        }
+        ;
     }
 
     // TODO: implement

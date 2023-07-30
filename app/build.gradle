@@ -28,8 +28,6 @@ dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13.2'
 
-	//implementation 'org.javatuples:javatuples:1.2'
-
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
@@ -41,7 +39,12 @@ dependencies {
     }
     implementation 'org.openpnp:opencv:4.6.0-0'
 
+	// Add tensorflow
+	//implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.9'
+	//implementation 'org.bytedeco:javacpp:1.5.9'
+	//implementation 'org.bytedeco:javacpp:1.5.9:linux-arm64'
 	//implementation 'org.tensorflow:tensorflow-core-platform-gpu:0.4.0'
+	//implementation 'org.tensorflow:tensorflow-core-api:0.4.0:linux-x86'
 }
 
 mainClassName = "org.aquapackrobotics.sw8s.App"

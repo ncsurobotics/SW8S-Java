@@ -1,18 +1,15 @@
 package org.aquapackrobotics.sw8s.states.PathYUVStates;
 
-import java.util.concurrent.*;
 import java.io.File;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 
-import org.opencv.videoio.VideoCapture;
-import org.opencv.core.Mat;
-
-import org.aquapackrobotics.sw8s.comms.*;
-import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.PathYUV;
-
-import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.core.Mat;
 
 public class PathYUVReadState extends State {
 
@@ -22,7 +19,7 @@ public class PathYUVReadState extends State {
     // 0.45, 0.5 };
     // private File[] cand_files = new File[9];
 
-    public PathYUVReadState(ControlBoardThreadManager manager) {
+    public PathYUVReadState(CommsThreadManager manager) {
         super(manager);
         CameraFeedSender.openCapture(0);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");

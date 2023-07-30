@@ -1,5 +1,4 @@
-package org.aquapackrobotics.sw8s.states;
-
+package org.aquapackrobotics.sw8s.states.ReceiveTestStates;
 
 import org.aquapackrobotics.sw8s.states.*;
 import org.aquapackrobotics.sw8s.comms.*;
@@ -11,7 +10,7 @@ import java.util.concurrent.*;
 public class Depth extends State {
     ScheduledFuture<Float> depthRead;
 
-    public Depth(ControlBoardThreadManager manager) {
+    public Depth(CommsThreadManager manager) {
         super(manager);
     }
 
@@ -26,7 +25,7 @@ public class Depth extends State {
 
     // TODO: implement
     public boolean onPeriodic() {
-        if ( depthRead.isDone() ) {
+        if (depthRead.isDone()) {
             try {
                 System.out.println("Depth: " + depthRead.get().toString());
                 return true;

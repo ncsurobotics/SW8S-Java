@@ -1,21 +1,19 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import org.aquapackrobotics.sw8s.comms.*;
-
-import org.aquapackrobotics.sw8s.states.*;
-import org.aquapackrobotics.sw8s.comms.*;
-
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
-import java.util.concurrent.*;
+import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.states.InitState;
+import org.aquapackrobotics.sw8s.states.State;
 
 public class Local_Test extends Mission {
-    public Local_Test(ControlBoardThreadManager manager) {
+    public Local_Test(CommsThreadManager manager) {
         super(manager);
     }
 
     public void stopMotors() {
-        //set all motors to 0
+        // set all motors to 0
     }
 
     // TODO: implement
@@ -26,7 +24,7 @@ public class Local_Test extends Mission {
 
     // TODO: implement
     @Override
-    protected void executeState(State state) throws ExecutionException, InterruptedException  {
+    protected void executeState(State state) throws ExecutionException, InterruptedException {
         Scanner scnr = new Scanner(System.in);
 
         manager.setThrusterInversions(true, true, false, false, true, false, false, true);
@@ -38,17 +36,17 @@ public class Local_Test extends Mission {
             if (scnr.hasNextLine()) {
                 nextLine = scnr.nextLine();
                 if (nextLine.equals("")) {
-                    manager.setLocalSpeeds(0,0,0,0,0,0);
+                    manager.setLocalSpeeds(0, 0, 0, 0, 0, 0);
                     System.out.println("All motors set to 0.");
                     return;
                 }
                 String[] lineParts = nextLine.split(" ");
-                
+
                 String direction = lineParts[0];
                 double power = Double.valueOf(lineParts[1]);
 
                 switch (direction.toLowerCase()) {
-                    case "left": 
+                    case "left":
                         manager.setLocalSpeeds(-power, 0, 0, 0, 0, 0);
                         break;
                     case "right":
@@ -79,6 +77,7 @@ public class Local_Test extends Mission {
             }
         }
     }
+
     // TODO: implement
     @Override
     protected State nextState(State state) {

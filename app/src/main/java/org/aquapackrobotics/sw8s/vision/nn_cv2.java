@@ -1,16 +1,21 @@
 package org.aquapackrobotics.sw8s.vision;
 
-import org.opencv.dnn.*;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 
-import org.opencv.core.*;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfRect2d;
+import org.opencv.core.Point;
+import org.opencv.core.Rect2d;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.dnn.Dnn;
+import org.opencv.dnn.Net;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
 /**
  * Code for general opencv dnn tasks
