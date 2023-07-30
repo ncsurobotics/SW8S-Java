@@ -1,7 +1,9 @@
 package org.aquapackrobotics.sw8s.comms.control;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -60,7 +62,9 @@ public class ControlBoardCommunication {
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            FileHandler fHandle = new FileHandler("%t/Comms_Out.log", true);
+            new File("/mnt/data/comms/control").mkdir();
+            FileHandler fHandle = new FileHandler("/mnt/data/comms/control/out" + Instant.now().toString() + ".log",
+                    true);
             fHandle.setFormatter(new SimpleFormatter());
             logger.addHandler(fHandle);
         } catch (IOException e) {

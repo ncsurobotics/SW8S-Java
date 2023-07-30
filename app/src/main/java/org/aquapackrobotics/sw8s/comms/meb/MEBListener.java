@@ -1,7 +1,9 @@
 package org.aquapackrobotics.sw8s.comms.meb;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
@@ -38,7 +40,8 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            FileHandler fHandle = new FileHandler("%t/MEB_Comms_In.log", true);
+            new File("/mnt/data/comms/meb").mkdir();
+            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
             fHandle.setFormatter(new SimpleFormatter());
             logger.addHandler(fHandle);
         } catch (IOException e) {

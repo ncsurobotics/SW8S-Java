@@ -35,11 +35,6 @@ public class ControlBoardListenerTest {
 
     }
 
-    @After
-    public void cleanup() {
-        MessageStack.clear();
-    }
-
     private byte[] generateAcknowledgeMessage(short id, byte errorCode, byte[] data) {
         ByteArrayOutputStream acknowledgeMessage = new ByteArrayOutputStream();
 
@@ -90,7 +85,7 @@ public class ControlBoardListenerTest {
             // Sends message bytes to listener
             listener.eventBytesHandler(acknowledgeMessage);
             try {
-                Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
+                Assert.assertTrue(Arrays.equals(expectedMessageData, listener.getMsgById(id)));
             } catch (InterruptedException e) {
             }
         }
@@ -113,7 +108,7 @@ public class ControlBoardListenerTest {
         listener.eventBytesHandler(secondHalfAcknowledge);
 
         try {
-            Assert.assertTrue(Arrays.equals(expectedMessageData, MessageStack.getInstance().getMsgById(id)));
+            Assert.assertTrue(Arrays.equals(expectedMessageData, listener.getMsgById(id)));
         } catch (InterruptedException e) {
         }
         acknowledgeMessage.reset();
@@ -133,8 +128,8 @@ public class ControlBoardListenerTest {
 
         listener.eventBytesHandler(acknowledgeMessageDouble.toByteArray());
         try {
-            Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id)));
-            Assert.assertTrue(Arrays.equals(expectedMessage, MessageStack.getInstance().getMsgById(id2)));
+            Assert.assertTrue(Arrays.equals(expectedMessage, listener.getMsgById(id)));
+            Assert.assertTrue(Arrays.equals(expectedMessage, listener.getMsgById(id2)));
 
         } catch (InterruptedException e) {
         }

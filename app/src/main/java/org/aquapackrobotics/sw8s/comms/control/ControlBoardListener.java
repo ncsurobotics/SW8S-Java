@@ -1,20 +1,26 @@
 package org.aquapackrobotics.sw8s.comms.control;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+import org.aquapackrobotics.sw8s.comms.ByteArrayUtility;
+import org.aquapackrobotics.sw8s.comms.ICommPortListener;
+import org.aquapackrobotics.sw8s.comms.SerialCommunicationUtility;
+import org.aquapackrobotics.sw8s.comms.TCPCommPort;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
-
-import java.nio.charset.StandardCharsets;
-
-import java.lang.Math;
-
-import org.aquapackrobotics.sw8s.comms.*;
 
 /**
  * ControlBoardListener listens for messages from a comm port.
@@ -41,7 +47,25 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static boolean parseStarted = true;
     private static boolean parseEscaped = false;
 
+    private ConcurrentHashMap<Short, byte[]> messages;
+    private Logger logger;
+
     public ControlBoardListener() {
+        messages = new ConcurrentHashMap<Short, byte[]>();
+
+        logger = Logger.getLogger("Comms_In");
+        logger.setUseParentHandlers(false);
+        for (var h : logger.getHandlers())
+            logger.removeHandler(h);
+        try {
+            new File("/mnt/data/comms/control").mkdir();
+            FileHandler fHandle = new FileHandler("/mnt/data/comms/control/in" + Instant.now().toString() + ".log",
+                    true);
+            fHandle.setFormatter(new SimpleFormatter());
+            logger.addHandler(fHandle);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -71,6 +95,62 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     public void tcpEvent(TCPCommPort tcp) throws IOException {
         byte[] message = tcp.getBytesAvailable();
         eventBytesHandler(message);
+    }
+
+    private void logResponse(short id, byte[] message) {
+        logger.info(id + " | " + Arrays.toString(message));
+    }
+
+    /**
+     * Puts the given message at the front of the message deque
+     * 
+     * @param message message to add
+     */
+    private void push(byte[] message) {
+
+        // ID
+        byte lowByte = message[1];
+        byte highByte = message[0];
+        short id = (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
+
+        // Error code
+        int errorCode = message[2];
+
+        // Data
+        byte[] data = Arrays.copyOfRange(message, 3, message.length);
+
+        logResponse(id, message);
+
+        // If there's an error, exit
+        if (errorCode != (byte) 0) {
+            String errorMsg = "Error code " + errorCode + " with ID " + id + " and message " + Arrays.toString(message);
+            for (var c : data) {
+                errorMsg += (byte) c + " ";
+            }
+            System.out.println(errorMsg);
+            return;
+        }
+
+        // Payload
+        messages.put(id, data);
+    }
+
+    /**
+     * Removes the first element of the deque and returns it. Also features a
+     * timeout if no element is available.
+     * 
+     * @return the first element of the deque, or null if no element during
+     *         specified timeout
+     * @throws InterruptedException if interrupted while waiting for element to
+     *                              become available
+     */
+    public byte[] getMsgById(short id) throws InterruptedException {
+        // Returns the first message stored in the map
+        byte[] msg;
+        while ((msg = messages.remove(id)) == null) {
+            Thread.sleep(1);
+        }
+        return msg;
     }
 
     /**
@@ -193,7 +273,7 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
             } else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 // Pushes message onto message stack if acknowledge message
-                MessageStack.getInstance().push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
+                push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
             } else if (ByteArrayUtility.startsWith(strippedMessage, DEBUG_STRING.getBytes())) {
                 // THIS IS AN EXTREMELY CRUDE WAY TO READ DEBUG MESSAGES
                 // FIX LATER

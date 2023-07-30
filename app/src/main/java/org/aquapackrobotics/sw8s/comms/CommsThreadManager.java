@@ -128,7 +128,7 @@ public class CommsThreadManager {
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setThrusterInversions(invert1, invert2, invert3, invert4, invert5,
                         invert6, invert7, invert8);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -157,7 +157,7 @@ public class CommsThreadManager {
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setRawSpeeds(speed1, speed2, speed3, speed4, speed5, speed6,
                         speed7, speed8);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -177,7 +177,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setLocalSpeeds(x, y, z, xrot, yrot, zrot);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -190,7 +190,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setGlobalSpeeds(x, y, z, pitch_spd, roll_spd, yaw_spd);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -204,7 +204,7 @@ public class CommsThreadManager {
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setStabilityAssist1(x, y, yawSpd, targetPitch, targetRoll,
                         targetDepth);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -218,7 +218,7 @@ public class CommsThreadManager {
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.SetStabilityAssist2(x, y, targetPitch, targetRoll, targetYaw,
                         targetDepth);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -230,7 +230,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.MatrixUpdate();
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -243,7 +243,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setMotorMatrix(thruster_num, x, y, z, pitch, roll, yaw);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -255,7 +255,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.ImuAxisConfig(config);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
 
@@ -268,7 +268,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.StabAssistPID(which, kp, ki, kd, limit, invert);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
         return scheduleTask(assistCallable);
@@ -279,7 +279,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.BNO055PeriodicRead(enable);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
         return scheduleTask(readCallable);
@@ -293,7 +293,7 @@ public class CommsThreadManager {
 
                 short id = controlBoardCommunication.BNO055Read();
                 ByteBuffer buffer_data = ByteBuffer.wrap(
-                        MessageStack.getInstance().getMsgById(id));
+                        controlListener.getMsgById(id));
 
                 try {
                     for (int i = 0; i < 7; i++) {
@@ -315,7 +315,7 @@ public class CommsThreadManager {
             public Float call() throws Exception {
                 short id = controlBoardCommunication.MS5837Read();
                 ByteBuffer buffer_data = ByteBuffer.wrap(
-                        MessageStack.getInstance().getMsgById(id));
+                        controlListener.getMsgById(id));
                 buffer_data.order(ByteOrder.LITTLE_ENDIAN);
                 return buffer_data.getFloat();
             }
@@ -328,7 +328,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.MSPeriodicRead(enable);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
         return scheduleTask(readCallable);
@@ -352,7 +352,7 @@ public class CommsThreadManager {
             @Override
             public byte[] call() throws Exception {
                 short id = controlBoardCommunication.setDofSpeeds(x, y, z, xrot, yrot, zrot);
-                return MessageStack.getInstance().getMsgById(id);
+                return controlListener.getMsgById(id);
             }
         };
         return scheduleTask(setCallable);
