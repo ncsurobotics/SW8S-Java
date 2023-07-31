@@ -85,8 +85,7 @@ public class Bin extends nn_cv2 {
 
     public boolean detected() {
         for (var target : find) {
-            int target_int = target.to_int();
-            if (super.idMap.containsKey(target_int) && super.output.indexOf(super.idMap.get(target_int)) >= 0)
+            if (super.output.indexOf(target.to_int()) >= 0)
                 return true;
         }
         return false;
@@ -95,28 +94,26 @@ public class Bin extends nn_cv2 {
     // turn the detected buoys into a translation vector
     public void transAlign() {
         for (var target : find) {
-            if (super.idMap.containsKey(target.to_int())) {
-                int i = super.idMap.get(target.to_int());
-                if (super.output.indexOf(i) >= 0) {
-                    // middle coordinate, top left + width or height
-                    double x = super.output_description.get(super.output.indexOf(i)).x +
-                            super.output_description.get(super.output.indexOf(i)).width / 2;
-                    x = x / (super.processImg.width() / 2);
-                    x = x < 0.5 ? -x : x - 0.5;
-                    double y = super.output_description.get(super.output.indexOf(i)).y +
-                            super.output_description.get(super.output.indexOf(i)).height / 2;
-                    y = y / (super.processImg.height() / 2);
-                    y = y < 0.5 ? -y : y - 0.5;
-                    this.translation[0] = x;
-                    this.translation[1] = y;
-                    // distance is referenced as the ratio of the object height and image height
-                    // higher distance means further away, normalized between [0,1]
-                    double min_dist = super.processImg.height();
-                    double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
-                            / min_dist;
-                    this.translation[2] = distance;
-                    break; // Only process for first match
-                }
+            int i = target.to_int();
+            if (super.output.indexOf(i) >= 0) {
+                // middle coordinate, top left + width or height
+                double x = super.output_description.get(super.output.indexOf(i)).x +
+                        super.output_description.get(super.output.indexOf(i)).width / 2;
+                x = x / (super.processImg.width() / 2);
+                x = x < 0.5 ? -x : x - 0.5;
+                double y = super.output_description.get(super.output.indexOf(i)).y +
+                        super.output_description.get(super.output.indexOf(i)).height / 2;
+                y = y / (super.processImg.height() / 2);
+                y = y < 0.5 ? -y : y - 0.5;
+                this.translation[0] = x;
+                this.translation[1] = y;
+                // distance is referenced as the ratio of the object height and image height
+                // higher distance means further away, normalized between [0,1]
+                double min_dist = super.processImg.height();
+                double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
+                        / min_dist;
+                this.translation[2] = distance;
+                break; // Only process for first match
             }
         }
 

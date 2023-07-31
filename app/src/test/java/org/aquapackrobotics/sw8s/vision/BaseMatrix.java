@@ -84,23 +84,17 @@ public class BaseMatrix {
     }
 
     @Test
-    public void markGate_BW() {
+    public void noFalsePositives() {
         try {
-            for (int i = 1; i < 7; i++) {
+            File dir = new File(System.getProperty("user.dir") + "/resources/blank_images/");
+            for (File f : dir.listFiles()) {
                 Mat img = Imgcodecs
-                        .imread(System.getProperty("user.dir") + "/resources/gate_images/" + String.valueOf(i)
-                                + ".jpeg");
-                Path path = new Path(0,
-                        200, 0,
-                        Integer.MAX_VALUE,
-                        0.5);
-                File dir = new File("tests/gate_BW/");
-                dir.mkdirs();
-                path.processFrame(img, "tests/gate_BW/" + String.valueOf(i) + ".jpeg");
-                // path.relativePosition(img);
+                        .imread(f.getPath());
+                PathYUV test = new PathYUV();
+                test.relativePosition(img);
+                Assert.fail("Found path");
             }
         } catch (Exception e) {
-            Assert.fail(e.getStackTrace().toString());
         }
     }
 
@@ -111,8 +105,8 @@ public class BaseMatrix {
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             Mat img2 = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
-            VisualObject original = new Path().relativePosition(img1);
-            VisualObject shrunk = new Path(0.25).relativePosition(img2);
+            new Path().relativePosition(img1);
+            new Path(0.25).relativePosition(img2);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
         }

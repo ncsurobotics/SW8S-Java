@@ -33,7 +33,6 @@ public class nn_cv2 extends ImagePrep {
 
     public List<Integer> output = new ArrayList<>();
     public List<Rect2d> output_description = new ArrayList<>();
-    HashMap<Integer, Integer> idMap = new HashMap<>();
 
     private int modelSize;
     private int factor;
@@ -110,10 +109,6 @@ public class nn_cv2 extends ImagePrep {
             return image;
         }
 
-        for (int i = 0; i < classIds.size(); i++) {
-            idMap.put(classIds.get(i), i);
-        }
-
         MatOfFloat confidences = new MatOfFloat(Converters.vector_float_to_Mat(confs));
         Rect2d[] boxesArray = rects.toArray(new Rect2d[0]);
         MatOfRect2d boxes = new MatOfRect2d(boxesArray);
@@ -125,6 +120,7 @@ public class nn_cv2 extends ImagePrep {
         for (int i = 0; i < ind.length; ++i) {
             int idx = ind[i];
             int classId = classIds.get(idx);
+            System.out.println("CLASS ID: " + String.valueOf(classId));
             Rect2d box = boxesArray[idx];
             Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), classId + 1);
             Imgproc.putText(out, Integer.toString(classId), box.tl(), Imgproc.FONT_HERSHEY_COMPLEX, 1,
