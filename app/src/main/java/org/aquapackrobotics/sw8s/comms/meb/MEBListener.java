@@ -42,8 +42,6 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     private static ConcurrentHashMap<Short, byte[]> messages = new ConcurrentHashMap<Short, byte[]>();
     private static Logger logger;
 
-    private static AHT10GlobalBuffer aht10GlobalBuffer = new AHT10GlobalBuffer();
-
     private static MEBStatus mebStatus = MEBStatus.getInstance();
 
     static {
@@ -51,14 +49,14 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
         logger.setUseParentHandlers(false);
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
-        try {
-            new File("/mnt/data/comms/meb").mkdir();
-            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
-            fHandle.setFormatter(new SimpleFormatter());
-            logger.addHandler(fHandle);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            new File("/mnt/data/comms/meb").mkdir();
+//            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
+//            fHandle.setFormatter(new SimpleFormatter());
+//            logger.addHandler(fHandle);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -164,8 +162,8 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float temp = buffer.getFloat();
                 float humid = buffer.getFloat();
-                aht10GlobalBuffer.temp.enqueue(temp);
-                aht10GlobalBuffer.humid.enqueue(humid);
+                mebStatus.temp = temp;
+                mebStatus.humid = humid;
             } else if (ByteArrayUtility.startsWith(strippedMessage, LEAK.getBytes())) {
                 byte leakStatus = strippedMessage[4];
                 if (leakStatus == (byte) 1) {
@@ -189,8 +187,7 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
             } else if (ByteArrayUtility.startsWith(strippedMessage, SHUTDOWN.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 5, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
-                buffer.order(ByteOrder.LITTLE_ENDIAN);
-                int cause = buffer.getInt();
+                int cause = buffer.get();
                 mebStatus.shutdownCause = cause;
             } else {
                 // push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));

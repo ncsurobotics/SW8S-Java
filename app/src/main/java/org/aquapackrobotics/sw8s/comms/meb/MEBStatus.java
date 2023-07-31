@@ -6,13 +6,20 @@ public class MEBStatus {
     public static float systemVoltage;
     public static int shutdownCause;
 
+    public static float humid;
+    public static float temp;
+
     private static MEBStatus mebStatus;
 
+
+
     private MEBStatus() {
-        boolean isLeak = false;
-        boolean isArmed = false;
-        float systemVoltage = 0.0f;
-        int shutdownCause = 0;
+        isLeak = false;
+        isArmed = false;
+        systemVoltage = 0.0f;
+        shutdownCause = 0;
+        humid = 0.0f;
+        temp = 0.0f;
     }
 
     public static MEBStatus getInstance() {
