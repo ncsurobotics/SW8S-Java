@@ -3,6 +3,8 @@ package org.aquapackrobotics.sw8s.comms.meb;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,12 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
 
     // Acknowledgements
     private static final String ACKNOWLEDGE = "ACK";
+    private static final String AHT10 = "AHT10";
+    private static final String LEAK = "LEAK";
+    private static final String TARM = "TARM";
+    private static final String VSYS = "VSYS";
+    private static final String SHUTDOWN = "SDOWN";
+
 
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
     private static boolean parseStarted = true;
@@ -34,19 +42,21 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     private static ConcurrentHashMap<Short, byte[]> messages = new ConcurrentHashMap<Short, byte[]>();
     private static Logger logger;
 
+    private static MEBStatus mebStatus = MEBStatus.getInstance();
+
     static {
         logger = Logger.getLogger("MEB_Comms_In");
         logger.setUseParentHandlers(false);
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
-        try {
-            new File("/mnt/data/comms/meb").mkdir();
-            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
-            fHandle.setFormatter(new SimpleFormatter());
-            logger.addHandler(fHandle);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            new File("/mnt/data/comms/meb").mkdir();
+//            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
+//            fHandle.setFormatter(new SimpleFormatter());
+//            logger.addHandler(fHandle);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -143,6 +153,42 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
             if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 // Pushes message onto message stack if acknowledge message
                 push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
+            } else if (ByteArrayUtility.startsWith(strippedMessage, AHT10.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 5, strippedMessage.length);
+                for (byte s : strippedMessage) {
+                    System.out.println(s);
+                }
+                ByteBuffer buffer = ByteBuffer.wrap(data);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                float temp = buffer.getFloat();
+                float humid = buffer.getFloat();
+                mebStatus.temp = temp;
+                mebStatus.humid = humid;
+            } else if (ByteArrayUtility.startsWith(strippedMessage, LEAK.getBytes())) {
+                byte leakStatus = strippedMessage[4];
+                if (leakStatus == (byte) 1) {
+                    mebStatus.isLeak = true;
+                } else {
+                    mebStatus.isLeak = false;
+                }
+            } else if (ByteArrayUtility.startsWith(strippedMessage, TARM.getBytes())) {
+                byte armStatus = strippedMessage[4];
+                if (armStatus == (byte) 1) {
+                    mebStatus.isArmed = true;
+                } else {
+                    mebStatus.isArmed = false;
+                }
+            } else if (ByteArrayUtility.startsWith(strippedMessage, VSYS.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
+                ByteBuffer buffer = ByteBuffer.wrap(data);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                float voltage = buffer.getFloat();
+                mebStatus.systemVoltage = voltage;
+            } else if (ByteArrayUtility.startsWith(strippedMessage, SHUTDOWN.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 5, strippedMessage.length);
+                ByteBuffer buffer = ByteBuffer.wrap(data);
+                int cause = buffer.get();
+                mebStatus.shutdownCause = cause;
             } else {
                 // push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
                 // Received message is not an acknowledgement message, it is ignored
