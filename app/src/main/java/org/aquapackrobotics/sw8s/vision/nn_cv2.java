@@ -122,7 +122,7 @@ public class nn_cv2 extends ImagePrep {
             int classId = classIds.get(idx);
             System.out.println("CLASS ID: " + String.valueOf(classId));
             Rect2d box = boxesArray[idx];
-            Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), classId + 1);
+            Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), 2);
             Imgproc.putText(out, Integer.toString(classId), box.tl(), Imgproc.FONT_HERSHEY_COMPLEX, 1,
                     new Scalar(0, 0, 255));
             output.add(classId);
