@@ -30,15 +30,15 @@ package org.aquapackrobotics.sw8s.vision;
 
 public class Bin extends nn_cv2 {
     public enum Target {
-        Cover, Bin_1, Bin_2;
+        Cover, Bin_Abydos, Bin_Earth;
 
         public int to_int() {
             switch (this) {
                 case Cover:
                     return 0;
-                case Bin_1:
+                case Bin_Abydos:
                     return 1;
-                case Bin_2:
+                case Bin_Earth:
                     return 2;
                 default:
                     return -1;
@@ -46,12 +46,12 @@ public class Bin extends nn_cv2 {
         }
 
         public static Target[] all() {
-            return new Target[] { Cover, Bin_1, Bin_2 };
+            return new Target[] { Cover, Bin_Abydos, Bin_Earth };
         }
     }
 
-    private static String model_path = "bin.onnx";
-    private static String larger_model_path = "bin_large.onnx";
+    private static String model_path = "bins_320.onnx";
+    private static String larger_model_path = "bins_640.onnx";
     private final Target[] find;
 
     // + left, - right [-1,1]

@@ -34,13 +34,13 @@ public class Buoy extends nn_cv2 {
 
         public int to_int() {
             switch (this) {
-                case Abydos_1:
-                    return 0;
-                case Abydos_2:
-                    return 1;
                 case Earth_1:
-                    return 2;
+                    return 0;
                 case Earth_2:
+                    return 1;
+                case Abydos_1:
+                    return 2;
+                case Abydos_2:
                     return 3;
                 default:
                     return -1;
@@ -48,12 +48,12 @@ public class Buoy extends nn_cv2 {
         }
 
         public static Target[] all() {
-            return new Target[] { Abydos_1, Abydos_2, Earth_1, Earth_2 };
+            return new Target[] { Earth_1, Earth_2, Abydos_1, Abydos_2 };
         }
     }
 
-    private static String model_path = "buoy.onnx";
-    private static String larger_model_path = "buoy_large.onnx";
+    private static String model_path = "buoy_320.onnx";
+    private static String larger_model_path = "buoy_640.onnx";
     private final Target[] find;
 
     // + left, - right [-1,1]
