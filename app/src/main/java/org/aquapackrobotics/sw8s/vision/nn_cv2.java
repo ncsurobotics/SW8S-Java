@@ -1,6 +1,7 @@
 package org.aquapackrobotics.sw8s.vision;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -66,11 +67,11 @@ public class nn_cv2 extends ImagePrep {
         super.processImg = image;
         output.clear();
         output_description.clear();
+        List<Integer> classIds = new ArrayList<>();
         List<Mat> result = new ArrayList<>();
         Mat blob = Dnn.blobFromImage(image, 1 / 255.0, new Size(modelSize, modelSize), new Scalar(0), true, false);
         this.net.setInput(blob);
         this.net.forward(result, this.outBlobNames);
-        List<Integer> clsIds = new ArrayList<>();
         List<Float> confs = new ArrayList<>();
         List<Rect2d> rects = new ArrayList<>();
         for (int i = 0; i < result.size(); i++) {
@@ -96,7 +97,7 @@ public class nn_cv2 extends ImagePrep {
                     int height = (int) ((row.get(0, 3)[0] * factor) / 800 * 600);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
-                    clsIds.add((int) classIdPoint.x);
+                    classIds.add((int) classIdPoint.x);
                     confs.add((float) confidence);
                     rects.add(new Rect2d(left, top, width, height));
 
@@ -107,6 +108,7 @@ public class nn_cv2 extends ImagePrep {
             // System.out.println("Nothing");
             return image;
         }
+
         MatOfFloat confidences = new MatOfFloat(Converters.vector_float_to_Mat(confs));
         Rect2d[] boxesArray = rects.toArray(new Rect2d[0]);
         MatOfRect2d boxes = new MatOfRect2d(boxesArray);
@@ -114,14 +116,16 @@ public class nn_cv2 extends ImagePrep {
         Dnn.NMSBoxes(boxes, confidences, .5f, .5f, indices); // We draw the bounding boxes for objects here
 
         int[] ind = indices.toArray();
-        int j = 0;
         Mat out = image.clone();
         for (int i = 0; i < ind.length; ++i) {
             int idx = ind[i];
-            int clsId = clsIds.get(idx);
+            int classId = classIds.get(idx);
+            System.out.println("CLASS ID: " + String.valueOf(classId));
             Rect2d box = boxesArray[idx];
-            Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), clsId + 1);
-            output.add(clsId);
+            Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), 2);
+            Imgproc.putText(out, Integer.toString(classId), box.tl(), Imgproc.FONT_HERSHEY_COMPLEX, 1,
+                    new Scalar(0, 0, 255));
+            output.add(classId);
             output_description.add(box);
         }
         return out;
