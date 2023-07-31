@@ -29,9 +29,32 @@ package org.aquapackrobotics.sw8s.vision;
  */
 
 public class Buoy extends nn_cv2 {
+    public enum Target {
+        Abydos_1, Abydos_2, Earth_1, Earth_2;
+
+        public int to_int() {
+            switch (this) {
+                case Abydos_1:
+                    return 0;
+                case Abydos_2:
+                    return 1;
+                case Earth_1:
+                    return 2;
+                case Earth_2:
+                    return 3;
+                default:
+                    return -1;
+            }
+        }
+
+        public static Target[] all() {
+            return new Target[] { Abydos_1, Abydos_2, Earth_1, Earth_2 };
+        }
+    }
+
     private static String model_path = "buoy.onnx";
     private static String larger_model_path = "buoy_large.onnx";
-    private final boolean[] find;
+    private final Target[] find;
 
     // + left, - right [-1,1]
     // + up, - down [-1,1]
@@ -41,18 +64,18 @@ public class Buoy extends nn_cv2 {
     public double[] rotation = { 0, 0, 0 };
 
     public Buoy() {
-        this(false, new boolean[] { true, true, true, true });
+        this(false, Target.all());
     }
 
-    public Buoy(boolean[] find) {
+    public Buoy(Target[] find) {
         this(false, find);
     }
 
     public Buoy(boolean larger) {
-        this(larger, new boolean[] { true, true, true, true });
+        this(larger, Target.all());
     }
 
-    public Buoy(boolean larger, boolean[] find) {
+    public Buoy(boolean larger, Target[] find) {
         if (larger) {
             super.loadModel(larger_model_path, 640, 1);
         } else {
@@ -63,8 +86,9 @@ public class Buoy extends nn_cv2 {
     }
 
     public boolean detected() {
-        for (int i = 0; i < find.length; i++) {
-            if (find[i] && super.output.indexOf(i) >= 0)
+        for (var target : find) {
+            int target_int = target.to_int();
+            if (super.idMap.containsKey(target_int) && super.output.indexOf(super.idMap.get(target_int)) >= 0)
                 return true;
         }
         return false;
@@ -72,28 +96,31 @@ public class Buoy extends nn_cv2 {
 
     // turn the detected buoys into a translation vector
     public void transAlign() {
-        for (int i = 0; i < find.length; i++) {
-            if (find[i] && super.output.indexOf(i) >= 0) {
-                // middle coordinate, top left + width or height
-                // System.out.println(super.output);
-                // System.out.println(super.output_description);
-                double x = super.output_description.get(super.output.indexOf(i)).x +
-                        super.output_description.get(super.output.indexOf(i)).width / 2;
-                x = x / (super.processImg.width() / 2);
-                x = x < 0.5 ? -x : x - 0.5;
-                double y = super.output_description.get(super.output.indexOf(i)).y +
-                        super.output_description.get(super.output.indexOf(i)).height / 2;
-                y = y / (super.processImg.height() / 2);
-                y = y < 0.5 ? -y : y - 0.5;
-                this.translation[0] = x;
-                this.translation[1] = y;
-                // distance is referenced as the ratio of the object height and image height
-                // higher distance means further away, normalized between [0,1]
-                double min_dist = super.processImg.height();
-                double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
-                        / min_dist;
-                this.translation[2] = distance;
-                return; // Only process for first match
+        for (var target : find) {
+            if (super.idMap.containsKey(target.to_int())) {
+                int i = super.idMap.get(target.to_int());
+                if (super.output.indexOf(i) >= 0) {
+                    // middle coordinate, top left + width or height
+                    // System.out.println(super.output);
+                    // System.out.println(super.output_description);
+                    double x = super.output_description.get(super.output.indexOf(i)).x +
+                            super.output_description.get(super.output.indexOf(i)).width / 2;
+                    x = x / (super.processImg.width() / 2);
+                    x = x < 0.5 ? -x : x - 0.5;
+                    double y = super.output_description.get(super.output.indexOf(i)).y +
+                            super.output_description.get(super.output.indexOf(i)).height / 2;
+                    y = y / (super.processImg.height() / 2);
+                    y = y < 0.5 ? -y : y - 0.5;
+                    this.translation[0] = x;
+                    this.translation[1] = y;
+                    // distance is referenced as the ratio of the object height and image height
+                    // higher distance means further away, normalized between [0,1]
+                    double min_dist = super.processImg.height();
+                    double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
+                            / min_dist;
+                    this.translation[2] = distance;
+                    break; // Only process for first match
+                }
             }
         }
 
