@@ -2,19 +2,11 @@ package org.aquapackrobotics.sw8s.vision;
 
 import java.io.File;
 
+import org.aquapackrobotics.sw8s.CV;
 import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-
-import org.aquapackrobotics.sw8s.CV;
-import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
-import org.aquapackrobotics.sw8s.vision.Path;
-import org.aquapackrobotics.sw8s.vision.PathYUV;
-
-import nu.pattern.OpenCV;
 
 public class BaseMatrix {
     static {
@@ -27,7 +19,8 @@ public class BaseMatrix {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             Path path = new Path();
-            path.processFrame(img, "drawn.jpeg");
+            new File("tests").mkdirs();
+            path.processFrame(img, "tests/drawn.jpeg");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
@@ -40,7 +33,8 @@ public class BaseMatrix {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             Path path = new Path(0.25);
-            path.processFrame(img, "drawn_shrunk.jpeg");
+            new File("tests").mkdirs();
+            path.processFrame(img, "tests/drawn_shrunk.jpeg");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
@@ -53,7 +47,8 @@ public class BaseMatrix {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             PathYUV path = new PathYUV();
-            path.processFrame(img, "drawn_YUV");
+            new File("tests").mkdirs();
+            path.processFrame(img, "tests/drawn_YUV");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
@@ -66,7 +61,8 @@ public class BaseMatrix {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             PathYUV path = new PathYUV(0.25);
-            path.processFrame(img, "drawn_shrunk_YUV");
+            new File("tests").mkdirs();
+            path.processFrame(img, "tests/drawn_shrunk_YUV");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
@@ -79,7 +75,8 @@ public class BaseMatrix {
             Mat img = Imgcodecs
                     .imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
             PathYUV path = new PathYUV(0.10);
-            path.processFrame(img, "drawn_decimated_YUV");
+            new File("tests").mkdirs();
+            path.processFrame(img, "tests/drawn_decimated_YUV");
             path.relativePosition(img);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
@@ -97,9 +94,9 @@ public class BaseMatrix {
                         200, 0,
                         Integer.MAX_VALUE,
                         0.5);
-                File dir = new File("gate_BW/");
+                File dir = new File("tests/gate_BW/");
                 dir.mkdirs();
-                path.processFrame(img, "gate_BW/" + String.valueOf(i) + ".jpeg");
+                path.processFrame(img, "tests/gate_BW/" + String.valueOf(i) + ".jpeg");
                 // path.relativePosition(img);
             }
         } catch (Exception e) {

@@ -50,8 +50,8 @@ public class Bin extends nn_cv2 {
         }
     }
 
-    private static String model_path = "bins_320.onnx";
-    private static String larger_model_path = "bins_640.onnx";
+    private static String model_path = "models/bins_320.onnx";
+    private static String larger_model_path = "models/bins_640.onnx";
     private final Target[] find;
 
     // + left, - right [-1,1]

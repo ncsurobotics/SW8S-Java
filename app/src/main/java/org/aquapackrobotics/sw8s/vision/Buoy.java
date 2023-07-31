@@ -52,8 +52,8 @@ public class Buoy extends nn_cv2 {
         }
     }
 
-    private static String model_path = "buoy_320.onnx";
-    private static String larger_model_path = "buoy_640.onnx";
+    private static String model_path = "models/buoy_320.onnx";
+    private static String larger_model_path = "models/buoy_640.onnx";
     private final Target[] find;
 
     // + left, - right [-1,1]

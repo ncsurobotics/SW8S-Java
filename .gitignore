@@ -28,9 +28,5 @@ app/.sw8_password
 perf.data*
 /*.png
 *.svg
-app/*.png
-app/*.jpeg
-app/*/*.jpeg
-app/*/*/*.jpeg
-app/*/*/*/*.jpeg
+app/tests/
 dependencies

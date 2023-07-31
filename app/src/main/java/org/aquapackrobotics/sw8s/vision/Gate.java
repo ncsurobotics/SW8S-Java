@@ -50,8 +50,8 @@ public class Gate extends nn_cv2 {
         }
     }
 
-    private static String model_path = "gate_320.onnx";
-    private static String larger_model_path = "gate_640.onnx";
+    private static String model_path = "models/models/gate_320.onnx";
+    private static String larger_model_path = "models/models/gate_640.onnx";
     private final Target[] find;
 
     // + left, - right [-1,1]
