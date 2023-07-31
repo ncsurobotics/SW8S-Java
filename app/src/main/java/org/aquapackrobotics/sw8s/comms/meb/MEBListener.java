@@ -12,10 +12,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.aquapackrobotics.sw8s.comms.ByteArrayUtility;
-import org.aquapackrobotics.sw8s.comms.ICommPortListener;
-import org.aquapackrobotics.sw8s.comms.SerialCommunicationUtility;
-import org.aquapackrobotics.sw8s.comms.TCPCommPort;
+import org.aquapackrobotics.sw8s.comms.*;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -49,14 +46,14 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
         logger.setUseParentHandlers(false);
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
-//        try {
-//            new File("/mnt/data/comms/meb").mkdir();
-//            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
-//            fHandle.setFormatter(new SimpleFormatter());
-//            logger.addHandler(fHandle);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            new File("/mnt/data/comms/meb").mkdir();
+            FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
+            fHandle.setFormatter(new SimpleFormatter());
+            logger.addHandler(fHandle);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -86,6 +83,16 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     public void tcpEvent(TCPCommPort tcp) throws IOException {
         byte[] message = tcp.getBytesAvailable();
         eventBytesHandler(message);
+    }
+
+    private void logCommand(MessageStruct msg, String code, String data) {
+        logger.info(code + " | " + Short.toString(msg.id) + " | " + data +
+                " | " + Arrays.toString(msg.message));
+    }
+
+    private void logCommand(byte[] msg, String code, String data) {
+        logger.info(code +  " | " + data +
+                " | " + Arrays.toString(msg));
     }
 
     /**
@@ -164,26 +171,32 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
                 float humid = buffer.getFloat();
                 mebStatus.temp = temp;
                 mebStatus.humid = humid;
+                logCommand(data, "AHT10", String.format("%f, %f", temp, humid));
             } else if (ByteArrayUtility.startsWith(strippedMessage, LEAK.getBytes())) {
+                byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 byte leakStatus = strippedMessage[4];
                 if (leakStatus == (byte) 1) {
                     mebStatus.isLeak = true;
                 } else {
                     mebStatus.isLeak = false;
                 }
+                logCommand(data, "LEAK", mebStatus.isLeak ? "1" : "0");
             } else if (ByteArrayUtility.startsWith(strippedMessage, TARM.getBytes())) {
                 byte armStatus = strippedMessage[4];
+                byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 if (armStatus == (byte) 1) {
                     mebStatus.isArmed = true;
                 } else {
                     mebStatus.isArmed = false;
                 }
+                logCommand(data, "TARM", mebStatus.isArmed ? "1" : "0");
             } else if (ByteArrayUtility.startsWith(strippedMessage, VSYS.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float voltage = buffer.getFloat();
                 mebStatus.systemVoltage = voltage;
+                logCommand(data, "VSYS", String.format("%f", voltage));
             } else if (ByteArrayUtility.startsWith(strippedMessage, SHUTDOWN.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 5, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
