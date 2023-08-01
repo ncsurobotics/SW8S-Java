@@ -122,6 +122,9 @@ public class App {
                 case "--bin":
                     mission = (Mission) new Bin(getManager(), missionName);
                     break;
+                case "--gate":
+                    mission = (Mission) new GateMission(getManager(), missionName);
+                    break;
                 case "--arm":
                 default:
                     mission = (Mission) new WaitArm(getManager(), missionName);
