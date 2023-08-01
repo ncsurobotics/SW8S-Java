@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import org.aquapackrobotics.sw8s.comms.control.ControlBoardCommunication;
 import org.aquapackrobotics.sw8s.comms.control.ControlBoardListener;
 import org.aquapackrobotics.sw8s.comms.meb.MEBCommunication;
+import org.aquapackrobotics.sw8s.comms.meb.*;
+import org.aquapackrobotics.sw8s.comms.meb.MEBStatus;
 
 import com.fazecast.jSerialComm.SerialPort;
 
@@ -344,6 +346,10 @@ public class CommsThreadManager {
 
     public double getYaw() {
         return getGyro()[6];
+    }
+
+    public boolean getArm() {
+        return MEBStatus.getInstance().isArmed;
     }
 
     public ScheduledFuture<byte[]> setDofSpeeds(float x, float y, float z,

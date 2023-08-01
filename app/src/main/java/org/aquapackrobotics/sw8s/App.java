@@ -122,8 +122,9 @@ public class App {
                 case "--bin":
                     mission = (Mission) new Bin(getManager(), missionName);
                     break;
+                case "--arm":
                 default:
-                    mission = (Mission) new AutoMission(getManager());
+                    mission = (Mission) new WaitArm(getManager(), missionName);
                     break;
             }
             System.out.println("RUN MISSION: " + mission.getClass().getName());

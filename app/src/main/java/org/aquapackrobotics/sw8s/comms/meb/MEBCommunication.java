@@ -230,6 +230,10 @@ public class MEBCommunication {
         return temp;
     }
 
+    public static boolean getArm() {
+        return MEBStatus.getInstance().isArmed;
+    }
+
     private static void addEscapedByteToStream(ByteArrayOutputStream stream, byte msgByte) {
         if (msgByte == END_BYTE || msgByte == START_BYTE || msgByte == ESCAPE_BYTE) {
             stream.write(ESCAPE_BYTE);
