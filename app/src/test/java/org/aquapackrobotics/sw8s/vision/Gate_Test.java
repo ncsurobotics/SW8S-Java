@@ -30,6 +30,7 @@ public class Gate_Test {
                 assertTrue(test.detected());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getStackTrace().toString());
         }
     }
@@ -48,6 +49,7 @@ public class Gate_Test {
                 assertTrue(test.detected());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getStackTrace().toString());
         }
     }

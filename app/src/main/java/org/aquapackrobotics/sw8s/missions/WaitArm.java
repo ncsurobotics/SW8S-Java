@@ -17,6 +17,7 @@ public class WaitArm extends Mission {
         try {
             while (!manager.getArm())
                 Thread.sleep(500); // Don't busy poll arm
+            Thread.sleep(2000);
         } catch (Exception e) {
             e.printStackTrace();
         }

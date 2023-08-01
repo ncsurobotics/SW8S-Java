@@ -49,7 +49,7 @@ public class MEBCommunication {
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            new File("/mnt/data/comms/meb").mkdir();
+            new File("/mnt/data/comms/meb/out").mkdirs();
             FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/out" + Instant.now().toString() + ".log", true);
             fHandle.setFormatter(new SimpleFormatter());
             logger.addHandler(fHandle);

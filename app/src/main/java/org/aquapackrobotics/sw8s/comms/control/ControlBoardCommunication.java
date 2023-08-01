@@ -62,7 +62,7 @@ public class ControlBoardCommunication {
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            new File("/mnt/data/comms/control").mkdir();
+            new File("/mnt/data/comms/control/out").mkdirs();
             FileHandler fHandle = new FileHandler("/mnt/data/comms/control/out" + Instant.now().toString() + ".log",
                     true);
             fHandle.setFormatter(new SimpleFormatter());

@@ -47,18 +47,17 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
     private static boolean parseStarted = true;
     private static boolean parseEscaped = false;
 
-    private ConcurrentHashMap<Short, byte[]> messages;
+    private static ConcurrentHashMap<Short, byte[]> messages = new ConcurrentHashMap<Short, byte[]>();
     private Logger logger;
 
     public ControlBoardListener() {
-        messages = new ConcurrentHashMap<Short, byte[]>();
 
         logger = Logger.getLogger("Comms_In");
         logger.setUseParentHandlers(false);
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            new File("/mnt/data/comms/control").mkdir();
+            new File("/mnt/data/comms/control/in").mkdirs();
             FileHandler fHandle = new FileHandler("/mnt/data/comms/control/in" + Instant.now().toString() + ".log",
                     true);
             fHandle.setFormatter(new SimpleFormatter());

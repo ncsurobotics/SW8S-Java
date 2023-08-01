@@ -32,7 +32,6 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     private static final String VSYS = "VSYS";
     private static final String SHUTDOWN = "SDOWN";
 
-
     private static ByteArrayOutputStream messageStore = new ByteArrayOutputStream();
     private static boolean parseStarted = true;
     private static boolean parseEscaped = false;
@@ -47,7 +46,7 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
         for (var h : logger.getHandlers())
             logger.removeHandler(h);
         try {
-            new File("/mnt/data/comms/meb").mkdir();
+            new File("/mnt/data/comms/meb/in").mkdirs();
             FileHandler fHandle = new FileHandler("/mnt/data/comms/meb/in" + Instant.now().toString() + ".log", true);
             fHandle.setFormatter(new SimpleFormatter());
             logger.addHandler(fHandle);
@@ -91,7 +90,7 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     }
 
     private void logCommand(byte[] msg, String code, String data) {
-        logger.info(code +  " | " + data +
+        logger.info(code + " | " + data +
                 " | " + Arrays.toString(msg));
     }
 
