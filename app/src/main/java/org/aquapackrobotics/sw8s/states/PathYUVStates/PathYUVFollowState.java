@@ -42,7 +42,7 @@ public class PathYUVFollowState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(0);
+        Mat frame = CameraFeedSender.getFrame(1);
         try {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());

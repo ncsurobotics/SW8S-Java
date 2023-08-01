@@ -29,7 +29,7 @@ public class GateMission extends PathYUV {
         while (!state.onPeriodic()) {
             Gate gateModel = new Gate();
             Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg",
-                    gateModel.detectYoloV5(CameraFeedSender.getFrame(1)));
+                    gateModel.detectYoloV5(CameraFeedSender.getFrame(0)));
         }
     }
 }

@@ -50,7 +50,7 @@ public class PathYUVDetectState extends State {
 
     public boolean onPeriodic() {
         System.out.println("Initial: " + String.valueOf(initialYaw) + ", Current: " + String.valueOf(manager.getYaw()));
-        Mat frame = CameraFeedSender.getFrame(0);
+        Mat frame = CameraFeedSender.getFrame(1);
         try {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());
