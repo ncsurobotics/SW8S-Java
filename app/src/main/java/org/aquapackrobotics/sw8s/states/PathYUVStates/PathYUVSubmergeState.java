@@ -24,7 +24,7 @@ public class PathYUVSubmergeState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
-                    -1.0);
+                    -2.0);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

@@ -110,6 +110,7 @@ public class App {
                         }
                     }
 
+                case "--path_yuv":
                 case "--path":
                     mission = (Mission) new PathYUV(getManager(), missionName);
                     break;
