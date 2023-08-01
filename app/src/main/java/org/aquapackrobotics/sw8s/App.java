@@ -102,7 +102,7 @@ public class App {
                     mission = (Mission) new GatePath(manager, missionName);
                     break;
                 case "--path":
-                    mission = (Mission) new Path(manager, missionName);
+                    mission = (Mission) new PathYUV(manager, missionName);
                     break;
                 case "--path_test":
                     mission = (Mission) new PathVisionTest(manager, missionName);

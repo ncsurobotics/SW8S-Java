@@ -62,16 +62,16 @@ public class PathYUVFollowState extends State {
             else if (angle < -10)
                 combined_angle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
-            //var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
-              //      -1.0);
+            var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
+                    -1.0);
             // var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw() +
             // footage.angle, -1.0);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
             }
-            //while (!mreturn.isDone())
-            //    ;
+            while (!mreturn.isDone())
+            ;
 
             if (Math.abs(angle) < 20 && Math.abs(footage.horizontal_offset) < 20
                     && Math.abs(footage.vertical_offset) < 20) {
