@@ -24,11 +24,7 @@ public class PathYUVSubmergeState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
-                    -1.0);
-            while (!mreturn.isDone())
-                ;
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,6 +32,11 @@ public class PathYUVSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
+            depthRead = manager.MSPeriodicRead((byte) 1);
+            var mreturn = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
+                    -1.0);
+            while (!mreturn.isDone())
+                ;
             if (System.currentTimeMillis() - this.prevTime > 100) {
                 this.prevTime = System.currentTimeMillis();
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
