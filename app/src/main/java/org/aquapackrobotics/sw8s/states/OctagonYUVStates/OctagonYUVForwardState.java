@@ -14,8 +14,7 @@ import org.aquapackrobotics.sw8s.vision.*;
 
 public class OctagonYUVForwardState extends State {
 
-    private ScheduledFuture<byte[]> depthRead;
-    private final PathYUV target;
+    private final Octagon target;
     private final File Dir;
     private double depth = -1.5;
     private String missionName;
@@ -23,8 +22,7 @@ public class OctagonYUVForwardState extends State {
 
     public OctagonYUVForwardState(CommsThreadManager manager, String missionName, double targetYaw) {
         super(manager);
-        target = new PathYUV(new IntPair(Integer.MIN_VALUE, 124), new IntPair(124, Integer.MAX_VALUE), 10,
-                800, 0.25);
+        target = new Octagon();
         Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
         this.targetYaw = targetYaw;
@@ -32,7 +30,6 @@ public class OctagonYUVForwardState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, targetYaw, depth);
             while (!mreturn.isDone())
                 ;

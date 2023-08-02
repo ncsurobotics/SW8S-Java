@@ -250,7 +250,7 @@ public class PathYUV extends ImagePrep {
 
         ArrayList<Mat> pca_draw = iteratePathBinaryPCAAndDraw(this.resultImg); // draw image with drawn vectors
         if (saveFile != null) {
-            // TODO replace with log: System.out.println("SAVING FILE: " + saveFile);
+            System.out.println("SAVING FILE: " + saveFile);
             File dir = new File(saveFile);
             dir.mkdirs();
             Imgcodecs.imwrite(saveFile + "/orig.jpeg", frame);
