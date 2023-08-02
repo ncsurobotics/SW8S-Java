@@ -79,6 +79,15 @@ public class CameraFeedSender {
         }
     }
 
+    static String openPipeline(String camPath, int width, int height, int fps) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            System.err.println("Not supported on Windows");
+            System.exit(1);
+        }
+        return String.format("v4l2src device=%s ! image/jpeg, width=%d, height=%d, framerate=%d/1",
+                camPath, width, height, fps);
+    }
+
     static String h264encPipeline(int bitrate) {
         // Note: On raspberry pi can probably use omx264enc too
         // Could check for RPi by reading /proc/device-tree/model and checking for text
@@ -154,66 +163,44 @@ public class CameraFeedSender {
     private static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void openCapture(int id) {
-        if (!heldCaptures.containsKey(id)) {
-            String savefile = saveFile("cam" + String.valueOf(id));
-            String capPl = openPipeline(id, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
-                    "raw. ! queue  ! videoconvert ! appsink " +
-                    "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
-                    "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
-                    + String.valueOf(id) + " "
-                    +
-                    "h264. ! queue ! mpegtsmux ! filesink location=\"" + savefile + "\" ";
-            System.out.println();
-            System.out.println("------------------------------");
-            System.out.print("Cap" + String.valueOf(id) + " Pipeline: ");
-            System.out.println(capPl);
-            System.out.print("Savefile" + String.valueOf(id) + ": ");
-            System.out.println(savefile);
-            VideoCapture cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
-            Runnable videoPoll = () -> {
-                while (true) {
-                    Mat frame = new Mat();
-                    if (cap.read(frame)) {
-                        heldCaptures.put(id, frame);
-                    }
-                }
-            };
-            Thread videoThread = new Thread(videoPoll);
-            threads.add(videoThread);
-            videoThread.start();
-            System.out.println("HELLO");
-        }
+        openCapture(id, ".");
     }
 
     public static void openCapture(int id, String missionName) {
         if (!heldCaptures.containsKey(id)) {
-            String savefile = saveFile("cam" + String.valueOf(id), missionName + "/camtest-recordings");
-            String capPl = openPipeline(id, 800, 600, 30) + " ! jpegdec ! tee name=raw " +
-                    "raw. ! queue  ! videoconvert ! appsink " +
-                    "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
-                    "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
-                    + String.valueOf(id) + " "
-                    +
-                    "h264. ! queue ! mpegtsmux ! filesink location=\"" + savefile + "\" ";
-            System.out.println();
-            System.out.println("------------------------------");
-            System.out.print("Cap" + String.valueOf(id) + " Pipeline: ");
-            System.out.println(capPl);
-            System.out.print("Savefile" + String.valueOf(id) + ": ");
-            System.out.println(savefile);
-            VideoCapture cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
-            Runnable videoPoll = () -> {
-                while (true) {
-                    Mat frame = new Mat();
-                    if (cap.read(frame)) {
-                        heldCaptures.put(id, frame);
+            try {
+                String savefile = saveFile("cam" + String.valueOf(id), missionName + "/camtest-recordings");
+                String capPl = openPipeline(CameraById.findCamera(id).get(0), 800, 600, 30)
+                        + " ! jpegdec ! tee name=raw " +
+                        "raw. ! queue  ! videoconvert ! appsink " +
+                        "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
+                        "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
+                        + String.valueOf(id) + " "
+                        +
+                        "h264. ! queue ! mpegtsmux ! filesink location=\"" + savefile + "\" ";
+                System.out.println();
+                System.out.println("------------------------------");
+                System.out.print("Cap" + String.valueOf(id) + " Pipeline: ");
+                System.out.println(capPl);
+                System.out.print("Savefile" + String.valueOf(id) + ": ");
+                System.out.println(savefile);
+                VideoCapture cap = new VideoCapture(capPl, Videoio.CAP_GSTREAMER);
+                Runnable videoPoll = () -> {
+                    while (true) {
+                        Mat frame = new Mat();
+                        if (cap.read(frame)) {
+                            heldCaptures.put(id, frame);
+                        }
                     }
-                }
-            };
-            Thread videoThread = new Thread(videoPoll);
-            threads.add(videoThread);
-            videoThread.start();
-            System.out.println("HELLO");
+                };
+                Thread videoThread = new Thread(videoPoll);
+                threads.add(videoThread);
+                videoThread.start();
+            } catch (Exception e) {
+                System.err.println("ERROR opening camera");
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 
