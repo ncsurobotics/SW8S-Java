@@ -114,6 +114,7 @@ public class App {
                 case "--path":
                     mission = (Mission) new PathYUV(getManager(), missionName);
                     break;
+                case "--buoys":
                 case "--buoy":
                     mission = (Mission) new Buoys(getManager(), missionName);
                     break;

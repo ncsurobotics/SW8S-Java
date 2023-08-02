@@ -1,17 +1,15 @@
 package org.aquapackrobotics.sw8s.comms.meb;
 
 public class MEBStatus {
-    public static boolean isLeak;
-    public static boolean isArmed;
-    public static float systemVoltage;
-    public static int shutdownCause;
+    public boolean isLeak;
+    public boolean isArmed;
+    public float systemVoltage;
+    public int shutdownCause;
 
-    public static float humid;
-    public static float temp;
+    public float humid;
+    public float temp;
 
     private static MEBStatus mebStatus;
-
-
 
     private MEBStatus() {
         isLeak = false;

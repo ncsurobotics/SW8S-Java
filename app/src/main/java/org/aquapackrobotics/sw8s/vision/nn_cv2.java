@@ -45,8 +45,8 @@ public class nn_cv2 extends ImagePrep {
     public void loadModel(String model) {
         this.net = Dnn.readNet(model);
         this.outBlobNames = getOutputNames(net);
-        this.net.setPreferableBackend(Dnn.DNN_BACKEND_CUDA);
-        this.net.setPreferableTarget(Dnn.DNN_TARGET_CUDA);
+        this.net.setPreferableBackend(Dnn.DNN_BACKEND_OPENCV);
+        this.net.setPreferableTarget(Dnn.DNN_TARGET_CPU);
         modelSize = 320;
         factor = 2;
     }

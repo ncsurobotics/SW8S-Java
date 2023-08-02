@@ -20,7 +20,7 @@ public class BuoyInitState extends State {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -1.5);
+                    -2.0);
             // var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
             while (!mreturn.isDone())
                 ;
@@ -32,7 +32,7 @@ public class BuoyInitState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() < -1.0 && manager.getDepth() > -2.0) {
+                if (manager.getDepth() > -1.0) {
                     return true;
                 }
             }

@@ -12,16 +12,26 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.OctagonYUVSubmergeState
  */
 public class OctagonYUV extends Mission {
     private String missionName;
+    private double initialYaw;
 
     public OctagonYUV(CommsThreadManager manager, String missionName) {
         super(manager);
         CameraFeedSender.openCapture(0);
         this.missionName = missionName;
+        try {
+            var mreturn = manager.BNO055PeriodicRead((byte) 1);
+            while (!mreturn.isDone())
+                ;
+            Thread.sleep(500); // Give sensor time to get itself ready
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.initialYaw = manager.getYaw();
     }
 
     @Override
     protected State initialState() {
-        return new OctagonYUVSubmergeState(manager, missionName);
+        return new OctagonYUVSubmergeState(manager, missionName, initialYaw);
     }
 
     @Override

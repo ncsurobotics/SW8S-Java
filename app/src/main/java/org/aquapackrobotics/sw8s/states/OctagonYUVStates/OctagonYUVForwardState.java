@@ -19,19 +19,21 @@ public class OctagonYUVForwardState extends State {
     private final File Dir;
     private double depth = -1.5;
     private String missionName;
+    private double targetYaw;
 
-    public OctagonYUVForwardState(CommsThreadManager manager, String missionName) {
+    public OctagonYUVForwardState(CommsThreadManager manager, String missionName, double targetYaw) {
         super(manager);
-        target = new PathYUV(new IntPair(Integer.MIN_VALUE, 178), new IntPair(178, Integer.MAX_VALUE), 10,
+        target = new PathYUV(new IntPair(Integer.MIN_VALUE, 124), new IntPair(124, Integer.MAX_VALUE), 10,
                 800, 0.25);
         Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
+        this.targetYaw = targetYaw;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.7, 0, 0, manager.getYaw(), depth);
+            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, targetYaw, depth);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

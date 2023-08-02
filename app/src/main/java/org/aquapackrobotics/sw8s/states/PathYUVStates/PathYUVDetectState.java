@@ -40,7 +40,7 @@ public class PathYUVDetectState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0.15, 0.8, curPitch, 0, initialYaw, -2.0);
+            var mreturn = manager.setStability2Speeds(0.15, 0.8, curPitch, 0, initialYaw, -1.5);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class PathYUVDetectState extends State {
                 combinedAngle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combinedAngle));
             var mreturn = manager.setStability2Speeds(x, 0.2, curPitch, 0, combinedAngle,
-                    -2.0);
+                    -1.5);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             System.out.println("DETECT");
 
@@ -87,7 +87,7 @@ public class PathYUVDetectState extends State {
             /*
              * try {
              * var mreturn = manager.setStability2Speeds(0, 0.4, curPitch, 0, combinedAngle,
-             * -2.0);
+             * -1.5);
              * while (!mreturn.isDone())
              * ;
              * } catch (Exception e2) {

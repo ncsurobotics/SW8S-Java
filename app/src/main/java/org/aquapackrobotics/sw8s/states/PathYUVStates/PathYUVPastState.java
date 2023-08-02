@@ -36,7 +36,7 @@ public class PathYUVPastState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -2.0);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class PathYUVPastState extends State {
 
             System.out.println("Y: FORWARD");
             var mreturn = manager.setStability2Speeds(x, 0.3, 0, 0, combined_angle,
-                    -2.0);
+                    -1.5);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
@@ -85,7 +85,7 @@ public class PathYUVPastState extends State {
                 return true;
             try {
                 var mreturn = manager.setStability2Speeds(0, 0.3, 0, 0, this.curAngle,
-                        -2.0);
+                        -1.5);
             } catch (Exception e2) {
                 e2.printStackTrace();
                 System.exit(1);

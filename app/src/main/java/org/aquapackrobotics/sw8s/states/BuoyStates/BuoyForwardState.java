@@ -20,13 +20,13 @@ public class BuoyForwardState extends State {
     private final Buoy target;
     private final Buoy targetLarge;
     private final File Dir;
-    private double depth = -1.5;
+    private double depth = -2.0;
     private double yaw;
     private double noDetectCount;
 
     public BuoyForwardState(CommsThreadManager manager, String testName) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(1);
         target = new Buoy(false);
         targetLarge = new Buoy(true);
         Dir = new File("/mnt/data/" + testName + "/buoy");

@@ -17,7 +17,7 @@ public class OctagonYUVFollowState extends State {
     private ScheduledFuture<byte[]> depthRead;
     private final PathYUV target;
     private final File Dir;
-    private double depth = -1.7;
+    private double depth = -1.5;
 
     public OctagonYUVFollowState(CommsThreadManager manager, String missionName) {
         super(manager);
