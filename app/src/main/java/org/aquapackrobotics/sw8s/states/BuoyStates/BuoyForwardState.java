@@ -48,7 +48,7 @@ public class BuoyForwardState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(1);
+        Mat frame = CameraFeedSender.getFrame(0);
         Mat yoloout = target.detectYoloV5(frame);
         if (target.detected()) {
             noDetectCount = 0;

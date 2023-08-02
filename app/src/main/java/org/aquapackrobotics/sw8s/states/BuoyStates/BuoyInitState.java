@@ -24,6 +24,7 @@ public class BuoyInitState extends State {
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
+            depthRead = manager.BNO055PeriodicRead((byte) 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
