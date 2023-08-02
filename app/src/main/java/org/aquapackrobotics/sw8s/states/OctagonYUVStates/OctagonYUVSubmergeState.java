@@ -11,18 +11,21 @@ public class OctagonYUVSubmergeState extends State {
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
     private double targetYaw;
+    private final double MISSION_DEPTH;
 
-    public OctagonYUVSubmergeState(CommsThreadManager manager, String missionName, double targetYaw) {
+    public OctagonYUVSubmergeState(CommsThreadManager manager, String missionName, double targetYaw,
+            double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
         this.targetYaw = targetYaw;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, targetYaw,
-                    -1.5);
+                    MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -33,7 +36,7 @@ public class OctagonYUVSubmergeState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() < -0.8) {
+                if (manager.getDepth() < MISSION_DEPTH + 0.5) {
                     return true;
                 }
             }
@@ -49,6 +52,6 @@ public class OctagonYUVSubmergeState extends State {
     }
 
     public State nextState() {
-        return new OctagonYUVForwardState(manager, missionName, targetYaw);
+        return new OctagonYUVForwardState(manager, missionName, targetYaw, MISSION_DEPTH);
     }
 }

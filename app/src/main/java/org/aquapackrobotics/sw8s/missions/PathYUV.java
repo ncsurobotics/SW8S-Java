@@ -11,6 +11,8 @@ import org.aquapackrobotics.sw8s.states.PathYUVStates.PathYUVSubmergeState;
  * Mission for navigating gates
  */
 public class PathYUV extends Mission {
+    private static final double MISSION_DEPTH = -1.0;
+
     private String missionName;
     private double initialYaw;
 
@@ -31,7 +33,7 @@ public class PathYUV extends Mission {
 
     @Override
     protected State initialState() {
-        return new PathYUVSubmergeState(manager, missionName, initialYaw);
+        return new PathYUVSubmergeState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 
     @Override

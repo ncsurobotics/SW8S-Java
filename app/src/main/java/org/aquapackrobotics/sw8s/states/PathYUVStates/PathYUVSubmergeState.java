@@ -12,19 +12,22 @@ public class PathYUVSubmergeState extends State {
     private String missionName;
     private double initialYaw;
     private double prevTime;
+    private final double MISSION_DEPTH;
 
-    public PathYUVSubmergeState(CommsThreadManager manager, String missionName, double initialYaw) {
+    public PathYUVSubmergeState(CommsThreadManager manager, String missionName, double initialYaw,
+            double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;
         this.prevTime = System.currentTimeMillis();
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
-                    -1.5);
+                    MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -60,6 +63,6 @@ public class PathYUVSubmergeState extends State {
     public State nextState() {
         // return new PathYUVFollowState(manager, missionName);
         // return new PathYUVThroughState(manager, missionName);
-        return new PathYUVDetectState(manager, missionName, initialYaw);
+        return new PathYUVDetectState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

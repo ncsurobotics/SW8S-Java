@@ -20,20 +20,22 @@ public class PathYUVFollowState extends State {
 
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
+    private final double MISSION_DEPTH;
 
-    public PathYUVFollowState(CommsThreadManager manager, String missionName) {
+    public PathYUVFollowState(CommsThreadManager manager, String missionName, double MISSION_DEPTH) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
         // target = new PathYUV(0.25);
         Dir = new File("/mnt/data/" + missionName + "/pathYUV");
         Dir.mkdir();
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -63,9 +65,7 @@ public class PathYUVFollowState extends State {
                 combined_angle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combined_angle));
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
-                    -1.5);
-            // var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw() +
-            // footage.angle, -1.5);
+                    MISSION_DEPTH);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);

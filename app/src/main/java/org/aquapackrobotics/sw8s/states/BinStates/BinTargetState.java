@@ -16,14 +16,14 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class BinTargetState extends State {
 
-    private ScheduledFuture<byte[]> depthRead;
+    private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Bin target;
     private final Bin targetLarge;
     private final File Dir;
-    private double depth = -1.5;
     private double yaw;
+    private final double MISSION_DEPTH;
 
-    public BinTargetState(CommsThreadManager manager, String testName) {
+    public BinTargetState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(0);
         target = new Bin(false);
@@ -31,13 +31,13 @@ public class BinTargetState extends State {
         Dir = new File("/mnt/data/" + testName + "/bin");
         Dir.mkdir();
         yaw = manager.getYaw();
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, depth);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -79,10 +79,10 @@ public class BinTargetState extends State {
                     y = target.translation[1] > 0 ? 0.2 : -0.2;
                 }
 
-                manager.setStability2Speeds(x, y, 0, 0, yaw, depth);
+                manager.setStability2Speeds(x, y, 0, 0, yaw, MISSION_DEPTH);
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {
-                manager.setStability2Speeds(0, 0.2, 0, 0, yaw, depth);
+                manager.setStability2Speeds(0, 0.2, 0, 0, yaw, MISSION_DEPTH);
                 System.out.println("Not detected");
             }
         } catch (Exception e) {

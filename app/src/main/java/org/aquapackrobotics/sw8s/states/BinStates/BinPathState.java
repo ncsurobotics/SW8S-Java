@@ -23,8 +23,9 @@ public class BinPathState extends State {
 
     private double[] PathYUVOpts = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15 };
     private int PathYUVidx = 0;
+    private final double MISSION_DEPTH;
 
-    public BinPathState(CommsThreadManager manager, String missionName, double initialYaw) {
+    public BinPathState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
@@ -32,12 +33,13 @@ public class BinPathState extends State {
         Dir.mkdir();
         this.missionName = missionName;
         this.initialYaw = initialYaw;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.2, 30, 0, initialYaw, -1.0);
+            var mreturn = manager.setStability2Speeds(0, 0.2, 30, 0, initialYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -70,7 +72,7 @@ public class BinPathState extends State {
             System.out.println("Combined Angle: " + String.valueOf(combinedAngle));
             var mreturn = manager.setStability2Speeds(x, y, 5 * (this.PathYUVOpts.length - this.PathYUVidx), 0,
                     combinedAngle,
-                    -1.0);
+                    MISSION_DEPTH);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length - 1) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
@@ -96,12 +98,12 @@ public class BinPathState extends State {
 
     public void onExit() throws ExecutionException, InterruptedException {
         System.out.println("EXITING");
-        var mreturn = manager.setStability2Speeds(0, 0.2, 0, 0, combinedAngle, -1.0);
+        var mreturn = manager.setStability2Speeds(0, 0.2, 0, 0, combinedAngle, MISSION_DEPTH);
         while (!mreturn.isDone())
             ;
     }
 
     public State nextState() {
-        return new BinTargetState(manager, missionName);
+        return new BinTargetState(manager, missionName, MISSION_DEPTH);
     }
 }

@@ -16,13 +16,14 @@ public class OctagonYUVFollowState extends State {
 
     private final Octagon target;
     private final File Dir;
-    private double depth = -1.5;
+    private double depth;
 
-    public OctagonYUVFollowState(CommsThreadManager manager, String missionName) {
+    public OctagonYUVFollowState(CommsThreadManager manager, String missionName, double MISSION_DEPTH) {
         super(manager);
         target = new Octagon();
         Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
+        this.depth = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {

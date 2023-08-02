@@ -16,15 +16,15 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class BuoyForwardState extends State {
 
-    private ScheduledFuture<byte[]> depthRead;
+    private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Buoy target;
     private final Buoy targetLarge;
     private final File Dir;
-    private double depth = -2.0;
     private double yaw;
     private double noDetectCount;
+    private final double MISSION_DEPTH;
 
-    public BuoyForwardState(CommsThreadManager manager, String testName) {
+    public BuoyForwardState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(1);
         target = new Buoy(false);
@@ -33,13 +33,13 @@ public class BuoyForwardState extends State {
         Dir.mkdir();
         yaw = manager.getYaw();
         this.noDetectCount = -1;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, depth);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class BuoyForwardState extends State {
                 }
 
                 double y = Math.abs(target.translation[0]) < 0.5 ? 0.4 : 0;
-                manager.setStability2Speeds(x, y, 0, 0, yaw, depth);
+                manager.setStability2Speeds(x, y, 0, 0, yaw, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -90,13 +90,13 @@ public class BuoyForwardState extends State {
 
     public void onExit() throws ExecutionException, InterruptedException {
         System.out.println("Exiting buoy");
-        manager.setStability2Speeds(0, 1, 0, 0, yaw, depth);
+        manager.setStability2Speeds(0, 1, 0, 0, yaw, MISSION_DEPTH);
         Thread.sleep(4000);
         System.out.println("Stopping motors");
-        manager.setStability2Speeds(0, 0, 0, 0, yaw, depth);
+        manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
         Thread.sleep(1000);
         System.out.println("Driving back");
-        manager.setStability2Speeds(-0.5, -0.5, 0, 0, yaw, depth);
+        manager.setStability2Speeds(-0.5, -0.5, 0, 0, yaw, MISSION_DEPTH);
         Thread.sleep(6000);
     }
 

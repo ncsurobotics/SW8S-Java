@@ -16,26 +16,26 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class BuoyReadState extends State {
 
-    private ScheduledFuture<byte[]> depthRead;
+    private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Buoy target;
     private final Buoy targetLarge;
     private final File Dir;
-    private double depth = -1;
+    private final double MISSION_DEPTH;
 
-    public BuoyReadState(CommsThreadManager manager) {
+    public BuoyReadState(CommsThreadManager manager, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(0);
         target = new Buoy(false);
         targetLarge = new Buoy(true);
         Dir = new File("/mnt/data/buoy");
         Dir.mkdir();
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), depth);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

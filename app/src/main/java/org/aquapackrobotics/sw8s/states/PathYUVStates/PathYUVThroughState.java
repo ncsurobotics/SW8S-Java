@@ -22,8 +22,9 @@ public class PathYUVThroughState extends State {
     private int PathYUVidx = 0;
     private int inAngleCount;
     private String missionName;
+    private final double MISSION_DEPTH;
 
-    public PathYUVThroughState(CommsThreadManager manager, String missionName) {
+    public PathYUVThroughState(CommsThreadManager manager, String missionName, double MISSION_DEPTH) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
@@ -31,12 +32,13 @@ public class PathYUVThroughState extends State {
         Dir = new File("/mnt/data/" + missionName + "/pathYUV");
         Dir.mkdir();
         inAngleCount = 0;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), -1.5);
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(), MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -85,7 +87,7 @@ public class PathYUVThroughState extends State {
             }
 
             var mreturn = manager.setStability2Speeds(x, y, 0, 0, combined_angle,
-                    -1.5);
+                    MISSION_DEPTH);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             if (this.PathYUVidx < this.PathYUVOpts.length) {
                 this.target = new PathYUV(this.PathYUVOpts[this.PathYUVidx++]);
@@ -103,6 +105,6 @@ public class PathYUVThroughState extends State {
 
     public State nextState() {
         // return null;
-        return new PathYUVPastState(manager, missionName);
+        return new PathYUVPastState(manager, missionName, MISSION_DEPTH);
     }
 }

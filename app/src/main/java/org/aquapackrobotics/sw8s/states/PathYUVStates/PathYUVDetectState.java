@@ -24,8 +24,9 @@ public class PathYUVDetectState extends State {
     private double initialYaw;
     private double curPitch;
     private double combinedAngle;
+    private final double MISSION_DEPTH;
 
-    public PathYUVDetectState(CommsThreadManager manager, String missionName, double initialYaw) {
+    public PathYUVDetectState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         this.PathYUVidx = 0;
         target = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
@@ -35,12 +36,13 @@ public class PathYUVDetectState extends State {
         this.initialYaw = initialYaw;
         this.curPitch = 40;
         this.combinedAngle = initialYaw;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0.15, 0.8, curPitch, 0, initialYaw, -1.5);
+            var mreturn = manager.setStability2Speeds(0.15, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -72,7 +74,7 @@ public class PathYUVDetectState extends State {
                 combinedAngle += 5.0;
             System.out.println("Combined Angle: " + String.valueOf(combinedAngle));
             var mreturn = manager.setStability2Speeds(x, 0.2, curPitch, 0, combinedAngle,
-                    -1.5);
+                    MISSION_DEPTH);
             System.out.println("Decimation level: " + String.valueOf(this.PathYUVOpts[this.PathYUVidx]));
             System.out.println("DETECT");
 
@@ -87,7 +89,7 @@ public class PathYUVDetectState extends State {
             /*
              * try {
              * var mreturn = manager.setStability2Speeds(0, 0.4, curPitch, 0, combinedAngle,
-             * -1.5);
+             * MISSION_DEPTH);
              * while (!mreturn.isDone())
              * ;
              * } catch (Exception e2) {
@@ -103,6 +105,6 @@ public class PathYUVDetectState extends State {
     }
 
     public State nextState() {
-        return new PathYUVThroughState(manager, missionName);
+        return new PathYUVThroughState(manager, missionName, MISSION_DEPTH);
     }
 }

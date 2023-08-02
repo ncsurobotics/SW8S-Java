@@ -16,21 +16,23 @@ public class OctagonYUVForwardState extends State {
 
     private final Octagon target;
     private final File Dir;
-    private double depth = -1.5;
     private String missionName;
     private double targetYaw;
+    private final double MISSION_DEPTH;
 
-    public OctagonYUVForwardState(CommsThreadManager manager, String missionName, double targetYaw) {
+    public OctagonYUVForwardState(CommsThreadManager manager, String missionName, double targetYaw,
+            double MISSION_DEPTH) {
         super(manager);
         target = new Octagon();
         Dir = new File("/mnt/data/" + missionName + "/path");
         Dir.mkdir();
         this.targetYaw = targetYaw;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, targetYaw, depth);
+            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, targetYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -54,6 +56,6 @@ public class OctagonYUVForwardState extends State {
     }
 
     public State nextState() {
-        return new OctagonYUVFollowState(manager, missionName);
+        return new OctagonYUVFollowState(manager, missionName, MISSION_DEPTH);
     }
 }

@@ -7,6 +7,8 @@ import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.BinStates.BinInitState;
 
 public class Bin extends Mission {
+    private static final double MISSION_DEPTH = -1.0;
+
     String missionName;
     private double initialYaw;
 
@@ -27,7 +29,7 @@ public class Bin extends Mission {
 
     @Override
     protected State initialState() {
-        return new BinInitState(manager, missionName, initialYaw);
+        return new BinInitState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 
     @Override

@@ -7,6 +7,8 @@ import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.BuoyStates.BuoyInitState;
 
 public class Buoys extends Mission {
+    private static final double MISSION_DEPTH = -1.0;
+
     String missionName;
 
     public Buoys(CommsThreadManager manager, String missionName) {
@@ -16,7 +18,7 @@ public class Buoys extends Mission {
 
     @Override
     protected State initialState() {
-        return new BuoyInitState(manager, missionName);
+        return new BuoyInitState(manager, missionName, MISSION_DEPTH);
     }
 
     @Override

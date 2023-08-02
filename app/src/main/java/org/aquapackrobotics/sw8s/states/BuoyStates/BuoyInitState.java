@@ -10,18 +10,18 @@ public class BuoyInitState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
+    private final double MISSION_DEPTH;
 
-    public BuoyInitState(CommsThreadManager manager, String missionName) {
+    public BuoyInitState(CommsThreadManager manager, String missionName, double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
+        this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte) 1);
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
-                    -2.0);
-            // var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, -1.0);
+                    MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class BuoyInitState extends State {
     public boolean onPeriodic() {
         try {
             if (depthRead.isDone()) {
-                if (manager.getDepth() > -1.0) {
+                if (manager.getDepth() > MISSION_DEPTH + 0.5) {
                     return true;
                 }
             }
@@ -49,6 +49,6 @@ public class BuoyInitState extends State {
 
     public State nextState() {
         // return new BuoyReadState(manager);
-        return new BuoyForwardState(manager, missionName);
+        return new BuoyForwardState(manager, missionName, MISSION_DEPTH);
     }
 }
