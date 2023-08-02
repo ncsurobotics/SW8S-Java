@@ -12,11 +12,22 @@ import org.aquapackrobotics.sw8s.states.State;
 public class WaitArm extends Mission {
     public WaitArm(CommsThreadManager manager, String missionName) {
         super(manager);
+        Runnable armSignalWait = new Runnable() {
+            @Override
+            public void run() {
+                while (!manager.getArm()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        };
         CameraFeedSender.openCapture(0, missionName);
         CameraFeedSender.openCapture(1, missionName);
         try {
-            while (!manager.getArm())
-                Thread.sleep(500); // Don't busy poll arm
+            manager.scheduleRunnable(armSignalWait);
             Thread.sleep(2000);
         } catch (Exception e) {
             e.printStackTrace();

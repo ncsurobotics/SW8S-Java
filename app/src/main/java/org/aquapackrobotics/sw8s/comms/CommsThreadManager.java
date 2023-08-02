@@ -441,4 +441,8 @@ public class CommsThreadManager {
         ScheduledFuture<V> sf = pool.schedule(b, 0, TimeUnit.MILLISECONDS);
         return sf;
     }
+
+    public void scheduleRunnable(Runnable runnable) {
+        pool.schedule(runnable, 0, TimeUnit.MILLISECONDS);
+    }
 }

@@ -5,14 +5,14 @@ import java.util.concurrent.ExecutionException;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.BinStates.BinInitState;
+import org.aquapackrobotics.sw8s.states.BinStates.BinTargetState;
 
 public class VariantBin extends Mission {
     private static final double MISSION_DEPTH = -1.0;
 
     String missionName;
     private double initialYaw;
-    CommsThreadManager manager;
-    public Bin(CommsThreadManager manager, String missionName) {
+    public VariantBin(CommsThreadManager manager, String missionName) {
         super(manager);
         this.manager = manager;
         this.missionName = missionName;
@@ -41,6 +41,6 @@ public class VariantBin extends Mission {
 
     @Override
     protected State nextState(State state) {
-        return BinTargetState(this.manager, this.missionName, MISSION_DEPTH);
+        return new BinTargetState(this.manager, missionName, MISSION_DEPTH);
     }
 }
