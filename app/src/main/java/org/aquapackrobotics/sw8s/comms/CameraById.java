@@ -10,34 +10,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-class CommandResult {
-    public int ec;
-    public String stdout;
-    public String stderr;
-}
-
 public class CameraById {
-
-    static CommandResult runShellCommand(String command) throws IOException, InterruptedException {
-        CommandResult res = new CommandResult();
-        Runtime rt = Runtime.getRuntime();
-        Process proc = rt.exec(command);
-        proc.waitFor();
-        res.ec = proc.exitValue();
-        BufferedReader stdoutStream = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        BufferedReader stderrStream = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-        res.stdout = stdoutStream.lines().collect(Collectors.joining("\n"));
-        res.stderr = stderrStream.lines().collect(Collectors.joining("\n"));
-        return res;
-    }
-
     static public ArrayList<String> findCamera(String targetSerial) throws IOException, InterruptedException {
         ArrayList<String> cameras = new ArrayList<String>();
         for (int i = 0; i < 30; ++i) {
             String device = "/dev/video" + i;
             File deviceFile = new File(device);
             if (deviceFile.exists()) {
-                CommandResult res = runShellCommand("udevadm info --name=" + device);
+                CommandResult res = Linux.runShellCommand("udevadm info --name=" + device);
                 if (res.ec == 0) {
                     for (String line : res.stdout.split("\n")) {
                         int pos = line.indexOf("ID_SERIAL=");
