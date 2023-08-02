@@ -38,10 +38,20 @@ public class CommsThreadManager {
     public CommsThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
 
+        boolean is_moab = true;
+        String cboard_tty, meb_tty;
+        if(is_moab){
+            cboard_tty = "/dev/serial/by-id/usb-STMicroelectronics_Control_Board_v2__Virtual_COM_Port__36313632303251010061003C-if00";
+            meb_tty = "/dev/serial/by-id/usb-Texas_Instruments_MSP_Tools_Driver_887E1B5125002200-if02";
+        }else{
+            cboard_tty = "/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00";
+            meb_tty = "/dev/serial/by-id/usb-Texas_Instruments_MSP_Tools_Driver_B20A826E14002300-if02";
+        }
+
         SerialPort robotPort = SerialPort.getCommPort(
-                "/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00");
+                cboard_tty);
         SerialPort mebPort = SerialPort
-                .getCommPort("/dev/serial/by-id/usb-Texas_Instruments_MSP_Tools_Driver_B20A826E14002300-if02");
+                .getCommPort(meb_tty);
         mebPort.setBaudRate(57600);
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         controlListener = new ControlBoardListener();
