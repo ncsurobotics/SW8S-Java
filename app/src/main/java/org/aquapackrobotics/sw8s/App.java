@@ -124,6 +124,8 @@ public class App {
                 case "--bin":
                     mission = (Mission) new Bin(getManager(), missionName);
                     break;
+                case "--bin_variant":
+                    mission = (Mission) new VariantBin(getManager(), missionName);
                 case "--gate":
                     mission = (Mission) new GateMission(getManager(), missionName);
                     break;
