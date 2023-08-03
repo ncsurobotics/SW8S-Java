@@ -57,99 +57,110 @@ public class App {
             Linux.changeExposure(Camera.BOTTOM, 20);
             Linux.changeExposure(Camera.FRONT, 18);
 
-            switch (str) {
-                case "--test":
-                    System.out.println("Yay! it worked!");
-                    System.exit(0);
-                case "-h":
-                    for (int i = 0; i < helpFlag.length; i++) {
-                        System.out.println(helpFlag[i]);
-                    }
-                    System.exit(0);
-                case "--help":
-                    for (int i = 0; i < helpFlag.length; i++) {
-                        System.out.println(helpFlag[i]);
-                    }
-                    System.exit(0);
-                case "--raw_test":
-                    mission = (Mission) new Raw_Test(getManager());
-                    break;
-                case "--local_test":
-                    mission = (Mission) new Local_Test(getManager());
-                    break;
-                case "--manual":
-                    mission = (Mission) new ManualMission(getManager(), 5000);
-                    break;
-                case "--motor_test":
-                    mission = (Mission) new MotorTest(getManager());
-                    break;
-                case "--submerge_test":
-                    mission = (Mission) new SubmergeTest(getManager());
-                    break;
-                case "--local_comms":
-                    mission = (Mission) new LocalComms(getManager(), 5000);
-                    break;
-                case "--receive_test":
-                    mission = (Mission) new ReceiveTest(getManager());
-                    break;
-                case "--cam_test":
-                    CameraFeedSender.openCapture(Camera.BOTTOM);
-                    CameraFeedSender.openCapture(Camera.FRONT);
-                    Thread.sleep(60_000);
-                case "--dropper_test":
-                    mission = (Mission) new DropperTest(getManager());
-                    break;
-                case "--kill-confirm":
-                    while (true) {
-                        try {
-                            getManager().setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
-                                    (float) 0.0,
-                                    (float) 0.0, (float) 0.0, (float) 0.0).wait();
-                            while (true)
-                                ;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+            if(str.startsWith("--set-cb-tty=")){
+                String port = str.substring(13);
+                System.out.println("Setting control board serial port to '" _+ port + "'.");
+                CommsThreadManager.setControlBoardPort(port);
+            }else if(str.startsWith("--set-meb-tty=")){
+                String port = str.substring(14);
+                System.out.println("Setting MEB board serial port to '" _+ port + "'.");
+                CommsThreadManager.setMEBPort(port);
+            }else{
 
-                case "--path_yuv":
-                case "--path":
-                    mission = (Mission) new PathYUV(getManager(), missionName);
-                    break;
-                case "--buoys":
-                case "--buoy":
-                    mission = (Mission) new Buoys(getManager(), missionName);
-                    break;
-                case "--buoy_path":
-                    mission = (Mission) new BuoyPath(getManager(), missionName);
-                    break;
-                case "--octagon":
-                    mission = (Mission) new OctagonYUV(getManager(), missionName);
-                    break;
-                case "--bins":
-                case "--bin":
-                    mission = (Mission) new Bin(getManager(), missionName);
-                    break;
-                case "--bin_variant":
-                    mission = (Mission) new VariantBin(getManager(), missionName);
-                    break;
-                case "--gate":
-                    mission = (Mission) new GateMission(getManager(), missionName);
-                    break;
-                case "--gate_path":
-                    mission = (Mission) new GatePathMission(getManager(), missionName);
-                    break;
-                case "--flip":
-                    System.out.println("Old BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
-                    System.out.println("Old TOP: " + String.valueOf(Camera.BOTTOM.getID()));
-                    Camera.swap();
-                    System.out.println("New BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
-                    System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
-                    continue;
-                case "--arm":
-                default:
-                    mission = (Mission) new WaitArm(getManager(), missionName);
-                    break;
+                switch (str) {
+                    case "--test":
+                        System.out.println("Yay! it worked!");
+                        System.exit(0);
+                    case "-h":
+                        for (int i = 0; i < helpFlag.length; i++) {
+                            System.out.println(helpFlag[i]);
+                        }
+                        System.exit(0);
+                    case "--help":
+                        for (int i = 0; i < helpFlag.length; i++) {
+                            System.out.println(helpFlag[i]);
+                        }
+                        System.exit(0);
+                    case "--raw_test":
+                        mission = (Mission) new Raw_Test(getManager());
+                        break;
+                    case "--local_test":
+                        mission = (Mission) new Local_Test(getManager());
+                        break;
+                    case "--manual":
+                        mission = (Mission) new ManualMission(getManager(), 5000);
+                        break;
+                    case "--motor_test":
+                        mission = (Mission) new MotorTest(getManager());
+                        break;
+                    case "--submerge_test":
+                        mission = (Mission) new SubmergeTest(getManager());
+                        break;
+                    case "--local_comms":
+                        mission = (Mission) new LocalComms(getManager(), 5000);
+                        break;
+                    case "--receive_test":
+                        mission = (Mission) new ReceiveTest(getManager());
+                        break;
+                    case "--cam_test":
+                        CameraFeedSender.openCapture(Camera.BOTTOM);
+                        CameraFeedSender.openCapture(Camera.FRONT);
+                        Thread.sleep(60_000);
+                    case "--dropper_test":
+                        mission = (Mission) new DropperTest(getManager());
+                        break;
+                    case "--kill-confirm":
+                        while (true) {
+                            try {
+                                getManager().setMotorSpeeds((float) 0.3, (float) 0.0, (float) 0.0, (float) 0.0,
+                                        (float) 0.0,
+                                        (float) 0.0, (float) 0.0, (float) 0.0).wait();
+                                while (true)
+                                    ;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    case "--path_yuv":
+                    case "--path":
+                        mission = (Mission) new PathYUV(getManager(), missionName);
+                        break;
+                    case "--buoys":
+                    case "--buoy":
+                        mission = (Mission) new Buoys(getManager(), missionName);
+                        break;
+                    case "--buoy_path":
+                        mission = (Mission) new BuoyPath(getManager(), missionName);
+                        break;
+                    case "--octagon":
+                        mission = (Mission) new OctagonYUV(getManager(), missionName);
+                        break;
+                    case "--bins":
+                    case "--bin":
+                        mission = (Mission) new Bin(getManager(), missionName);
+                        break;
+                    case "--bin_variant":
+                        mission = (Mission) new VariantBin(getManager(), missionName);
+                        break;
+                    case "--gate":
+                        mission = (Mission) new GateMission(getManager(), missionName);
+                        break;
+                    case "--gate_path":
+                        mission = (Mission) new GatePathMission(getManager(), missionName);
+                        break;
+                    case "--flip":
+                        System.out.println("Old BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
+                        System.out.println("Old TOP: " + String.valueOf(Camera.BOTTOM.getID()));
+                        Camera.swap();
+                        System.out.println("New BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
+                        System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
+                        continue;
+                    case "--arm":
+                    default:
+                        mission = (Mission) new WaitArm(getManager(), missionName);
+                        break;
+                }
             }
             System.out.println("RUN MISSION: " + mission.getClass().getName());
             mission.run();
