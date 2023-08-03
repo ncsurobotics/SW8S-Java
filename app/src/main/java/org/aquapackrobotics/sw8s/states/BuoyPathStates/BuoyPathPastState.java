@@ -15,7 +15,7 @@ import org.aquapackrobotics.sw8s.vision.*;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
-public class BuoyPathForwardState extends State {
+public class BuoyPathPastState extends State {
 
     private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Buoy target;
@@ -26,9 +26,8 @@ public class BuoyPathForwardState extends State {
     private double noDetectCount;
     private final double MISSION_DEPTH;
     private double combinedAngle;
-    private String testName;
 
-    public BuoyPathForwardState(CommsThreadManager manager, String testName, double initialYaw, double MISSION_DEPTH) {
+    public BuoyPathPastState(CommsThreadManager manager, String testName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.BOTTOM);
         CameraFeedSender.openCapture(Camera.FRONT);
@@ -99,7 +98,7 @@ public class BuoyPathForwardState extends State {
                     x = target.translation[0] > 0 ? -0.2 : 0.2;
                 }
 
-                manager.setStability2Speeds(x, 0.4, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability1Speeds(0, 0, 0, 0, 0.5, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -110,7 +109,7 @@ public class BuoyPathForwardState extends State {
             } else
                 pathAlign();
             try {
-                manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
+                manager.setStability2Speeds(0, 0, 0, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -119,6 +118,12 @@ public class BuoyPathForwardState extends State {
         }
 
         if (noDetectCount >= 15) {
+            try {
+                manager.setStability2Speeds(0, 1.0, 0, 0, combinedAngle, MISSION_DEPTH);
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return false;
@@ -132,9 +137,12 @@ public class BuoyPathForwardState extends State {
         System.out.println("Stopping motors");
         manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
         Thread.sleep(1000);
+        System.out.println("Driving back");
+        manager.setStability2Speeds(-0.5, -0.5, 0, 0, initialYaw, MISSION_DEPTH);
+        Thread.sleep(3000);
     }
 
     public State nextState() {
-        return new BuoyPathPastState(manager, testName, combinedAngle, MISSION_DEPTH);
+        return null;
     }
 }
