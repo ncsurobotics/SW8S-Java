@@ -22,13 +22,17 @@ public class WaitArm extends Mission {
                         throw new RuntimeException(e);
                     }
                 }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
         CameraFeedSender.openCapture(0, missionName);
         CameraFeedSender.openCapture(1, missionName);
         try {
-            manager.scheduleRunnable(armSignalWait);
-            Thread.sleep(2000);
+            manager.scheduleRunnable(armSignalWait).get(); // .get() blocks until complete
         } catch (Exception e) {
             e.printStackTrace();
         }

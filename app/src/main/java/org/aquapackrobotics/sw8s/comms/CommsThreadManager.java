@@ -442,7 +442,7 @@ public class CommsThreadManager {
         return sf;
     }
 
-    public void scheduleRunnable(Runnable runnable) {
-        pool.schedule(runnable, 0, TimeUnit.MILLISECONDS);
+    public ScheduledFuture<?> scheduleRunnable(Runnable runnable) throws ExecutionException, InterruptedException {
+        return pool.schedule(runnable, 0, TimeUnit.MILLISECONDS);
     }
 }
