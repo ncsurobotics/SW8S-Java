@@ -23,7 +23,8 @@ public class OctagonYUV extends Mission {
         CameraFeedSender.openCapture(Camera.BOTTOM);
         this.missionName = missionName;
         try {
-            Linux.changeExposure(Camera.BOTTOM, 5);
+            Linux.changeExposure(Camera.BOTTOM, 12);
+            // Linux.changeExposure(Camera.BOTTOM, 8);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;
