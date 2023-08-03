@@ -126,6 +126,7 @@ public class App {
                 case "--octagon":
                     mission = (Mission) new OctagonYUV(getManager(), missionName);
                     break;
+                case "--bins":
                 case "--bin":
                     mission = (Mission) new Bin(getManager(), missionName);
                     break;
