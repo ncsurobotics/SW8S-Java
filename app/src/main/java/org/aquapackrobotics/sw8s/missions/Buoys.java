@@ -7,7 +7,7 @@ import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.BuoyStates.BuoyInitState;
 
 public class Buoys extends Mission {
-    private static final double MISSION_DEPTH = -1.0;
+    private static final double MISSION_DEPTH = -2.7;
 
     String missionName;
 
