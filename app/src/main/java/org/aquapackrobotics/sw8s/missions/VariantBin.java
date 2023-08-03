@@ -12,6 +12,7 @@ public class VariantBin extends Mission {
 
     String missionName;
     private double initialYaw;
+
     public VariantBin(CommsThreadManager manager, String missionName) {
         super(manager);
         this.manager = manager;
@@ -41,6 +42,6 @@ public class VariantBin extends Mission {
 
     @Override
     protected State nextState(State state) {
-        return new BinTargetState(this.manager, missionName, MISSION_DEPTH);
+        return null;
     }
 }
