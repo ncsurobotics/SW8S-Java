@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.aquapackrobotics.sw8s.vision.IntPair;
 import org.opencv.core.Core;
@@ -203,6 +204,32 @@ public class ImagePrep {
                 kmeans(intermediate_k, this.block).copyTo(this.processImg.submat(this.ROI));
 
             }
+        }
+        if (global_k > 0) {
+            this.resultImg = kmeans(global_k, this.processImg);
+        } else {
+            this.resultImg = this.processImg;
+        }
+    }
+
+    /**
+     * perform local kmeans block by block
+     * 
+     * @param intermediate_k num of colors in each block
+     * @param global_k       num of colors in entire image, <=0 for off
+     */
+    public void localKmeansParallel(int intermediate_k, int global_k) {
+        IntStream.range(0, this.max_height_id).forEach(row -> {
+            this.id_height = row;
+            for (int col = 0; col <= this.max_width_id; col++) {
+                this.id_width = col;
+                set_block();
+                kmeans(intermediate_k, this.block).copyTo(this.processImg.submat(this.ROI));
+
+            }
+        });
+        this.inputImg.copyTo(this.processImg);
+        for (int row = 0; row <= this.max_height_id; row++) {
         }
         if (global_k > 0) {
             this.resultImg = kmeans(global_k, this.processImg);

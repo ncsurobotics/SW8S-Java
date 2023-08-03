@@ -7,24 +7,22 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.comms.Linux;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.states.OctagonYUVStates.OctagonYUVSubmergeState;
+import org.aquapackrobotics.sw8s.states.GateStates.GateInitState;
 
 /**
  * Mission for navigating gates
  */
-public class OctagonYUV extends Mission {
-    private static final double MISSION_DEPTH = -1.0;
+public class GateSpinMission extends Mission {
+    private static final double MISSION_DEPTH = -1.5;
+    String missionName;
+    double initialYaw;
 
-    private String missionName;
-    private double initialYaw;
-
-    public OctagonYUV(CommsThreadManager manager, String missionName) {
+    public GateSpinMission(CommsThreadManager manager, String missionName) {
         super(manager);
-        CameraFeedSender.openCapture(Camera.BOTTOM);
+        CameraFeedSender.openCapture(Camera.FRONT, missionName);
         this.missionName = missionName;
         try {
-            Linux.changeExposure(Camera.BOTTOM, 12);
-            // Linux.changeExposure(Camera.BOTTOM, 8);
+            Linux.changeExposure(Camera.FRONT, 18);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;
@@ -37,18 +35,17 @@ public class OctagonYUV extends Mission {
 
     @Override
     protected State initialState() {
-        return new OctagonYUVSubmergeState(manager, missionName, initialYaw, MISSION_DEPTH);
+        return new GateInitState(manager, missionName, initialYaw, MISSION_DEPTH).setSpin();
     }
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
         while (!state.onPeriodic()) {
-            System.out.println("State: " + state.getClass().getName());
         }
     }
 
     @Override
-    protected State nextState(State state) {
+    public State nextState(State state) {
         return state.nextState();
     }
 }

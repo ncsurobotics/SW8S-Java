@@ -13,11 +13,14 @@ public class GateInitState extends State {
     private double initialYaw;
     private final double MISSION_DEPTH;
 
+    private boolean spin;
+
     public GateInitState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
+        spin = false;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -47,10 +50,16 @@ public class GateInitState extends State {
         }
     }
 
+    public GateInitState setSpin() {
+        this.spin = true;
+        return this;
+    }
+
     public void onExit() throws ExecutionException, InterruptedException {
     }
 
     public State nextState() {
+        if (spin) return new GateSpinState(manager, missionName, MISSION_DEPTH);
         return new GateForwardState(manager, missionName, MISSION_DEPTH);
     }
 }
