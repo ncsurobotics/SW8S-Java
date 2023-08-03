@@ -11,7 +11,7 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Gate;
-import org.aquapackrobotics.sw8s.vision.GatePoles;
+import org.aquapackrobotics.sw8s.vision.*;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -54,22 +54,18 @@ public class GateForwardState extends State {
                 noDetectCount = 0;
                 target.transAlign();
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
-                printWriter.print(Arrays.toString(target.translation));
+                printWriter.println(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
-                printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
 
-                if (Math.abs(target.translation[2]) < 0.1) {
-                    return true;
-                }
+                DoublePair trans = Translation.movement(
+                        new DoublePair(target.translation[0], target.translation[1]));
+                System.out.println("Computed: " + target);
+                printWriter.println("Computed: " + target);
+                printWriter.close();
 
-                double x = 0;
-                if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? -0.2 : 0.2;
-                }
-
-                manager.setStability2Speeds(x, 0.4, 0, 0, yaw, MISSION_DEPTH);
+                manager.setStability2Speeds(trans.x, 0.2, 0, 0, yaw, MISSION_DEPTH);
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {
                 if (noDetectCount >= 0)

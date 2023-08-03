@@ -11,7 +11,7 @@ import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.Buoy;
+import org.aquapackrobotics.sw8s.vision.*;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -59,9 +59,14 @@ public class BuoyForwardState extends State {
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
                 printWriter.print(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
-                printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+
+                DoublePair trans = Translation.movement(
+                        new DoublePair(target.translation[0], target.translation[1]));
+                System.out.println("Computed: " + target);
+                printWriter.println("Computed: " + target);
+                printWriter.close();
 
                 if (Math.abs(target.translation[2]) < 0.1) {
                     return true;

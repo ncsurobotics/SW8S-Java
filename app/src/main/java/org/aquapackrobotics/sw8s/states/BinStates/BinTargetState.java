@@ -12,7 +12,7 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Bin;
-import org.aquapackrobotics.sw8s.vision.VisualObject;
+import org.aquapackrobotics.sw8s.vision.*;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -59,10 +59,18 @@ public class BinTargetState extends State {
             if (target.detected()) {
                 target.transAlign();
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
-                printWriter.print(Arrays.toString(target.translation));
+                printWriter.println(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
-                printWriter.close();
                 System.out.println("Translation [x, z, distance]: " + Arrays.toString(target.translation));
+
+                System.out.println("Original: " + Arrays.toString(target.translation));
+                DoubleTriple trans = Translation.movement_triple(
+                        new DoublePair(target.translation[0], target.translation[1]),
+                        manager.getYaw(), target.translation[2]);
+                yaw = trans.z;
+                System.out.println("Computed: " + trans.toString());
+                printWriter.println("Computed: " + trans.toString());
+                printWriter.close();
 
                 if (Math.abs(target.translation[0]) < 0.1 && Math.abs(target.translation[1]) < 0.1) {
                     System.out.println("FIRE DROPPERS");
@@ -72,21 +80,10 @@ public class BinTargetState extends State {
                     // return true;
                 }
 
-                double x = 0;
-                if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.4 : -0.4;
-                }
-
-                double y = 0;
-                if (Math.abs(target.translation[1]) > 0.1) {
-                    y = target.translation[1] > 0 ? 0.4 : -0.4;
-                }
-
-                manager.setStability2Speeds(x, y, 0, 0, yaw, total_depth);
-                if (target.translation[0] > manager.getGyro()[0] - 0.1
-                        && target.translation[0] < manager.getGyro()[0] + 0.1
-                        && target.translation[1] > manager.getGyro()[1] - 0.1
-                        && target.translation[1] < manager.getGyro()[1] + 0.1) {
+                manager.setStability2Speeds(trans.x, trans.y, 0, 0, yaw, total_depth);
+                if (Math.abs(target.translation[0]) < 1.0 &&
+                        Math.abs(target.translation[1]) < 1.0 &&
+                        Math.abs(target.translation[2]) < 5) {
                     if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25) {
                         for (int i = 0; i < 3; i++) {
                             manager.fireDroppers();
@@ -102,7 +99,9 @@ public class BinTargetState extends State {
                 System.out.println("Not detected");
                 Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
         }
         return false;

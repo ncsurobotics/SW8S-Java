@@ -5,7 +5,7 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Gate;
-import org.aquapackrobotics.sw8s.vision.GatePoles;
+import org.aquapackrobotics.sw8s.vision.*;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -21,6 +21,7 @@ public class GateSpinState extends State {
     private double yaw;
     private double noDetectCount;
     private final double MISSION_DEPTH;
+
     public GateSpinState(CommsThreadManager manager, String testName, double missionDepth) {
         super(manager);
         CameraFeedSender.openCapture(Camera.FRONT);
@@ -37,8 +38,7 @@ public class GateSpinState extends State {
         try {
             System.out.println("ENTER GATE SPIN STATE");
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
-            while (!mreturn.isDone()){}
-            // mreturn.get()
+            while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,21 +54,22 @@ public class GateSpinState extends State {
             target.transAlign();
             try {
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
-                printWriter.print(Arrays.toString(target.translation));
+                printWriter.println(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
-                printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
+                Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+
+                DoublePair trans = Translation.movement(
+                        new DoublePair(target.translation[0], target.translation[1]));
+                System.out.println("Computed: " + target);
+                printWriter.println("Computed: " + target);
+                printWriter.close();
 
                 if (Math.abs(target.translation[2]) < 0.1) {
                     return true;
                 }
 
-                double x = 0;
-                if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.2 : -0.2;
-                }
-
-                manager.setStability2Speeds(x, 0.4, 0, 0, yaw++, MISSION_DEPTH);
+                manager.setStability2Speeds(trans.x, 0.4, 0, 0, yaw++, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
