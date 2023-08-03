@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
+import org.aquapackrobotics.sw8s.comms.Linux;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.GateStates.GateInitState;
 
@@ -21,6 +22,7 @@ public class GateMission extends Mission {
         CameraFeedSender.openCapture(Camera.FRONT, missionName);
         this.missionName = missionName;
         try {
+            Linux.changeExposure(Camera.FRONT, 18);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;

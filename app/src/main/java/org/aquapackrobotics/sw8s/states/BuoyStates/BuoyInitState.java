@@ -10,17 +10,19 @@ public class BuoyInitState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
+    private double initialYaw;
     private final double MISSION_DEPTH;
 
-    public BuoyInitState(CommsThreadManager manager, String missionName, double MISSION_DEPTH) {
+    public BuoyInitState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
+        this.initialYaw = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, manager.getYaw(),
+            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
@@ -50,6 +52,6 @@ public class BuoyInitState extends State {
 
     public State nextState() {
         // return new BuoyReadState(manager);
-        return new BuoyForwardState(manager, missionName, MISSION_DEPTH);
+        return new BuoyForwardState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

@@ -24,4 +24,9 @@ public class Linux {
         res.stderr = stderrStream.lines().collect(Collectors.joining("\n"));
         return res;
     }
+
+    public static void changeExposure(Camera cam, int level) throws IOException, InterruptedException {
+        runShellCommand("v4l2-ctl -d /dev/video" + cam.getID() + " -c exposure_auto=1 && v4l2-ctl -d /dev/video"
+                + cam.getID() + " -c exposure_absolute=" + level);
+    }
 }

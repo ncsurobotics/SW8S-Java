@@ -54,6 +54,8 @@ public class App {
             Mission mission;
             CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
             CameraFeedSender.openCapture(Camera.FRONT, missionName);
+            Linux.changeExposure(Camera.BOTTOM, 20);
+            Linux.changeExposure(Camera.FRONT, 18);
 
             switch (str) {
                 case "--test":
