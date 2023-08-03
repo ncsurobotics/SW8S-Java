@@ -34,9 +34,10 @@ public class GateFindState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            System.out.println("ENTER FORWARD STATE");
-            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0.2, MISSION_DEPTH);
-            while (!mreturn.isDone())
+            System.out.println("ENTER FIND STATE");
+            Thread.sleep(2000);
+            var mreturn2 = manager.setStability1Speeds(0, 0, -0.2, 0, 0, MISSION_DEPTH);
+            while (!mreturn2.isDone())
                 ;
         } catch (Exception e) {
             e.printStackTrace();

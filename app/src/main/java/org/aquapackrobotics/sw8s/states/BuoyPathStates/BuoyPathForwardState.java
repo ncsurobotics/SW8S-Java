@@ -68,7 +68,7 @@ public class BuoyPathForwardState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
+            var mreturn = manager.setStability2Speeds(-0.15, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class BuoyPathForwardState extends State {
             } else
                 pathAlign();
             try {
-                manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
+                manager.setStability2Speeds(-0.15, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }

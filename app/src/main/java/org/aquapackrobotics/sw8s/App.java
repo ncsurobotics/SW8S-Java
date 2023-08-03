@@ -57,18 +57,18 @@ public class App {
             CameraFeedSender.openCapture(Camera.FRONT, missionName);
             Linux.changeExposure(Camera.BOTTOM, 20);
             Linux.changeExposure(Camera.FRONT, 18);
-            Linux.disableAutofocus(Camera.FRONT);
-            Linux.disableAutofocus(Camera.BOTTOM);
+            // Linux.disableAutofocus(Camera.FRONT);
+            // Linux.disableAutofocus(Camera.BOTTOM);
 
-            if(str.startsWith("--set-cb-tty=")){
+            if (str.startsWith("--set-cb-tty=")) {
                 String port = str.substring(13);
                 System.out.println("Setting control board serial port to '" + port + "'.");
                 CommsThreadManager.setControlBoardPort(port);
-            }else if(str.startsWith("--set-meb-tty=")){
+            } else if (str.startsWith("--set-meb-tty=")) {
                 String port = str.substring(14);
                 System.out.println("Setting MEB board serial port to '" + port + "'.");
                 CommsThreadManager.setMEBPort(port);
-            }else{
+            } else {
 
                 switch (str) {
                     case "--test":
@@ -165,7 +165,7 @@ public class App {
                 }
             }
 
-            if(mission == null)
+            if (mission == null)
                 mission = (Mission) new WaitArm(getManager(), missionName);
 
             System.out.println("RUN MISSION: " + mission.getClass().getName());

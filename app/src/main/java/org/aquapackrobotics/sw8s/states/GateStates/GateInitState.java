@@ -40,6 +40,11 @@ public class GateInitState extends State {
             if (depthRead.isDone()) {
                 if (manager.getDepth() > MISSION_DEPTH + 0.5) {
                     Thread.sleep(2000);
+                    var mreturn = manager.setStability2Speeds(0, 0.5, 0, 0, initialYaw,
+                            MISSION_DEPTH);
+                    while (!mreturn.isDone())
+                        ;
+                    Thread.sleep(5000);
                     return true;
                 }
             }

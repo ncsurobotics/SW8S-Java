@@ -22,7 +22,7 @@ public class GateMission extends Mission {
         CameraFeedSender.openCapture(Camera.FRONT, missionName);
         this.missionName = missionName;
         try {
-            Linux.changeExposure(Camera.FRONT, 18);
+            Linux.changeExposure(Camera.FRONT, 16);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;

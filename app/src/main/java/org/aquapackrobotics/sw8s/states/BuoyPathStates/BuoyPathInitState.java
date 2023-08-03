@@ -36,7 +36,7 @@ public class BuoyPathInitState extends State {
         try {
             if (depthRead.isDone()) {
                 if (manager.getDepth() > MISSION_DEPTH + 0.5) {
-                    Thread.sleep(5000);
+                    Thread.sleep(8000);
                     return true;
                 }
             }
