@@ -11,12 +11,13 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Gate;
+import org.aquapackrobotics.sw8s.vision.GatePoles;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 public class GateForwardState extends State {
 
-    private final Gate target;
+    private final GatePoles target;
     private final File Dir;
     private double yaw;
     private double noDetectCount;
@@ -25,7 +26,7 @@ public class GateForwardState extends State {
     public GateForwardState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.FRONT);
-        target = new Gate();
+        target = new GatePoles();
         Dir = new File("/mnt/data/" + testName + "/gate");
         Dir.mkdir();
         yaw = manager.getYaw();

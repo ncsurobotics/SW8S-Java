@@ -91,9 +91,10 @@ public class nn_cv2 extends ImagePrep {
 
                 Point classIdPoint = mm.maxLoc;
                 if (confidence > .7) {
-                    int centerX = (int) ((row.get(0, 0)[0]) * factor) / 640 * 800; // scaling for drawing the bounding boxes
+                    int centerX = (int) ((row.get(0, 0)[0] * factor) / 640 * 800); // scaling for drawing the bounding
+                                                                                    // boxes
                     int centerY = (int) ((row.get(0, 1)[0] * factor) / 640 * 600);
-                    int width = (int) ((row.get(0, 2)[0]) * factor) / 640 * 800;
+                    int width = (int) ((row.get(0, 2)[0] * factor) / 640 * 800);
                     int height = (int) ((row.get(0, 3)[0] * factor) / 640 * 600);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
@@ -125,6 +126,7 @@ public class nn_cv2 extends ImagePrep {
             Imgproc.rectangle(out, box.tl(), box.br(), new Scalar(0, 0, 255), 2);
             Imgproc.putText(out, Integer.toString(classId), box.tl(), Imgproc.FONT_HERSHEY_COMPLEX, 1,
                     new Scalar(0, 0, 255));
+            System.out.println("ADDING: " + classId);
             output.add(classId);
             output_description.add(box);
         }
