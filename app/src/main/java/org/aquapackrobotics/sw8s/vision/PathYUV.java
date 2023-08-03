@@ -278,6 +278,34 @@ public class PathYUV extends ImagePrep {
         throw new Exception("Not yet updated.");
     }
 
+    public VisualObject relativeAvgPosition(Mat frame){
+        VisualObject res = new VisualObject(new double[]{0, 0, 0, 0, 0});
+        int count = 0;
+        processFrame(frame);
+        for(int i = 0; i < result.size(); ++i){
+            if(result.get(i)){
+                res.add(new VisualObject(results_prop.get(i)));
+                count++;
+            }
+        }
+        res.divide(count);
+        return res;
+    }
+
+    public VisualObject relativeAvgPosition(Mat frame, String saveFile){
+        VisualObject res = new VisualObject(new double[]{0, 0, 0, 0, 0});
+        int count = 0;
+        processFrame(frame, saveFile);
+        for(int i = 0; i < result.size(); ++i){
+            if(result.get(i)){
+                res.add(new VisualObject(results_prop.get(i)));
+                count++;
+            }
+        }
+        res.divide(count);
+        return res;
+    }
+
     public VisualObject[] relativePositions(Mat frame) throws Exception {
         processFrame(frame);
         if (result.indexOf(true) >= 0) {
