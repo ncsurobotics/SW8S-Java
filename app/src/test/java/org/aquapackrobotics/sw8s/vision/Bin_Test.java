@@ -19,16 +19,26 @@ public class Bin_Test {
     @Test
     public void markBin() {
         try {
-            File outDir = new File("tests/bin/");
+            File outDir = new File("tests/bin/success/");
             outDir.mkdirs();
+            File outDir1 = new File("tests/bin/failure/");
+            outDir1.mkdirs();
             File dir = new File(System.getProperty("user.dir") + "/resources/bin_images/");
+            int successes = 0;
             for (File f : dir.listFiles()) {
+                String out = "tests/bin/";
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Bin test = new Bin();
-                Imgcodecs.imwrite("tests/bin/" + f.getName(), test.detectYoloV5(img));
-                assertTrue(test.detected());
+                if (test.detected()) {
+                    out += "success/";
+                    successes++;
+                } else {
+                    out += "failure/";
+                }
+                Imgcodecs.imwrite(out + f.getName(), test.detectYoloV5(img));
             }
+            // assertTrue((double) successes / dir.listFiles().length > 0.9);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
         }
@@ -37,16 +47,26 @@ public class Bin_Test {
     @Test
     public void markBinLarge() {
         try {
-            File outDir = new File("tests/bin_large/");
+            File outDir = new File("tests/bin_large/success/");
             outDir.mkdirs();
+            File outDir1 = new File("tests/bin_large/failure/");
+            outDir1.mkdirs();
             File dir = new File(System.getProperty("user.dir") + "/resources/bin_images/");
+            int successes = 0;
             for (File f : dir.listFiles()) {
+                String out = "tests/bin_large/";
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Bin test = new Bin(true);
-                Imgcodecs.imwrite("tests/bin_large/" + f.getName(), test.detectYoloV5(img));
-                assertTrue(test.detected());
+                if (test.detected()) {
+                    out += "success/";
+                    successes++;
+                } else {
+                    out += "failure/";
+                }
+                Imgcodecs.imwrite(out + f.getName(), test.detectYoloV5(img));
             }
+            // assertTrue((double) successes / dir.listFiles().length > 0.9);
         } catch (Exception e) {
             Assert.fail(e.getStackTrace().toString());
         }

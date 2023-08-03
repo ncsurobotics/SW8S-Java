@@ -91,10 +91,10 @@ public class nn_cv2 extends ImagePrep {
 
                 Point classIdPoint = mm.maxLoc;
                 if (confidence > .7) {
-                    int centerX = (int) (row.get(0, 0)[0]) * factor; // scaling for drawing the bounding boxes
-                    int centerY = (int) ((row.get(0, 1)[0] * factor) / 800 * 600);
-                    int width = (int) (row.get(0, 2)[0]) * factor;
-                    int height = (int) ((row.get(0, 3)[0] * factor) / 800 * 600);
+                    int centerX = (int) ((row.get(0, 0)[0]) * factor) / 640 * 800; // scaling for drawing the bounding boxes
+                    int centerY = (int) ((row.get(0, 1)[0] * factor) / 640 * 600);
+                    int width = (int) ((row.get(0, 2)[0]) * factor) / 640 * 800;
+                    int height = (int) ((row.get(0, 3)[0] * factor) / 640 * 600);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
                     classIds.add((int) classIdPoint.x);
