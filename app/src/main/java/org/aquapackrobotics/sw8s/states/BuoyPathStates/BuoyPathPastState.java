@@ -26,6 +26,9 @@ public class BuoyPathPastState extends State {
     private double noDetectCount;
     private final double MISSION_DEPTH;
     private double combinedAngle;
+    private double strafe;
+    private int strafe_count;
+    private int strafe_flip;
 
     public BuoyPathPastState(CommsThreadManager manager, String testName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
@@ -42,6 +45,9 @@ public class BuoyPathPastState extends State {
         this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
         combinedAngle = manager.getYaw();
+        this.strafe = 0.3;
+        this.strafe_count = 0;
+        this.strafe_flip = 0;
     }
 
     public void pathAlign() {
@@ -61,6 +67,16 @@ public class BuoyPathPastState extends State {
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
+            try {
+                if (++strafe_count > strafe_flip) {
+                    strafe_flip *= 2;
+                    strafe_count = 0;
+                    strafe = -strafe;
+                    System.out.println("FLIPPING STRAFE");
+                }
+                manager.setStability2Speeds(strafe, 0, 0, 0, combinedAngle, MISSION_DEPTH);
+            } catch (Exception e2) {
+            }
         }
     }
 

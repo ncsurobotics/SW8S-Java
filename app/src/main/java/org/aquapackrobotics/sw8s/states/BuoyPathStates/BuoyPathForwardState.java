@@ -129,6 +129,11 @@ public class BuoyPathForwardState extends State {
         System.out.println("Exiting buoy");
         manager.setStability2Speeds(0, 1, 0, 0, initialYaw, MISSION_DEPTH);
         Thread.sleep(4000);
+        manager.setStability2Speeds(0, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+        while ((manager.getYaw() - initialYaw) > 10) {
+            System.out.println("DIFFERENCE: " + manager.getYaw() + ", " + initialYaw);
+            Thread.sleep(100);
+        }
         System.out.println("Stopping motors");
         manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
         Thread.sleep(1000);
