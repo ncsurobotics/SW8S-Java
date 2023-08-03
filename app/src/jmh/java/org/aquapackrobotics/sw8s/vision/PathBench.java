@@ -21,7 +21,6 @@ public class PathBench {
     }
 
     private static Mat img = Imgcodecs.imread(System.getProperty("user.dir") + "/resources/path_images/1.jpeg");
-    private static Mat blank_img = Imgcodecs.imread(System.getProperty("user.dir") + "/resources/blank_images/1.jpeg");
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
@@ -29,58 +28,6 @@ public class PathBench {
         try {
             Path path = new Path();
             bh.consume(path.relativePosition(img));
-        } catch (Exception e) {
-        }
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    public void _25(Blackhole bh) {
-        try {
-            Path path = new Path(0.25);
-            bh.consume(path.relativePosition(img));
-        } catch (Exception e) {
-        }
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    public void _50_draw() {
-        try {
-            Path path = new Path();
-            path.processFrame(img, "/tmp/output.jpeg");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    public void _25_draw() {
-        try {
-            Path path = new Path(0.25);
-            path.processFrame(img, "/tmp/output.jpeg");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    public void blank_50(Blackhole bh) {
-        try {
-            Path path = new Path();
-            bh.consume(path.relativePosition(blank_img));
-        } catch (Exception e) {
-        }
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    public void blank_25(Blackhole bh) {
-        try {
-            Path path = new Path(0.25);
-            bh.consume(path.relativePosition(blank_img));
         } catch (Exception e) {
         }
     }
