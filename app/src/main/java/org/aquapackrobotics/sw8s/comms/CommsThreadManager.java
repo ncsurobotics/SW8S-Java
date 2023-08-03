@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.prefs.Preferences;
 
 import org.aquapackrobotics.sw8s.comms.control.ControlBoardCommunication;
 import org.aquapackrobotics.sw8s.comms.control.ControlBoardListener;
@@ -37,21 +38,10 @@ public class CommsThreadManager {
     // Constructor
     public CommsThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
-
-        boolean is_moab = false;
-        String cboard_tty, meb_tty;
-        if(is_moab){
-            cboard_tty = "/dev/serial/by-id/usb-STMicroelectronics_Control_Board_v2__Virtual_COM_Port__36313632303251010061003C-if00";
-            meb_tty = "/dev/serial/by-id/usb-Texas_Instruments_MSP_Tools_Driver_887E1B5125002200-if02";
-        }else{
-            cboard_tty = "/dev/serial/by-id/usb-Adafruit_Control_Board_v1__ItsyBitsy_M4_Express__FF083B2F5337524651202020FA89E776-if00";
-            meb_tty = "/dev/serial/by-id/usb-Texas_Instruments_MSP_Tools_Driver_B20A826E14002300-if02";
-        }
-
-        SerialPort robotPort = SerialPort.getCommPort(
-                cboard_tty);
-        SerialPort mebPort = SerialPort
-                .getCommPort(meb_tty);
+        String cboard_tty = CommsThreadManager.getControlBoardPort();
+        String meb_tty = CommsThreadManager.getMEBPort();
+        SerialPort robotPort = SerialPort.getCommPort(cboard_tty);
+        SerialPort mebPort = SerialPort.getCommPort(meb_tty);
         mebPort.setBaudRate(57600);
         controlBoardCommunication = new ControlBoardCommunication(new SerialComPort(robotPort));
         controlListener = new ControlBoardListener();
@@ -94,6 +84,26 @@ public class CommsThreadManager {
         } catch (Exception e) {
             System.out.println("Could not set motor matrix");
         }
+    }
+
+    public static String getControlBoardPort(){
+        var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
+        return prefs.get("CBOARD_PORT", "/dev/ttyACM0");
+    }
+
+    public static void setControlBoardPort(String port){
+        var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
+        prefs.put("CBOARD_PORT", port);
+    }
+
+    public static String getMEBPort(){
+        var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
+        return prefs.get("MEB_PORT", "/dev/ttyACM2");
+    }
+
+    public static void setMEBPort(String port){
+        var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
+        prefs.put("MEB_PORT", port);
     }
 
     /**
