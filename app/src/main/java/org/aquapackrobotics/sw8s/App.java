@@ -59,11 +59,11 @@ public class App {
 
             if(str.startsWith("--set-cb-tty=")){
                 String port = str.substring(13);
-                System.out.println("Setting control board serial port to '" _+ port + "'.");
+                System.out.println("Setting control board serial port to '" + port + "'.");
                 CommsThreadManager.setControlBoardPort(port);
             }else if(str.startsWith("--set-meb-tty=")){
                 String port = str.substring(14);
-                System.out.println("Setting MEB board serial port to '" _+ port + "'.");
+                System.out.println("Setting MEB board serial port to '" + port + "'.");
                 CommsThreadManager.setMEBPort(port);
             }else{
 
