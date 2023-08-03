@@ -59,7 +59,8 @@ public class GateInitState extends State {
     }
 
     public State nextState() {
-        if (spin) return new GateSpinState(manager, missionName, MISSION_DEPTH);
-        return new GateForwardState(manager, missionName, MISSION_DEPTH);
+        if (spin)
+            return new GateSpinState(manager, missionName, MISSION_DEPTH);
+        return new GateFindState(manager, missionName, MISSION_DEPTH);
     }
 }

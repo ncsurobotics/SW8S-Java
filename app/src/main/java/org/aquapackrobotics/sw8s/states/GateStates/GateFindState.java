@@ -10,35 +10,32 @@ import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.Gate;
 import org.aquapackrobotics.sw8s.vision.GatePoles;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
-public class GateForwardState extends State {
+public class GateFindState extends State {
 
     private final GatePoles target;
     private final File Dir;
-    private double yaw;
-    private double noDetectCount;
     private final double MISSION_DEPTH;
+    private String testName;
 
-    public GateForwardState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
+    public GateFindState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.FRONT);
         target = new GatePoles(true);
         Dir = new File("/mnt/data/" + testName + "/gate");
         Dir.mkdir();
         new File(Dir.toString() + "/failure/").mkdirs();
-        yaw = manager.getYaw();
-        this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
+        this.testName = testName;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, yaw, MISSION_DEPTH);
+            var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0.2, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -51,7 +48,6 @@ public class GateForwardState extends State {
         Mat yoloout = target.detectYoloV5(frame);
         try {
             if (target.detected()) {
-                noDetectCount = 0;
                 target.transAlign();
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
                 printWriter.print(Arrays.toString(target.translation));
@@ -59,32 +55,17 @@ public class GateForwardState extends State {
                 printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
-
-                if (Math.abs(target.translation[2]) < 0.1) {
-                    return true;
-                }
-
-                double x = 0;
-                if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? -0.2 : 0.2;
-                }
-
-                manager.setStability2Speeds(x, 0.4, 0, 0, yaw, MISSION_DEPTH);
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+                var mreturn = manager.setStability1Speeds(0, 0, 0, 0, 0, MISSION_DEPTH);
+                while (!mreturn.isDone())
+                    ;
+                return true;
             } else {
-                if (noDetectCount >= 0)
-                    ++noDetectCount;
-                System.out.println("Not detected");
-                manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
-                Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (noDetectCount >= 5) {
-            return true;
-        }
         return false;
 
     }
@@ -94,6 +75,6 @@ public class GateForwardState extends State {
     }
 
     public State nextState() {
-        return null;
+        return new GateForwardState(manager, testName, MISSION_DEPTH);
     }
 }
