@@ -24,6 +24,8 @@ public class BinTargetState extends State {
     private double yaw;
     private final double MISSION_DEPTH;
 
+    private final double descend;
+
     public BinTargetState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.BOTTOM);
@@ -34,6 +36,7 @@ public class BinTargetState extends State {
         new File(Dir.toString() + "/failure/").mkdirs();
         yaw = manager.getYaw();
         this.MISSION_DEPTH = MISSION_DEPTH;
+        descend = 0;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -48,6 +51,7 @@ public class BinTargetState extends State {
     }
 
     public boolean onPeriodic() {
+        double total_depth = MISSION_DEPTH + descend;
         Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         Mat yoloout = target.detectYoloV5(frame);
         try {
@@ -60,10 +64,6 @@ public class BinTargetState extends State {
                 System.out.println("Translation [x, z, distance]: " + Arrays.toString(target.translation));
 
                 if (Math.abs(target.translation[0]) < 0.1 && Math.abs(target.translation[1]) < 0.1) {
-                    for (int i = 0; i < 3; i++) {
-                        manager.fireDroppers();
-                        Thread.sleep(100);
-                    }
                     System.out.println("FIRE DROPPERS");
                     File subDir = new File(Dir.toString() + "/" + "fire");
                     subDir.mkdir();
@@ -81,7 +81,14 @@ public class BinTargetState extends State {
                     y = target.translation[1] > 0 ? 0.2 : -0.2;
                 }
 
-                manager.setStability2Speeds(x, y, 0, 0, yaw, MISSION_DEPTH);
+                manager.setStability2Speeds(x, y, 0, 0, yaw, total_depth);
+                if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25 ) {
+                    for (int i = 0; i < 3; i++) {
+                        manager.fireDroppers();
+                        Thread.sleep(100);
+                    }
+                }
+
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {
                 manager.setStability2Speeds(0, 0.2, 0, 0, yaw, MISSION_DEPTH);
