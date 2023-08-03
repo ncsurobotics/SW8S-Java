@@ -38,7 +38,7 @@ public class CommsThreadManager {
     public CommsThreadManager(ScheduledThreadPoolExecutor pool) throws IOException {
         this.pool = pool;
 
-        boolean is_moab = true;
+        boolean is_moab = false;
         String cboard_tty, meb_tty;
         if(is_moab){
             cboard_tty = "/dev/serial/by-id/usb-STMicroelectronics_Control_Board_v2__Virtual_COM_Port__36313632303251010061003C-if00";

@@ -169,6 +169,7 @@ public class CameraFeedSender {
     public static void openCapture(Camera cam, String missionName) {
         int id = cam.getID();
         if (!heldCaptures.containsKey(id)) {
+            System.out.println(cam.name());
             try {
                 String savefile = saveFile("cam" + cam.name(), missionName + "/camtest-recordings");
                 String capPl = openPipeline(id, 800, 600, 30)
