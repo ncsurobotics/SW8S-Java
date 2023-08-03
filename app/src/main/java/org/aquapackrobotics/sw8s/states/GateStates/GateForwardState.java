@@ -26,7 +26,7 @@ public class GateForwardState extends State {
     public GateForwardState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.FRONT);
-        target = new GatePoles();
+        target = new GatePoles(true);
         Dir = new File("/mnt/data/" + testName + "/gate");
         Dir.mkdir();
         yaw = manager.getYaw();
@@ -37,7 +37,7 @@ public class GateForwardState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
+            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, yaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {

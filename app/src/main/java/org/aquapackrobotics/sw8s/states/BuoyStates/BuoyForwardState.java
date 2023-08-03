@@ -31,7 +31,8 @@ public class BuoyForwardState extends State {
         target = new Buoy(false);
         targetLarge = new Buoy(true);
         Dir = new File("/mnt/data/" + testName + "/buoy");
-        Dir.mkdir();
+        Dir.mkdirs();
+        new File(Dir.toString() + "/failure/").mkdirs();
         this.initialYaw = initialYaw;
         this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
@@ -59,7 +60,8 @@ public class BuoyForwardState extends State {
                 printWriter.print(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
                 printWriter.close();
-                System.out.println("Translation [x, z, distance]: " + Arrays.toString(target.translation));
+                System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
+                Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
 
                 if (Math.abs(target.translation[2]) < 0.1) {
                     return true;
@@ -67,11 +69,10 @@ public class BuoyForwardState extends State {
 
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.2 : -0.2;
+                    x = target.translation[0] > 0 ? -0.2 : 0.2;
                 }
 
-                double y = Math.abs(target.translation[0]) < 0.5 ? 0.4 : 0;
-                manager.setStability2Speeds(x, y, 0, 0, initialYaw, MISSION_DEPTH);
+                manager.setStability2Speeds(x, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -79,10 +80,16 @@ public class BuoyForwardState extends State {
         } else {
             if (noDetectCount >= 0)
                 ++noDetectCount;
+            try {
+                manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             System.out.println("Not detected");
+            Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
         }
 
-        if (noDetectCount >= 5) {
+        if (noDetectCount >= 15) {
             return true;
         }
         return false;
