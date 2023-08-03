@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -24,7 +25,7 @@ public class BuoyReadState extends State {
 
     public BuoyReadState(CommsThreadManager manager, double MISSION_DEPTH) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(Camera.FRONT);
         target = new Buoy(false);
         targetLarge = new Buoy(true);
         Dir = new File("/mnt/data/buoy");
@@ -44,7 +45,7 @@ public class BuoyReadState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(1);
+        Mat frame = CameraFeedSender.getFrame(Camera.FRONT);
         Mat yoloout = target.detectYoloV5(frame);
         target.transAlign();
         if (target.detected()) {

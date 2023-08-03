@@ -52,8 +52,8 @@ public class App {
             }
 
             Mission mission;
-            CameraFeedSender.openCapture(0, missionName);
-            CameraFeedSender.openCapture(1, missionName);
+            CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
+            CameraFeedSender.openCapture(Camera.FRONT, missionName);
 
             switch (str) {
                 case "--test":
@@ -91,8 +91,8 @@ public class App {
                     mission = (Mission) new ReceiveTest(getManager());
                     break;
                 case "--cam_test":
-                    CameraFeedSender.openCapture(0);
-                    CameraFeedSender.openCapture(1);
+                    CameraFeedSender.openCapture(Camera.BOTTOM);
+                    CameraFeedSender.openCapture(Camera.FRONT);
                     Thread.sleep(60_000);
                 case "--dropper_test":
                     mission = (Mission) new DropperTest(getManager());

@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ExecutionException;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -18,7 +19,7 @@ public class PathYUV extends Mission {
 
     public PathYUV(CommsThreadManager manager, String missionName) {
         super(manager);
-        CameraFeedSender.openCapture(0, missionName);
+        CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
         this.missionName = missionName;
         try {
             var mreturn = manager.BNO055PeriodicRead((byte) 1);

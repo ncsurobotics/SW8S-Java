@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -23,7 +24,7 @@ public class PathYUVReadState extends State {
 
     public PathYUVReadState(CommsThreadManager manager, double MISSION_DEPTH) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(Camera.BOTTOM);
         Dir = new File(new File(System.getProperty("java.io.tmpdir")), "path");
         Dir.mkdir();
         this.MISSION_DEPTH = MISSION_DEPTH;
@@ -47,7 +48,7 @@ public class PathYUVReadState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(1);
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         // for (int i = 0; i < candidates.length; i++) {
         // PathYUV target = new PathYUV(candidates[i]);
         PathYUV target = new PathYUV(0.25);

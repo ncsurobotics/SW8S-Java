@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -25,7 +26,7 @@ public class BinTargetState extends State {
 
     public BinTargetState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
         super(manager);
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(Camera.BOTTOM);
         target = new Bin(false);
         targetLarge = new Bin(true);
         Dir = new File("/mnt/data/" + testName + "/bin");
@@ -46,7 +47,7 @@ public class BinTargetState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(1);
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         Mat yoloout = target.detectYoloV5(frame);
         try {
             if (target.detected()) {

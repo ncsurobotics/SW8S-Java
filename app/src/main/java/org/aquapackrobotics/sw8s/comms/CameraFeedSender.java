@@ -162,20 +162,21 @@ public class CameraFeedSender {
     private static ConcurrentHashMap<Integer, Mat> heldCaptures = new ConcurrentHashMap<>();
     private static ArrayList<Thread> threads = new ArrayList<>();
 
-    public static void openCapture(int id) {
-        openCapture(id, ".");
+    public static void openCapture(Camera cam) {
+        openCapture(cam, ".");
     }
 
-    public static void openCapture(int id, String missionName) {
+    public static void openCapture(Camera cam, String missionName) {
+        int id = cam.getID();
         if (!heldCaptures.containsKey(id)) {
             try {
-                String savefile = saveFile("cam" + String.valueOf(id), missionName + "/camtest-recordings");
-                String capPl = openPipeline(CameraById.findCamera(id).get(0), 800, 600, 30)
+                String savefile = saveFile("cam" + cam.name(), missionName + "/camtest-recordings");
+                String capPl = openPipeline(id, 800, 600, 30)
                         + " ! jpegdec ! tee name=raw " +
                         "raw. ! queue  ! videoconvert ! appsink " +
                         "raw. ! queue  ! videoconvert ! " + h264encPipeline(2048000) + " ! tee name=h264 " +
                         "h264. ! queue ! h264parse config_interval=-1 ! video/x-h264,stream-format=byte-stream,alignment=au ! rtspclientsink location=rtsp://127.0.0.1:8554/cam"
-                        + String.valueOf(id) + " "
+                        + cam.name() + " "
                         +
                         "h264. ! queue ! mpegtsmux ! filesink location=\"" + savefile + "\" ";
                 System.out.println();
@@ -204,18 +205,18 @@ public class CameraFeedSender {
         }
     }
 
-    public static Mat getFrame(int id) {
+    public static Mat getFrame(Camera cam) {
         while (true) {
-            Mat captured = heldCaptures.get(id);
+            Mat captured = heldCaptures.get(cam.getID());
             if (captured != null)
                 return captured;
             else
-                openCapture(id);
+                openCapture(cam);
         }
     }
 
     public static void openCapture() {
-        openCapture(0);
+        openCapture(Camera.BOTTOM);
     }
 
     public static Mat convertImage(File input) throws IOException {

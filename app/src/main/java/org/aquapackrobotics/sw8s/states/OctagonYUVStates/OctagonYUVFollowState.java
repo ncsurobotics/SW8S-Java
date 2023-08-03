@@ -37,7 +37,7 @@ public class OctagonYUVFollowState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(0);
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         try {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString() + ".jpeg");

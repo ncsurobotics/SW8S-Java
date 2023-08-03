@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.missions;
 
 import java.util.concurrent.ExecutionException;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -29,8 +30,8 @@ public class WaitArm extends Mission {
                 }
             }
         };
-        CameraFeedSender.openCapture(0, missionName);
-        CameraFeedSender.openCapture(1, missionName);
+        CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
+        CameraFeedSender.openCapture(Camera.FRONT, missionName);
         try {
             manager.scheduleRunnable(armSignalWait).get(); // .get() blocks until complete
         } catch (Exception e) {

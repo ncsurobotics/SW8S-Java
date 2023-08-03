@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -48,7 +49,7 @@ public class BinPathState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(0);
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         try {
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());

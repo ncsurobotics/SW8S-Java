@@ -2,6 +2,7 @@ package org.aquapackrobotics.sw8s.states.StabilityGateStates;
 
 import java.util.concurrent.ExecutionException;
 
+import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
@@ -19,7 +20,7 @@ public class StabilityGateVisionState extends State {
     public StabilityGateVisionState(CommsThreadManager manager, double yaw) {
         super(manager);
         this.yaw = yaw;
-        CameraFeedSender.openCapture(0);
+        CameraFeedSender.openCapture(Camera.BOTTOM);
         /* TODO: Adjust these to see side poles */
         target = new Path(100, 170, 30, 400);
     }
@@ -45,7 +46,7 @@ public class StabilityGateVisionState extends State {
     }
 
     public boolean onPeriodic() {
-        Mat frame = CameraFeedSender.getFrame(0);
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         try {
             VisualObject footage = target.relativePosition(frame);
             double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.1;
