@@ -112,7 +112,7 @@ public class BuoyPathForwardState extends State {
                     x = target.translation[0] > 0 ? -0.2 : 0.2;
                 }
 
-                manager.setStability2Speeds(x, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+                manager.setStability2Speeds(x, 0.4, 0, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -147,7 +147,7 @@ public class BuoyPathForwardState extends State {
         Thread.sleep(1000);
         System.out.println("Driving back");
         manager.setStability2Speeds(-0.5, -0.5, 0, 0, initialYaw, MISSION_DEPTH);
-        Thread.sleep(6000);
+        Thread.sleep(3000);
     }
 
     public State nextState() {
