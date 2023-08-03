@@ -135,6 +135,9 @@ public class App {
                 case "--gate_path":
                     mission = (Mission) new GatePathMission(getManager(), missionName);
                     break;
+                case "--gate_spin":
+                    mission = (Mission) new GateSpinMission(getManager(), missionName);
+                    break;
                 case "--flip":
                     System.out.println("Old BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
                     System.out.println("Old TOP: " + String.valueOf(Camera.BOTTOM.getID()));
