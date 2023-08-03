@@ -166,11 +166,11 @@ task push {
         }
         exec {
             executable = 'rsync'
-            args = ['-ae', 'ssh -i .sw8_ssh_identity', '--exclude', '/.git', '--filter', ':- .gitignore', '../', 'sw8@192.168.2.5:SW8S-Java']
+            args = ['-ae', 'ssh -i .sw8_ssh_identity', '--exclude', '/.git', '--filter', ':- .gitignore', '../', '--size-only', 'sw8@192.168.2.5:SW8S-Java']
         }
         exec {
             executable = 'rsync'
-            args = ['-ae', 'ssh -i .sw8_ssh_identity', '../dependencies', 'sw8@192.168.2.5:SW8S-Java']
+            args = ['-ae', 'ssh -i .sw8_ssh_identity', '../dependencies', '--size-only', 'sw8@192.168.2.5:SW8S-Java']
         }
         ssh.run {
             session(remotes.orangePi) {

@@ -219,18 +219,16 @@ public class ImagePrep {
      * @param global_k       num of colors in entire image, <=0 for off
      */
     public void localKmeansParallel(int intermediate_k, int global_k) {
+        System.out.println("PARALLLEL PROCESS: 0 -> " + this.max_height_id);
         IntStream.range(0, this.max_height_id).forEach(row -> {
+            System.out.println("LOOP HIT: " + row);
             this.id_height = row;
             for (int col = 0; col <= this.max_width_id; col++) {
                 this.id_width = col;
                 set_block();
                 kmeans(intermediate_k, this.block).copyTo(this.processImg.submat(this.ROI));
-
             }
         });
-        this.inputImg.copyTo(this.processImg);
-        for (int row = 0; row <= this.max_height_id; row++) {
-        }
         if (global_k > 0) {
             this.resultImg = kmeans(global_k, this.processImg);
         } else {
