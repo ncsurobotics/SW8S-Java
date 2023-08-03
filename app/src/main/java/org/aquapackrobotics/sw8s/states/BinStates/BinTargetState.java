@@ -12,6 +12,7 @@ import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.vision.Bin;
+import org.aquapackrobotics.sw8s.vision.VisualObject;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -82,12 +83,17 @@ public class BinTargetState extends State {
                 }
 
                 manager.setStability2Speeds(x, y, 0, 0, yaw, total_depth);
-                if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25 ) {
-                    for (int i = 0; i < 3; i++) {
-                        manager.fireDroppers();
-                        Thread.sleep(100);
+                if (target.translation[0] > manager.getGyro()[0] - 0.1 && target.translation[0] < manager.getGyro()[0] + 0.1
+                && target.translation[1] > manager.getGyro()[1] - 0.1 && target.translation[1] < manager.getGyro()[1] + 0.1) {
+                    if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25 ) {
+                        for (int i = 0; i < 3; i++) {
+                            manager.fireDroppers();
+                            Thread.sleep(100);
+                        }
+                        return false;
                     }
                 }
+
 
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {
