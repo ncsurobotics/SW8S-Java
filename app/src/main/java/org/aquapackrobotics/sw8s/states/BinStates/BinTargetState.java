@@ -31,6 +31,7 @@ public class BinTargetState extends State {
         targetLarge = new Bin(true);
         Dir = new File("/mnt/data/" + testName + "/bin");
         Dir.mkdir();
+        new File(Dir.toString() + "/failure/").mkdirs();
         yaw = manager.getYaw();
         this.MISSION_DEPTH = MISSION_DEPTH;
     }
@@ -85,6 +86,7 @@ public class BinTargetState extends State {
             } else {
                 manager.setStability2Speeds(0, 0.2, 0, 0, yaw, MISSION_DEPTH);
                 System.out.println("Not detected");
+                Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
             }
         } catch (Exception e) {
             e.printStackTrace();

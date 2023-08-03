@@ -29,6 +29,7 @@ public class GateForwardState extends State {
         target = new GatePoles(true);
         Dir = new File("/mnt/data/" + testName + "/gate");
         Dir.mkdir();
+        new File(Dir.toString() + "/failure/").mkdirs();
         yaw = manager.getYaw();
         this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
@@ -57,6 +58,7 @@ public class GateForwardState extends State {
                 System.out.println(Arrays.toString(target.translation));
                 printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
+                Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
 
                 if (Math.abs(target.translation[2]) < 0.1) {
                     return true;
@@ -76,6 +78,7 @@ public class GateForwardState extends State {
             if (noDetectCount >= 0)
                 ++noDetectCount;
             System.out.println("Not detected");
+            Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
         }
 
         if (noDetectCount >= 5) {
