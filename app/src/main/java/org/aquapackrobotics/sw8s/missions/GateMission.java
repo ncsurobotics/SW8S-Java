@@ -13,7 +13,7 @@ import org.aquapackrobotics.sw8s.states.GateStates.GateInitState;
  * Mission for navigating gates
  */
 public class GateMission extends Mission {
-    private static final double MISSION_DEPTH = -1.5;
+    private static final double MISSION_DEPTH = -1.0;
     String missionName;
     double initialYaw;
 

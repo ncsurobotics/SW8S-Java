@@ -120,6 +120,9 @@ public class App {
                 case "--buoy":
                     mission = (Mission) new Buoys(getManager(), missionName);
                     break;
+                case "--buoy_path":
+                    mission = (Mission) new BuoyPath(getManager(), missionName);
+                    break;
                 case "--octagon":
                     mission = (Mission) new OctagonYUV(getManager(), missionName);
                     break;

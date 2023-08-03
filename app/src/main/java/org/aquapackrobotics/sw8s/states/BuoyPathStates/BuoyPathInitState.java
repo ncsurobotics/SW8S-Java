@@ -1,4 +1,4 @@
-package org.aquapackrobotics.sw8s.states.BuoyStates;
+package org.aquapackrobotics.sw8s.states.BuoyPathStates;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
@@ -6,14 +6,14 @@ import java.util.concurrent.ScheduledFuture;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 
-public class BuoyInitState extends State {
+public class BuoyPathInitState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private String missionName;
     private double initialYaw;
     private final double MISSION_DEPTH;
 
-    public BuoyInitState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
+    public BuoyPathInitState(CommsThreadManager manager, String missionName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;
@@ -53,6 +53,6 @@ public class BuoyInitState extends State {
 
     public State nextState() {
         // return new BuoyReadState(manager);
-        return new BuoyForwardState(manager, missionName, initialYaw, MISSION_DEPTH);
+        return new BuoyPathForwardState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

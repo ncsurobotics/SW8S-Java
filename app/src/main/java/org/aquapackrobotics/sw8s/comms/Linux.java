@@ -26,7 +26,15 @@ public class Linux {
     }
 
     public static void changeExposure(Camera cam, int level) throws IOException, InterruptedException {
-        runShellCommand("v4l2-ctl -d /dev/video" + cam.getID() + " -c exposure_auto=1 && v4l2-ctl -d /dev/video"
-                + cam.getID() + " -c exposure_absolute=" + level);
+        CommandResult res;
+        String cmd;
+
+        cmd = "v4l2-ctl -d /dev/video" + cam.getID() + " -c exposure_auto=1";
+        res = runShellCommand(cmd);
+        System.out.println("Command: \"" + cmd + "\" completed with exit code " + res.ec);
+
+        cmd = "v4l2-ctl -d /dev/video" + cam.getID() + " -c exposure_absolute=" + level;
+        res = runShellCommand(cmd);
+        System.out.println("Command: \"" + cmd + "\" completed with exit code " + res.ec);
     }
 }
