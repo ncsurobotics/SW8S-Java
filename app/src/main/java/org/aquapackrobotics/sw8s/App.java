@@ -3,6 +3,7 @@
  */
 package org.aquapackrobotics.sw8s;
 
+import java.awt.color.CMMException;
 import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -56,6 +57,8 @@ public class App {
             CameraFeedSender.openCapture(Camera.FRONT, missionName);
             Linux.changeExposure(Camera.BOTTOM, 20);
             Linux.changeExposure(Camera.FRONT, 18);
+            Linux.disableAutofocus(Camera.FRONT);
+            Linux.disableAutofocus(Camera.BOTTOM);
 
             if(str.startsWith("--set-cb-tty=")){
                 String port = str.substring(13);

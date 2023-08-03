@@ -37,4 +37,13 @@ public class Linux {
         res = runShellCommand(cmd);
         System.out.println("Command: \"" + cmd + "\" completed with exit code " + res.ec);
     }
+
+    public static void disableAutofocus(Camera cam) throws IOException, InterruptedException {
+        CommandResult res;
+        String cmd;
+
+        cmd = "v4l2-ctl -d /dev/video" + cam.getID() + " -c focus_auto=0";
+        res = runShellCommand(cmd);
+        System.out.println("Command: \"" + cmd + "\" completed with exit code " + res.ec);
+    }
 }

@@ -39,7 +39,7 @@ public class BinInitState extends State {
             if (depthRead.isDone()) {
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
                 if (manager.getDepth() < -0.5) {
-                    Thread.sleep(2000); // sleep two seconds
+                    Thread.sleep(5000); // sleep five seconds
                     return true;
                 }
             }

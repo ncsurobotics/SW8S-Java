@@ -39,6 +39,7 @@ public class GateInitState extends State {
         try {
             if (depthRead.isDone()) {
                 if (manager.getDepth() > MISSION_DEPTH + 0.5) {
+                    Thread.sleep(2000);
                     return true;
                 }
             }
