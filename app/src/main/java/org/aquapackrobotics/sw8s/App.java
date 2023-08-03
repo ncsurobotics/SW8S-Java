@@ -133,6 +133,13 @@ public class App {
                 case "--gate_path":
                     mission = (Mission) new GatePathMission(getManager(), missionName);
                     break;
+                case "--flip":
+                    System.out.println("Old BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
+                    System.out.println("Old TOP: " + String.valueOf(Camera.BOTTOM.getID()));
+                    Camera.swap();
+                    System.out.println("New BOTTOM: " + String.valueOf(Camera.BOTTOM.getID()));
+                    System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
+                    continue;
                 case "--arm":
                 default:
                     mission = (Mission) new WaitArm(getManager(), missionName);

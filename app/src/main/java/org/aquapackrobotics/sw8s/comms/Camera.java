@@ -17,8 +17,8 @@ public enum Camera {
         }
     }
 
-    public void swap() {
-        var prefs = Preferences.userRoot().node(this.getClass().getName());
+    public static void swap() {
+        var prefs = Preferences.userRoot().node(Camera.class.getName());
         prefs.putInt("BOTTOM", prefs.getInt("BOTTOM", 0) == 0 ? 1 : 0);
         prefs.putInt("TOP", prefs.getInt("TOP", 1) == 1 ? 0 : 1);
     }
