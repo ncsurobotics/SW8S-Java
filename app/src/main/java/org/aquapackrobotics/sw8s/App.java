@@ -126,8 +126,12 @@ public class App {
                     break;
                 case "--bin_variant":
                     mission = (Mission) new VariantBin(getManager(), missionName);
+                    break;
                 case "--gate":
                     mission = (Mission) new GateMission(getManager(), missionName);
+                    break;
+                case "--gate_path":
+                    mission = (Mission) new GatePathMission(getManager(), missionName);
                     break;
                 case "--arm":
                 default:

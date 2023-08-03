@@ -1,36 +1,49 @@
 package org.aquapackrobotics.sw8s.missions;
 
-import java.io.File;
-import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
 import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CameraFeedSender;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
-import org.aquapackrobotics.sw8s.vision.Gate;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.aquapackrobotics.sw8s.states.GateStates.GateInitState;
 
 /**
  * Mission for navigating gates
  */
-public class GateMission extends PathYUV {
-    private Gate gateModel;
-    private File Dir;
+public class GateMission extends Mission {
+    private static final double MISSION_DEPTH = -1.5;
+    String missionName;
+    double initialYaw;
 
     public GateMission(CommsThreadManager manager, String missionName) {
-        super(manager, missionName);
+        super(manager);
         CameraFeedSender.openCapture(Camera.FRONT, missionName);
-        Dir = new File("/mnt/data/" + missionName + "/gate");
-        Dir.mkdirs();
+        this.missionName = missionName;
+        try {
+            var mreturn = manager.BNO055PeriodicRead((byte) 1);
+            while (!mreturn.isDone())
+                ;
+            Thread.sleep(500); // Give sensor time to get itself ready
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.initialYaw = manager.getYaw();
+    }
+
+    @Override
+    protected State initialState() {
+        return new GateInitState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 
     @Override
     protected void executeState(State state) throws ExecutionException, InterruptedException {
         while (!state.onPeriodic()) {
-            Gate gateModel = new Gate();
-            Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg",
-                    gateModel.detectYoloV5(CameraFeedSender.getFrame(Camera.FRONT)));
         }
+    }
+
+    @Override
+    public State nextState(State state) {
+        return state.nextState();
     }
 }
