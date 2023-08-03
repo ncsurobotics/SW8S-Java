@@ -51,7 +51,7 @@ public class App {
                 continue;
             }
 
-            Mission mission;
+            Mission mission = null;
             CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
             CameraFeedSender.openCapture(Camera.FRONT, missionName);
             Linux.changeExposure(Camera.BOTTOM, 20);
@@ -157,11 +157,14 @@ public class App {
                         System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
                         continue;
                     case "--arm":
-                    default:
                         mission = (Mission) new WaitArm(getManager(), missionName);
                         break;
                 }
             }
+
+            if(mission == null)
+                mission = (Mission) new WaitArm(getManager(), missionName);
+
             System.out.println("RUN MISSION: " + mission.getClass().getName());
             mission.run();
         }
