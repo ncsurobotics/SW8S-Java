@@ -66,7 +66,7 @@ public class GateForwardState extends State {
 
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.2 : -0.2;
+                    x = target.translation[0] > 0 ? -0.2 : 0.2;
                 }
 
                 manager.setStability2Speeds(x, 0.4, 0, 0, yaw, MISSION_DEPTH);

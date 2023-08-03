@@ -13,7 +13,7 @@ import org.aquapackrobotics.sw8s.states.OctagonYUVStates.OctagonYUVSubmergeState
  * Mission for navigating gates
  */
 public class OctagonYUV extends Mission {
-    private static final double MISSION_DEPTH = -1.0;
+    private static final double MISSION_DEPTH = -1.5;
 
     private String missionName;
     private double initialYaw;

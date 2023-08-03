@@ -74,18 +74,20 @@ public class BinTargetState extends State {
 
                 double x = 0;
                 if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? 0.2 : -0.2;
+                    x = target.translation[0] > 0 ? 0.4 : -0.4;
                 }
 
                 double y = 0;
                 if (Math.abs(target.translation[1]) > 0.1) {
-                    y = target.translation[1] > 0 ? 0.2 : -0.2;
+                    y = target.translation[1] > 0 ? 0.4 : -0.4;
                 }
 
                 manager.setStability2Speeds(x, y, 0, 0, yaw, total_depth);
-                if (target.translation[0] > manager.getGyro()[0] - 0.1 && target.translation[0] < manager.getGyro()[0] + 0.1
-                && target.translation[1] > manager.getGyro()[1] - 0.1 && target.translation[1] < manager.getGyro()[1] + 0.1) {
-                    if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25 ) {
+                if (target.translation[0] > manager.getGyro()[0] - 0.1
+                        && target.translation[0] < manager.getGyro()[0] + 0.1
+                        && target.translation[1] > manager.getGyro()[1] - 0.1
+                        && target.translation[1] < manager.getGyro()[1] + 0.1) {
+                    if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25) {
                         for (int i = 0; i < 3; i++) {
                             manager.fireDroppers();
                             Thread.sleep(100);
@@ -94,10 +96,9 @@ public class BinTargetState extends State {
                     }
                 }
 
-
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {
-                manager.setStability2Speeds(0, 0.2, 0, 0, yaw, MISSION_DEPTH);
+                manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
                 System.out.println("Not detected");
                 Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
             }

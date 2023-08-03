@@ -222,9 +222,12 @@ public class ImagePrep {
         System.out.println("PARALLLEL PROCESS: 0 -> " + this.max_height_id);
         IntStream.range(0, this.max_height_id).forEach(row -> {
             System.out.println("LOOP HIT: " + row);
-            this.id_height = row;
+            id_height = row;
+            IntStream.range(0, this.max_width_id).forEach(col -> {
+                id_width = col;
+            });
             for (int col = 0; col <= this.max_width_id; col++) {
-                this.id_width = col;
+                id_width = col;
                 set_block();
                 kmeans(intermediate_k, this.block).copyTo(this.processImg.submat(this.ROI));
             }

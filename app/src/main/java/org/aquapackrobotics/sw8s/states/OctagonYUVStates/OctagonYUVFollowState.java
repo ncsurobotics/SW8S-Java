@@ -60,7 +60,7 @@ public class OctagonYUVFollowState extends State {
              */
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());
-            double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
+            double x = -(footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
             System.out.println("Horizontal Offset: " + String.valueOf(footage.horizontal_offset));
             System.out.println("X: " + String.valueOf(x));
             double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
