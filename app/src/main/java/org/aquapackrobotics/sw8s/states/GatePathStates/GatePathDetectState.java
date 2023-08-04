@@ -51,8 +51,12 @@ public class GatePathDetectState extends State {
         super(manager);
         this.PathYUVidx = 0;
         path = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
-        gate = new GatePoles(true, new GatePoles.Target[] { GatePoles.Target.Gate_Large, GatePoles.Target.Gate_Earth,
-                GatePoles.Target.Gate_Abydos });
+        /*
+         * gate = new GatePoles(true, new GatePoles.Target[] {
+         * GatePoles.Target.Gate_Large, GatePoles.Target.Gate_Earth,
+         * GatePoles.Target.Gate_Abydos });
+         */
+        gate = new GatePoles(true);
         DirPath = new File("/mnt/data/" + missionName + "/pathYUV");
         DirPath.mkdir();
         DirGate = new File("/mnt/data/" + missionName + "/gate");
@@ -78,7 +82,7 @@ public class GatePathDetectState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0.15, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
+            var mreturn = manager.setStability2Speeds(0, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -135,7 +139,7 @@ public class GatePathDetectState extends State {
                         printWriter.println("Computed: " + gate);
                         printWriter.close();
 
-                        manager.setStability2Speeds(trans.x, 0.4, curPitch, 0, combinedAngle, MISSION_DEPTH);
+                        manager.setStability2Speeds(trans.x, 0.8, curPitch, 0, combinedAngle, MISSION_DEPTH);
                         Imgcodecs.imwrite(DirGate.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
                         return true;
                     } else {
@@ -171,6 +175,9 @@ public class GatePathDetectState extends State {
                 e.printStackTrace();
             }
         }
+        if (update) {
+            System.out.println("Updated values {path, gate}: " + lastPathVal + ", " + lastGateVal);
+        }
         if (update && !lastPathVal && !lastGateVal) {
             try {
                 // Gradually increasing strafe
@@ -179,7 +186,8 @@ public class GatePathDetectState extends State {
                     count = 0;
                     strafe = -strafe;
                 }
-                manager.setStability2Speeds(0, 0.25, curPitch, 0, combinedAngle, MISSION_DEPTH);
+                System.out.println("NO DETECT, STRAFE: " + strafe);
+                manager.setStability2Speeds(strafe, 0.4, curPitch, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
