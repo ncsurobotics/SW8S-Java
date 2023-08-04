@@ -46,7 +46,7 @@ public class BinTargetState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            System.out.println("ENTER FORWARD STATE");
+            System.out.println("ENTER TARGET STATE");
             var mreturn = manager.setStability2Speeds(0, 0, 0, 0, yaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
@@ -107,7 +107,7 @@ public class BinTargetState extends State {
                         }
                         return true;
                     } else {
-                        depth -= -0.1;
+                        depth -= 0.1;
                     }
                 }
 
