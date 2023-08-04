@@ -86,22 +86,22 @@ public class CommsThreadManager {
         }
     }
 
-    public static String getControlBoardPort(){
+    public static String getControlBoardPort() {
         var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
         return prefs.get("CBOARD_PORT", "/dev/ttyACM0");
     }
 
-    public static void setControlBoardPort(String port){
+    public static void setControlBoardPort(String port) {
         var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
         prefs.put("CBOARD_PORT", port);
     }
 
-    public static String getMEBPort(){
+    public static String getMEBPort() {
         var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
         return prefs.get("MEB_PORT", "/dev/ttyACM2");
     }
 
-    public static void setMEBPort(String port){
+    public static void setMEBPort(String port) {
         var prefs = Preferences.userRoot().node(CommsThreadManager.class.getName());
         prefs.put("MEB_PORT", port);
     }
@@ -454,5 +454,10 @@ public class CommsThreadManager {
 
     public ScheduledFuture<?> scheduleRunnable(Runnable runnable) throws ExecutionException, InterruptedException {
         return pool.schedule(runnable, 0, TimeUnit.MILLISECONDS);
+    }
+
+    public ScheduledFuture<Boolean> scheduleCallable(Callable<Boolean> callable)
+            throws ExecutionException, InterruptedException {
+        return pool.schedule(callable, 0, TimeUnit.MILLISECONDS);
     }
 }
