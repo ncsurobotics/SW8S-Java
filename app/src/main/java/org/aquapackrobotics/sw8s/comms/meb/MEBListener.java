@@ -38,6 +38,8 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     private static ConcurrentHashMap<Short, byte[]> messages = new ConcurrentHashMap<Short, byte[]>();
     private static Logger logger;
 
+    private static boolean wasArmed = false;
+
     private static MEBStatus mebStatus = MEBStatus.getInstance();
 
     static {
@@ -82,11 +84,6 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
     public void tcpEvent(TCPCommPort tcp) throws IOException {
         byte[] message = tcp.getBytesAvailable();
         eventBytesHandler(message);
-    }
-
-    private void logCommand(MessageStruct msg, String code, String data) {
-        logger.info(code + " | " + Short.toString(msg.id) + " | " + data +
-                " | " + Arrays.toString(msg.message));
     }
 
     private void logCommand(byte[] msg, String code, String data) {
@@ -185,8 +182,13 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 if (armStatus == (byte) 1) {
                     mebStatus.isArmed = true;
+                    wasArmed = true;
                 } else {
                     mebStatus.isArmed = false;
+                    if (wasArmed) {
+                        System.out.println("Kill after arm, exiting");
+                        System.exit(5);
+                    }
                 }
                 logCommand(data, "TARM", mebStatus.isArmed ? "1" : "0");
             } else if (ByteArrayUtility.startsWith(strippedMessage, VSYS.getBytes())) {
