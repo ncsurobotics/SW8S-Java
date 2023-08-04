@@ -45,7 +45,7 @@ public class BuoyPathForwardState extends State {
         combinedAngle = manager.getYaw();
     }
 
-    public void pathAlign() {
+    public boolean pathAlign() {
         Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         try {
             VisualObject footage = path.relativePosition(frame,
@@ -61,8 +61,10 @@ public class BuoyPathForwardState extends State {
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
+            return true;
         } catch (Exception e) {
         }
+        return false;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -103,12 +105,13 @@ public class BuoyPathForwardState extends State {
         } else {
             if (noDetectCount >= 0) {
                 ++noDetectCount;
-            } else
-                pathAlign();
-            try {
-                manager.setStability2Speeds(-0.15, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+            if (!pathAlign()) {
+                try {
+                    manager.setStability2Speeds(0, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             System.out.println("Not detected");
             Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);
@@ -135,7 +138,11 @@ public class BuoyPathForwardState extends State {
     }
 
     public State nextState() {
-        //return new BuoyPathPastState(manager, testName, combinedAngle, MISSION_DEPTH);
         return null;
+        /*
+         * return new BuoyPathPastState(manager, testName,
+         * combinedAngle >= 0.0 ? combinedAngle - 180.0 : combinedAngle + 180,
+         * MISSION_DEPTH);
+         */
     }
 }
