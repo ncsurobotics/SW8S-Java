@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntUnaryOperator;
+import java.util.function.UnaryOperator;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -23,7 +26,7 @@ public class MEBCommunication {
     private static final byte START_BYTE = (byte) 253;
     private static final byte END_BYTE = (byte) 254;
     private static final byte ESCAPE_BYTE = (byte) 255;
-    private static Short uniqueID = 0;
+    private static AtomicInteger uniqueID = new AtomicInteger(0);
 
     private static final byte[] RESET_MSB = new byte[] { 'M', 'S', 'B', 0x00 };
     private static final byte[] DROP_1 = new byte[] { 'M', 'S', 'B', 0x01 };
@@ -217,17 +220,15 @@ public class MEBCommunication {
         return ms;
     }
 
-    public static Short incrementId() {
-        short temp;
-        synchronized (uniqueID) {
-            temp = uniqueID;
-            uniqueID++;
-            if (uniqueID == 32767) {
-                uniqueID = 0;
+    public static short incrementId() {
+        IntUnaryOperator wrapInc = (id) -> {
+            id++;
+            if (id == 32767) {
+                id = 0;
             }
-        }
-
-        return temp;
+            return id;
+        };
+        return Integer.valueOf(uniqueID.getAndUpdate(wrapInc)).shortValue();
     }
 
     public static boolean getArm() {
