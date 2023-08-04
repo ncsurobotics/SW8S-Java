@@ -68,7 +68,7 @@ public class PathYUV extends ImagePrep {
      * Constructs a new PathYUV with given color and width targets
      */
     public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale) {
-        this(color_low, color_high, width_low, width_high, scale, new IntPair(25, 25), new IntPair(2, 4));
+        this(color_low, color_high, width_low, width_high, scale, new IntPair(25, 25), new IntPair(4, 8));
     }
 
     public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale,
@@ -84,7 +84,7 @@ public class PathYUV extends ImagePrep {
 
     public PathYUV(double scale) {
         // OpenCV uses range [0, 255] for colors, so 127 is halfway on the axis
-        this(new IntPair(Integer.MIN_VALUE, 152), new IntPair(152, Integer.MAX_VALUE), 20,
+        this(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE), 20,
                 800, scale);
     }
 
@@ -278,12 +278,12 @@ public class PathYUV extends ImagePrep {
         throw new Exception("Not yet updated.");
     }
 
-    public VisualObject relativeAvgPosition(Mat frame){
-        VisualObject res = new VisualObject(new double[]{0, 0, 0, 0, 0});
+    public VisualObject relativeAvgPosition(Mat frame) {
+        VisualObject res = new VisualObject(new double[] { 0, 0, 0, 0, 0 });
         int count = 0;
         processFrame(frame);
-        for(int i = 0; i < result.size(); ++i){
-            if(result.get(i)){
+        for (int i = 0; i < result.size(); ++i) {
+            if (result.get(i)) {
                 res.add(new VisualObject(results_prop.get(i)));
                 count++;
             }
@@ -292,12 +292,12 @@ public class PathYUV extends ImagePrep {
         return res;
     }
 
-    public VisualObject relativeAvgPosition(Mat frame, String saveFile){
-        VisualObject res = new VisualObject(new double[]{0, 0, 0, 0, 0});
+    public VisualObject relativeAvgPosition(Mat frame, String saveFile) {
+        VisualObject res = new VisualObject(new double[] { 0, 0, 0, 0, 0 });
         int count = 0;
         processFrame(frame, saveFile);
-        for(int i = 0; i < result.size(); ++i){
-            if(result.get(i)){
+        for (int i = 0; i < result.size(); ++i) {
+            if (result.get(i)) {
                 res.add(new VisualObject(results_prop.get(i)));
                 count++;
             }

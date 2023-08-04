@@ -30,11 +30,6 @@ public class GatePathSubmergeState extends State {
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
-            Thread.sleep(2000); // Make rotation obvious to judges
-            var mreturn2 = manager.setStability2Speeds(0, 0, 30, 0, initialYaw,
-                    MISSION_DEPTH);
-            while (!mreturn2.isDone())
-                ;
         } catch (Exception e) {
             e.printStackTrace();
         }
