@@ -55,6 +55,6 @@ public class BinInitState extends State {
     }
 
     public State nextState() {
-        return new BinPathState(manager, missionName, initialYaw, MISSION_DEPTH);
+        return new BinTargetState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

@@ -20,24 +20,28 @@ public class BinTargetState extends State {
 
     private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Bin target;
-    private final Bin targetLarge;
+    private final PathYUV path;
     private final File Dir;
+    private final File DirPath;
     private double yaw;
     private final double MISSION_DEPTH;
 
-    private final double descend;
+    private double depth;
 
-    public BinTargetState(CommsThreadManager manager, String testName, double MISSION_DEPTH) {
+    private final double DEPTH_TARGET = -3.0;
+
+    public BinTargetState(CommsThreadManager manager, String testName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.BOTTOM);
         target = new Bin(false);
-        targetLarge = new Bin(true);
+        path = new PathYUV();
         Dir = new File("/mnt/data/" + testName + "/bin");
         Dir.mkdir();
+        DirPath = new File("/mnt/data/" + testName + "/path");
+        DirPath.mkdirs();
         new File(Dir.toString() + "/failure/").mkdirs();
-        yaw = manager.getYaw();
+        yaw = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
-        descend = 0;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -51,8 +55,27 @@ public class BinTargetState extends State {
         }
     }
 
+    public void pathAlign() {
+        Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
+        try {
+            VisualObject footage = path.relativePosition(frame,
+                    DirPath.toString() + "/" + Instant.now().toString());
+            System.out.println("Original: " + footage);
+            DoubleTriple trans = Translation.movement_triple(
+                    new DoublePair(footage.horizontal_offset, footage.vertical_offset),
+                    manager.getYaw(), footage.angle);
+            yaw = trans.z;
+            System.out.println("Computed: " + trans);
+            var mreturn = manager.setStability2Speeds(trans.x, 0.4, 0, 0,
+                    yaw,
+                    MISSION_DEPTH);
+            while (!mreturn.isDone())
+                ;
+        } catch (Exception e) {
+        }
+    }
+
     public boolean onPeriodic() {
-        double total_depth = MISSION_DEPTH + descend;
         Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         Mat yoloout = target.detectYoloV5(frame);
         try {
@@ -73,25 +96,22 @@ public class BinTargetState extends State {
                 printWriter.close();
 
                 if (Math.abs(target.translation[0]) < 0.1 && Math.abs(target.translation[1]) < 0.1) {
-                    System.out.println("FIRE DROPPERS");
-                    File subDir = new File(Dir.toString() + "/" + "fire");
-                    subDir.mkdir();
-                    Imgcodecs.imwrite(subDir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
-                    // return true;
-                }
-
-                manager.setStability2Speeds(trans.x, trans.y, 0, 0, yaw, total_depth);
-                if (Math.abs(target.translation[0]) < 1.0 &&
-                        Math.abs(target.translation[1]) < 1.0 &&
-                        Math.abs(target.translation[2]) < 5) {
-                    if (manager.getDepth() > total_depth - 0.25 && manager.getDepth() < total_depth + 0.25) {
+                    if (depth <= DEPTH_TARGET) {
+                        System.out.println("FIRE DROPPERS");
+                        File subDir = new File(Dir.toString() + "/" + "fire");
+                        subDir.mkdir();
+                        Imgcodecs.imwrite(subDir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
                         for (int i = 0; i < 3; i++) {
                             manager.fireDroppers();
                             Thread.sleep(100);
                         }
-                        return false;
+                        return true;
+                    } else {
+                        depth -= -0.1;
                     }
                 }
+
+                manager.setStability2Speeds(trans.x, trans.y, 0, 0, yaw, depth);
 
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
             } else {

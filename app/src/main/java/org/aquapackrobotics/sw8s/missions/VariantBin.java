@@ -34,7 +34,7 @@ public class VariantBin extends Mission {
 
     @Override
     protected State initialState() {
-        return new BinTargetState(manager, missionName, MISSION_DEPTH);
+        return new BinTargetState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 
     @Override
