@@ -84,7 +84,7 @@ public class PathYUV extends ImagePrep {
 
     public PathYUV(double scale) {
         // OpenCV uses range [0, 255] for colors, so 127 is halfway on the axis
-        this(new IntPair(Integer.MIN_VALUE, 127), new IntPair(127, Integer.MAX_VALUE), 20,
+        this(new IntPair(Integer.MIN_VALUE, 152), new IntPair(152, Integer.MAX_VALUE), 20,
                 800, scale);
     }
 

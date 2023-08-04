@@ -121,8 +121,7 @@ public class GatePathDetectState extends State {
                 Mat frame = CameraFeedSender.getFrame(Camera.FRONT);
                 Mat yoloout = gate.detectYoloV5(frame);
                 try {
-                    if (gate.detected()) {
-                        gate.transAlign(); // TODO CHECK IF WORKS INSTEAD OF transAlign()
+                    if (gate.detected() && gate.transCompPole()) { // CHECK IF WORKS INSTEAD OF gate.transAlign()
                         PrintWriter printWriter = new PrintWriter(
                                 DirGate.toString() + "/" + Instant.now().toString() + ".txt");
                         printWriter.println(Arrays.toString(gate.translation));
