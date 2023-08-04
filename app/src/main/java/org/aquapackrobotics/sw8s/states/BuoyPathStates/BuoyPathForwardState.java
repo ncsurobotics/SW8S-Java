@@ -56,7 +56,7 @@ public class BuoyPathForwardState extends State {
                     manager.getYaw(), footage.angle);
             combinedAngle = trans.z;
             System.out.println("Computed: " + trans);
-            var mreturn = manager.setStability2Speeds(trans.x, trans.y, 0, 0,
+            var mreturn = manager.setStability2Speeds(trans.x, 0.4, 0, 0,
                     combinedAngle,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
@@ -86,20 +86,16 @@ public class BuoyPathForwardState extends State {
                 PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
                 printWriter.print(Arrays.toString(target.translation));
                 System.out.println(Arrays.toString(target.translation));
-                printWriter.close();
                 System.out.println("Translation [x, y, distance]: " + Arrays.toString(target.translation));
                 Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
 
-                if (Math.abs(target.translation[2]) < 0.1) {
-                    return true;
-                }
+                DoublePair trans = Translation.movement(
+                        new DoublePair(target.translation[0], target.translation[1]));
+                System.out.println("Computed: " + trans);
+                printWriter.println("Computed: " + trans);
+                printWriter.close();
 
-                double x = 0;
-                if (Math.abs(target.translation[0]) > 0.1) {
-                    x = target.translation[0] > 0 ? -0.2 : 0.2;
-                }
-
-                manager.setStability2Speeds(x, 0.4, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability2Speeds(trans.x, 0.4, 0, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -136,10 +132,10 @@ public class BuoyPathForwardState extends State {
         }
         System.out.println("Stopping motors");
         manager.setStability2Speeds(0, 0, 0, 0, initialYaw, MISSION_DEPTH);
-        Thread.sleep(1000);
     }
 
     public State nextState() {
-        return new BuoyPathPastState(manager, testName, combinedAngle, MISSION_DEPTH);
+        //return new BuoyPathPastState(manager, testName, combinedAngle, MISSION_DEPTH);
+        return null;
     }
 }
