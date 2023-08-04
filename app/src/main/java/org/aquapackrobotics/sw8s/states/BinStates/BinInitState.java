@@ -38,8 +38,8 @@ public class BinInitState extends State {
             System.out.println("Target: " + String.valueOf(initialYaw));
             if (depthRead.isDone()) {
                 System.out.println("Depth: " + String.valueOf(manager.getDepth()));
-                if (manager.getDepth() < -0.5) {
-                    Thread.sleep(5000); // sleep five seconds
+                if (manager.getDepth() > MISSION_DEPTH + 0.5) {
+                    Thread.sleep(2000); // sleep five seconds
                     return true;
                 }
             }
