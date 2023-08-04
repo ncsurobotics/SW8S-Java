@@ -26,6 +26,7 @@ public class BuoyPathForwardState extends State {
     private double noDetectCount;
     private final double MISSION_DEPTH;
     private double combinedAngle;
+    private double secondNoDetectCount;
     private String testName;
 
     private double strafe;
@@ -50,6 +51,7 @@ public class BuoyPathForwardState extends State {
         this.strafe = -0.15;
         this.count = 0;
         this.count_max = 10;
+        secondNoDetectCount = 0;
     }
 
     public boolean pathAlign() {
@@ -104,7 +106,9 @@ public class BuoyPathForwardState extends State {
                 printWriter.println("Computed: " + trans);
                 printWriter.close();
 
+
                 manager.setStability2Speeds(trans.x, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
+                secondNoDetectCount = 0;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -115,16 +119,22 @@ public class BuoyPathForwardState extends State {
             }
             if (!pathAlign()) {
                 try {
-                    // Gradually increasing strafe
-                    if (++count > count_max) {
-                        count_max += 5;
-                        count = 0;
-                        strafe = -strafe;
+                    if (++secondNoDetectCount > 10) {
+                        System.out.println("STRAFE");
+                        // Gradually increasing strafe
+                        if (++count > count_max) {
+                            count_max += 5;
+                            count = 0;
+                            strafe = -strafe;
+                        }
+                        manager.setStability2Speeds(strafe, 0.0, 0, 0, combinedAngle, MISSION_DEPTH);
                     }
-                    manager.setStability2Speeds(strafe, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else {
+                secondNoDetectCount = 0;
             }
             System.out.println("Not detected");
             Imgcodecs.imwrite(Dir.toString() + "/failure/" + Instant.now().toString() + ".jpeg", yoloout);

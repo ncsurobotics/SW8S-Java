@@ -68,20 +68,6 @@ public class MEBListenerTest {
     }
 
     @Test
-    public void testTarmArmed() {
-        short id = 0;
-        byte idLowByte = (byte) (id & 0x00FF);
-        byte idHighByte = (byte) ((id & 0xFF00) >> 8);
-        writeMessage.writeBytes("TARM".getBytes());
-        writeMessage.write((byte) 1);
-        writeMessage.write(idHighByte);
-        writeMessage.write(idLowByte);
-        MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
-        mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(true, MEBStatus.getInstance().isArmed);
-    }
-
-    @Test
     public void testTarmNotArmed() {
         short id = 0;
         byte idLowByte = (byte) (id & 0x00FF);

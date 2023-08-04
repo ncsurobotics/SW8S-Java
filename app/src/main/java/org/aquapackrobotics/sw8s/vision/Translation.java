@@ -14,7 +14,7 @@ public class Translation {
             x = conv.x > 0 ? speed : -speed;
         }
         if (Math.abs(conv.y) > cutoff) {
-            y = conv.y > 0 ? speed : -speed;
+            y = conv.y > 0 ? -speed : speed;
         }
         return new DoublePair(x, y);
     }

@@ -25,8 +25,7 @@ public class GatePathDetectState extends State {
 
     private ScheduledFuture<byte[]> depthRead;
     private PathYUV path;
-    private GatePoles gateNoPole;
-    private GatePoles gateOnlyPole;
+    private GatePoles gate;
     private final File DirPath;
     private final File DirGate;
 
@@ -52,17 +51,15 @@ public class GatePathDetectState extends State {
         super(manager);
         this.PathYUVidx = 0;
         path = new PathYUV(this.PathYUVOpts[this.PathYUVidx]);
-        gateNoPole = new GatePoles(true,
-                new GatePoles.Target[] { GatePoles.Target.Gate_Large, GatePoles.Target.Gate_Earth,
-                        GatePoles.Target.Gate_Abydos });
-        gateOnlyPole = new GatePoles(true, new GatePoles.Target[] { GatePoles.Target.Pole });
+        gate = new GatePoles(true, new GatePoles.Target[] { GatePoles.Target.Gate_Large, GatePoles.Target.Gate_Earth,
+                GatePoles.Target.Gate_Abydos });
         DirPath = new File("/mnt/data/" + missionName + "/pathYUV");
         DirPath.mkdir();
         DirGate = new File("/mnt/data/" + missionName + "/gate");
         DirGate.mkdir();
         this.missionName = missionName;
         this.initialYaw = initialYaw;
-        this.curPitch = 30;
+        this.curPitch = 0;
         this.combinedAngle = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
         this.strafe = -0.15;
@@ -70,7 +67,7 @@ public class GatePathDetectState extends State {
         this.count_max = 10;
         try {
             pathRunnable = manager.scheduleCallable(pathAlign());
-            gateRunnable = manager.scheduleCallable(gateAlign(gateNoPole));
+            gateRunnable = manager.scheduleCallable(gateAlign(gate));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +101,7 @@ public class GatePathDetectState extends State {
                             manager.getYaw(), footage.angle);
                     combinedAngle = trans.z;
                     System.out.println("Computed: " + trans);
-                    var mreturn = manager.setStability2Speeds(trans.x, trans.y, 0, 0,
+                    var mreturn = manager.setStability2Speeds(trans.x, trans.y, curPitch, 0,
                             combinedAngle,
                             MISSION_DEPTH);
                     while (!mreturn.isDone())
@@ -125,7 +122,7 @@ public class GatePathDetectState extends State {
                 Mat yoloout = gate.detectYoloV5(frame);
                 try {
                     if (gate.detected()) {
-                        gate.transAverage(); // TODO CHECK IF WORKS INSTEAD OF transAlign()
+                        gate.transAlign(); // TODO CHECK IF WORKS INSTEAD OF transAlign()
                         PrintWriter printWriter = new PrintWriter(
                                 DirGate.toString() + "/" + Instant.now().toString() + ".txt");
                         printWriter.println(Arrays.toString(gate.translation));
@@ -139,12 +136,10 @@ public class GatePathDetectState extends State {
                         printWriter.println("Computed: " + gate);
                         printWriter.close();
 
-                        manager.setStability2Speeds(trans.x, 0.2, 0, 0, combinedAngle, MISSION_DEPTH);
+                        manager.setStability2Speeds(trans.x, 0.4, curPitch, 0, combinedAngle, MISSION_DEPTH);
                         Imgcodecs.imwrite(DirGate.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
                         return true;
                     } else {
-                        System.out.println("Not detected");
-                        manager.setStability2Speeds(0, 0, 0, 0, combinedAngle, MISSION_DEPTH);
                         Imgcodecs.imwrite(DirGate.toString() + "/failure/" + Instant.now().toString() + ".jpeg",
                                 yoloout);
                         return false;
@@ -172,7 +167,7 @@ public class GatePathDetectState extends State {
             update = true;
             try {
                 lastGateVal = gateRunnable.get();
-                gateRunnable = manager.scheduleCallable(gateAlign(gateNoPole));
+                gateRunnable = manager.scheduleCallable(gateAlign(gate));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -185,10 +180,14 @@ public class GatePathDetectState extends State {
                     count = 0;
                     strafe = -strafe;
                 }
-                manager.setStability2Speeds(strafe, 0.25, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability2Speeds(0, 0.25, curPitch, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        if (update && lastPathVal && !lastGateVal) {
+            return true;
         }
         return false;
     }
