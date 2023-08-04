@@ -50,12 +50,12 @@ public class BuoyPathForwardState extends State {
         try {
             VisualObject footage = path.relativePosition(frame,
                     DirPath.toString() + "/" + Instant.now().toString());
-            System.out.println("Original: " + Arrays.toString(target.translation));
+            System.out.println("Original: " + footage);
             DoubleTriple trans = Translation.movement_triple(
-                    new DoublePair(target.translation[0], target.translation[1]),
-                    manager.getYaw(), target.translation[2]);
+                    new DoublePair(footage.horizontal_offset, footage.vertical_offset),
+                    manager.getYaw(), footage.angle);
             combinedAngle = trans.z;
-            System.out.println("Computed: " + trans.toString());
+            System.out.println("Computed: " + trans);
             var mreturn = manager.setStability2Speeds(trans.x, trans.y, 0, 0,
                     combinedAngle,
                     MISSION_DEPTH);

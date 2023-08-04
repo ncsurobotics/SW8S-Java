@@ -33,4 +33,9 @@ public class VisualObject {
         this.horizontal_offset /= factor;
         this.vertical_offset /= factor;
     }
+
+    @Override
+    public String toString() {
+        return "[" + color + ", " + width + ", " + angle + ", " + horizontal_offset + ", " + vertical_offset + "]";
+    }
 }
