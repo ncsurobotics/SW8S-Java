@@ -28,6 +28,10 @@ public class BuoyPathForwardState extends State {
     private double combinedAngle;
     private String testName;
 
+    private double strafe;
+    private int count;
+    private int count_max;
+
     public BuoyPathForwardState(CommsThreadManager manager, String testName, double initialYaw, double MISSION_DEPTH) {
         super(manager);
         CameraFeedSender.openCapture(Camera.BOTTOM);
@@ -43,6 +47,9 @@ public class BuoyPathForwardState extends State {
         this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
         combinedAngle = manager.getYaw();
+        this.strafe = -0.15;
+        this.count = 0;
+        this.count_max = 10;
     }
 
     public boolean pathAlign() {
@@ -108,7 +115,13 @@ public class BuoyPathForwardState extends State {
             }
             if (!pathAlign()) {
                 try {
-                    manager.setStability2Speeds(0, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+                    // Gradually increasing strafe
+                    if (++count > count_max) {
+                        count_max += 5;
+                        count = 0;
+                        strafe = -strafe;
+                    }
+                    manager.setStability2Speeds(strafe, 0.25, 0, 0, combinedAngle, MISSION_DEPTH);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
