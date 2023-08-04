@@ -63,7 +63,7 @@ public class BuoyPathForwardState extends State {
                     manager.getYaw(), footage.angle);
             combinedAngle = trans.z;
             System.out.println("Computed: " + trans);
-            var mreturn = manager.setStability2Speeds(trans.x, 0.4, 0, 0,
+            var mreturn = manager.setStability2Speeds(trans.x, 0.8, 0, 0,
                     combinedAngle,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
@@ -77,7 +77,7 @@ public class BuoyPathForwardState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             System.out.println("ENTER FORWARD STATE");
-            var mreturn = manager.setStability2Speeds(-0.15, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+            var mreturn = manager.setStability2Speeds(0, 0.8, 0, 0, initialYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class BuoyPathForwardState extends State {
                 printWriter.println("Computed: " + trans);
                 printWriter.close();
 
-                manager.setStability2Speeds(trans.x, 0.4, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability2Speeds(trans.x, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,7 +121,7 @@ public class BuoyPathForwardState extends State {
                         count = 0;
                         strafe = -strafe;
                     }
-                    manager.setStability2Speeds(strafe, 0.25, 0, 0, combinedAngle, MISSION_DEPTH);
+                    manager.setStability2Speeds(strafe, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -141,7 +141,7 @@ public class BuoyPathForwardState extends State {
         System.out.println("Exiting buoy");
         manager.setStability2Speeds(0, 1, 0, 0, initialYaw, MISSION_DEPTH);
         Thread.sleep(4000);
-        manager.setStability2Speeds(0, 0.4, 0, 0, initialYaw, MISSION_DEPTH);
+        manager.setStability2Speeds(0, 0.55, 0, 0, initialYaw, MISSION_DEPTH);
         while ((manager.getYaw() - initialYaw) > 10) {
             System.out.println("DIFFERENCE: " + manager.getYaw() + ", " + initialYaw);
             Thread.sleep(100);
