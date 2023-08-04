@@ -177,7 +177,7 @@ public class GatePoles extends nn_cv2 {
         if (!transAlign(new Target[] { Target.Gate_Large, Target.Gate_Earth, Target.Gate_Abydos })) {
             return transAverage(new Target[] { Target.Pole });
         }
-        return false;
+        return true;
     }
 
     public boolean transAverage(Target[] find_local) {
