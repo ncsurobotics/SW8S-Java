@@ -18,11 +18,13 @@ public class WaitArm extends Mission {
             public void run() {
                 while (!manager.getArm()) {
                     try {
-                        Thread.sleep(500);
+//                        Thread.sleep(500);
+                        Thread.currentThread().wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
+                Thread.currentThread().notify();
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
