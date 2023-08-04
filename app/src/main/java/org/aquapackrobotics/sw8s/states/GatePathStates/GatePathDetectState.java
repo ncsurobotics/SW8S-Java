@@ -142,7 +142,7 @@ public class GatePathDetectState extends State {
                     count = 0;
                     strafe = -strafe;
                 }
-                manager.setStability2Speeds(strafe, 0.6, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability2Speeds(strafe, 0.25, 0, 0, combinedAngle, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }
