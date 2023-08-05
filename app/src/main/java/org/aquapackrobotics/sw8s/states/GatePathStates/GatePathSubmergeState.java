@@ -26,7 +26,7 @@ public class GatePathSubmergeState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.2, 0, 0, initialYaw,
+            var mreturn = manager.setStability2Speeds(0, 0.8, 0, 0, initialYaw,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
