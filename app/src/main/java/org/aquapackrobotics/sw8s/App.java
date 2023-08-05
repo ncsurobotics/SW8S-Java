@@ -141,6 +141,9 @@ public class App {
                     case "--buoy_path":
                         mission = (Mission) new BuoyPath(getManager(), missionName);
                         break;
+                    case "--buoys_spin":
+                    case "--buoys_spins":
+                    case "--buoy_spins":
                     case "--buoy_spin":
                         mission = (Mission) new BuoySpin(getManager(), missionName);
                         break;
