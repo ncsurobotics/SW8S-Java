@@ -30,6 +30,7 @@ public class Bin_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Bin test = new Bin();
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;
@@ -58,6 +59,7 @@ public class Bin_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Bin test = new Bin(true);
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;

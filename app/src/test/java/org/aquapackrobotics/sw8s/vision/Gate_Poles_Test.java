@@ -29,6 +29,7 @@ public class Gate_Poles_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 GatePoles test = new GatePoles(true);
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;

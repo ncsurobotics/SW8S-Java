@@ -77,6 +77,7 @@ public class GatePoles extends nn_cv2 {
 
     public GatePoles(boolean larger, Target[] find) {
         super.numObjects = 4;
+        //super.CONFIDENCE_MIN = 0.3;
         if (larger) {
             super.loadModel(larger_model_path, 640, 1);
         } else {

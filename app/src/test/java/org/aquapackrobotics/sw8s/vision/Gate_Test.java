@@ -30,6 +30,7 @@ public class Gate_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Gate test = new Gate();
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;
@@ -59,6 +60,7 @@ public class Gate_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Gate test = new Gate(true);
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;

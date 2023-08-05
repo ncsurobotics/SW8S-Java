@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.aquapackrobotics.sw8s.missions.*;
 import org.aquapackrobotics.sw8s.comms.*;
+import org.aquapackrobotics.sw8s.comms.meb.MEBStatus;
 
 import java.util.concurrent.*;
 
@@ -164,8 +165,10 @@ public class App {
                         System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
                         continue;
                     case "--arm":
-                        mission = (Mission) new WaitArm(getManager(), missionName);
-                        break;
+                        while (!MEBStatus.isArmed) {
+                            Thread.sleep(100);
+                        }
+                        continue;
                 }
             }
 

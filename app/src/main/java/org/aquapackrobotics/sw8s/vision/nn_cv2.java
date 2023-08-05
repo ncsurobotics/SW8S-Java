@@ -37,6 +37,8 @@ public class nn_cv2 extends ImagePrep {
     private int modelSize;
     private int factor;
 
+    protected double CONFIDENCE_MIN = 0.7;
+
     /**
      * load a Yolov5 model
      * 
@@ -90,7 +92,7 @@ public class nn_cv2 extends ImagePrep {
                 double confidence = (double) (row.get(0, 4)[0]);
 
                 Point classIdPoint = mm.maxLoc;
-                if (confidence > .7) {
+                if (confidence > CONFIDENCE_MIN) {
                     int centerX = (int) ((row.get(0, 0)[0] * factor) / 640 * 800); // scaling for drawing the bounding
                                                                                     // boxes
                     int centerY = (int) ((row.get(0, 1)[0] * factor) / 640 * 600);

@@ -30,6 +30,7 @@ public class Buoy_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Buoy test = new Buoy();
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;
@@ -58,6 +59,7 @@ public class Buoy_Test {
                 Mat img = Imgcodecs
                         .imread(f.getPath());
                 Buoy test = new Buoy(true);
+                test.detectYoloV5(img);
                 if (test.detected()) {
                     out += "success/";
                     successes++;
