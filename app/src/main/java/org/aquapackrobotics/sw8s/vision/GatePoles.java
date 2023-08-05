@@ -176,12 +176,12 @@ public class GatePoles extends nn_cv2 {
 
     public boolean transCompPole() {
         if (!transAlign(new Target[] { Target.Gate_Large, Target.Gate_Earth, Target.Gate_Abydos })) {
-            return transAverage(new Target[] { Target.Pole });
+            return polesAverage(new Target[] { Target.Pole });
         }
         return true;
     }
 
-    public boolean transAverage(Target[] find_local) {
+    public boolean polesAverage(Target[] find_local) {
         int count = 0;
         this.translation = new double[] { 0.0, 0.0, 0.0 };
 
@@ -219,8 +219,14 @@ public class GatePoles extends nn_cv2 {
         this.translation[0] = (this.translation[0] - super.processImg.cols() / 2) / (super.processImg.cols() / 2);
         this.translation[1] = -(this.translation[1] - super.processImg.rows() / 2) / (super.processImg.rows() / 2);
 
+        // If only one pole, we target the other side
+        if (count == 1) {
+            this.translation[0] = -this.translation[0];
+            this.translation[1] = -this.translation[1];
+        }
+
         System.out.println("Poles count: " + count);
-        return count >= 2;
+        return count >= 1;
     }
 
     // turn the detected gate objects into a translation vector
