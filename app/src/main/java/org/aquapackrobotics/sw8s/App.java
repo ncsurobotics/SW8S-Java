@@ -29,17 +29,13 @@ public class App {
     }
 
     public static CommsThreadManager getManager() {
-        /*
-         * try {
-         * return (manager == null) ? manager = new CommsThreadManager(getPool()) :
-         * manager;
-         * } catch (Exception e) {
-         * e.printStackTrace();
-         * System.exit(2);
-         * return null;
-         * }
-         */
-        return null;
+        try {
+            return (manager == null) ? manager = new CommsThreadManager(getPool()) : manager;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(2);
+            return null;
+        }
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
@@ -171,10 +167,15 @@ public class App {
                         System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
                         continue;
                     case "--arm":
+                        getManager();
+                        System.out.println("Not armed");
                         CameraFeedSender.openCapture(Camera.FRONT); // TODO REMOVE
                         while (!MEBStatus.isArmed) {
                             Thread.sleep(100);
+                            System.out.println("Not armed");
                         }
+                        Thread.sleep(10000);
+                        System.out.println("ARMED");
                         continue;
                 }
             }

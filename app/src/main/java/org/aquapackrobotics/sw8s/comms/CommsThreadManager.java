@@ -49,8 +49,6 @@ public class CommsThreadManager {
         System.out
                 .println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         try {
-            startWatchDog();
-
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -76,14 +74,15 @@ public class CommsThreadManager {
                     (float) 0.4413, (float) 1.0, (float) 0.8139).get();
 
             ImuAxisConfig((byte) 6).get();
+            System.out.println("WAITING FOR CONFIGURE");
+            Thread.sleep(3000);
 
             stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, false).get();
             stabAssistPID('Y', 0.15, 0.0, 0.0, 0.1, false).get();
             stabAssistPID('Z', 1.6, 1e-6, 0.0, 0.8, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
 
-            System.out.println("WAITING FOR CONFIGURE");
-            Thread.sleep(3000);
+            startWatchDog();
 
         } catch (Exception e) {
             System.out.println("Could not set motor matrix");
