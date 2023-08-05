@@ -373,7 +373,7 @@ public class CommsThreadManager {
     }
 
     public boolean getArm() {
-        return MEBStatus.getInstance().isArmed;
+        return MEBStatus.isArmed;
     }
 
     public ScheduledFuture<byte[]> setDofSpeeds(float x, float y, float z,
@@ -395,25 +395,18 @@ public class CommsThreadManager {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public ScheduledFuture<byte[]>[] fireDroppers()
+    public ScheduledFuture<byte[][]> fireDroppers()
             throws ExecutionException, InterruptedException {
-        Callable<byte[]> dropper1_callable = new Callable<byte[]>() {
+        Callable<byte[][]> dropper_callable = new Callable<byte[][]>() {
             @Override
-            public byte[] call() throws Exception {
+            public byte[][] call() throws Exception {
                 short id = mebCommunication.drop_1();
-                return mebCommunication.getMsgById(id);
+                short id2 = mebCommunication.drop_2();
+                return new byte[][] { mebCommunication.getMsgById(id), mebCommunication.getMsgById(id2) };
             }
         };
 
-        Callable<byte[]> dropper2_callable = new Callable<byte[]>() {
-            @Override
-            public byte[] call() throws Exception {
-                short id = mebCommunication.drop_2();
-                return mebCommunication.getMsgById(id);
-            }
-        };
-
-        return new ScheduledFuture[] { scheduleTask(dropper1_callable), scheduleTask(dropper2_callable) };
+        return scheduleTask(dropper_callable);
     }
 
     /**

@@ -21,11 +21,10 @@ public class DropperTest extends Mission {
             manager.resetMSB();
             System.out.println("Resetting MSB");
             Thread.sleep(1000);
-            for (var handle : manager.fireDroppers()) {
-                while (!handle.isDone())
-                    ;
-                System.out.println("MEB Response for Dropper: " + Arrays.toString(handle.get()));
-            }
+            var handle = manager.fireDroppers();
+            while (!handle.isDone())
+                ;
+            System.out.println("MEB Response for Dropper: " + Arrays.toString(handle.get()));
         } catch (Exception e) {
             e.printStackTrace();
         }

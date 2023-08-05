@@ -40,8 +40,6 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
 
     private static boolean wasArmed = false;
 
-    private static MEBStatus mebStatus = MEBStatus.getInstance();
-
     static {
         logger = Logger.getLogger("MEB_Comms_In");
         logger.setUseParentHandlers(false);
@@ -165,44 +163,44 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float temp = buffer.getFloat();
                 float humid = buffer.getFloat();
-                mebStatus.temp = temp;
-                mebStatus.humid = humid;
+                MEBStatus.temp = temp;
+                MEBStatus.humid = humid;
                 logCommand(data, "AHT10", String.format("%f, %f", temp, humid));
             } else if (ByteArrayUtility.startsWith(strippedMessage, LEAK.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 byte leakStatus = strippedMessage[4];
                 if (leakStatus == (byte) 1) {
-                    mebStatus.isLeak = true;
+                    MEBStatus.isLeak = true;
                 } else {
-                    mebStatus.isLeak = false;
+                    MEBStatus.isLeak = false;
                 }
-                logCommand(data, "LEAK", mebStatus.isLeak ? "1" : "0");
+                logCommand(data, "LEAK", MEBStatus.isLeak ? "1" : "0");
             } else if (ByteArrayUtility.startsWith(strippedMessage, TARM.getBytes())) {
                 byte armStatus = strippedMessage[4];
                 byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 if (armStatus == (byte) 1) {
-                    mebStatus.isArmed = true;
+                    MEBStatus.isArmed = true;
                     wasArmed = true;
                 } else {
-                    mebStatus.isArmed = false;
+                    MEBStatus.isArmed = false;
                     if (wasArmed) {
                         System.out.println("Kill after arm, exiting");
                         System.exit(5);
                     }
                 }
-                logCommand(data, "TARM", mebStatus.isArmed ? "1" : "0");
+                logCommand(data, "TARM", MEBStatus.isArmed ? "1" : "0");
             } else if (ByteArrayUtility.startsWith(strippedMessage, VSYS.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 4, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 float voltage = buffer.getFloat();
-                mebStatus.systemVoltage = voltage;
+                MEBStatus.systemVoltage = voltage;
                 logCommand(data, "VSYS", String.format("%f", voltage));
             } else if (ByteArrayUtility.startsWith(strippedMessage, SHUTDOWN.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 5, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
                 int cause = buffer.get();
-                mebStatus.shutdownCause = cause;
+                MEBStatus.shutdownCause = cause;
             } else {
                 // push(Arrays.copyOfRange(strippedMessage, 3, strippedMessage.length));
                 // Received message is not an acknowledgement message, it is ignored

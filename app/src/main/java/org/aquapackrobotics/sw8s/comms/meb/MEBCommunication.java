@@ -232,7 +232,7 @@ public class MEBCommunication {
     }
 
     public static boolean getArm() {
-        return MEBStatus.getInstance().isArmed;
+        return MEBStatus.isArmed;
     }
 
     private static void addEscapedByteToStream(ByteArrayOutputStream stream, byte msgByte) {

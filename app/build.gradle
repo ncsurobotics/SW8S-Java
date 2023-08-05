@@ -224,3 +224,8 @@ application {
     // Define the main class for the application.
     mainClass = mainClassName
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
+}

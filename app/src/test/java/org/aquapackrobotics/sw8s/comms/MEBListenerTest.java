@@ -35,8 +35,8 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(100.0f, MEBStatus.getInstance().temp, 0);
-        Assert.assertEquals(200.0f, MEBStatus.getInstance().humid, 0);
+        Assert.assertEquals(100.0f, MEBStatus.temp, 0);
+        Assert.assertEquals(200.0f, MEBStatus.humid, 0);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(true, MEBStatus.getInstance().isLeak);
+        Assert.assertEquals(true, MEBStatus.isLeak);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(false, MEBStatus.getInstance().isLeak);
+        Assert.assertEquals(false, MEBStatus.isLeak);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(false, MEBStatus.getInstance().isArmed);
+        Assert.assertEquals(false, MEBStatus.isArmed);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(12.0f, MEBStatus.getInstance().systemVoltage, 0);
+        Assert.assertEquals(12.0f, MEBStatus.systemVoltage, 0);
     }
 
     @Test
@@ -106,6 +106,6 @@ public class MEBListenerTest {
         writeMessage.write(idLowByte);
         MessageStruct constructedMessage = SerialCommunicationUtility.constructMessage(writeMessage.toByteArray());
         mebListener.eventBytesHandler(constructedMessage.message);
-        Assert.assertEquals(60, MEBStatus.getInstance().shutdownCause, 0);
+        Assert.assertEquals(60, MEBStatus.shutdownCause, 0);
     }
 }

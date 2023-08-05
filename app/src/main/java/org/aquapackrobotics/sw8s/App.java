@@ -28,13 +28,17 @@ public class App {
     }
 
     public static CommsThreadManager getManager() {
-        try {
-            return (manager == null) ? manager = new CommsThreadManager(getPool()) : manager;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(2);
-            return null;
-        }
+        /*
+         * try {
+         * return (manager == null) ? manager = new CommsThreadManager(getPool()) :
+         * manager;
+         * } catch (Exception e) {
+         * e.printStackTrace();
+         * System.exit(2);
+         * return null;
+         * }
+         */
+        return null;
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
@@ -53,10 +57,10 @@ public class App {
             }
 
             Mission mission = null;
-            CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
-            CameraFeedSender.openCapture(Camera.FRONT, missionName);
-            Linux.changeExposure(Camera.BOTTOM, 20);
-            Linux.changeExposure(Camera.FRONT, 18);
+            // CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
+            // CameraFeedSender.openCapture(Camera.FRONT, missionName);
+            // Linux.changeExposure(Camera.BOTTOM, 20);
+            // Linux.changeExposure(Camera.FRONT, 18);
             // Linux.disableAutofocus(Camera.FRONT);
             // Linux.disableAutofocus(Camera.BOTTOM);
 

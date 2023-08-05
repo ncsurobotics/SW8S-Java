@@ -16,24 +16,16 @@ public class WaitArm extends Mission {
         Runnable armSignalWait = new Runnable() {
             @Override
             public void run() {
-                while (!manager.getArm()) {
+                while (true) {
                     try {
-//                        Thread.sleep(500);
+                        // Thread.sleep(500);
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                Thread.currentThread().notify();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
         };
-        CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
-        CameraFeedSender.openCapture(Camera.FRONT, missionName);
         try {
             manager.scheduleRunnable(armSignalWait).get(); // .get() blocks until complete
         } catch (Exception e) {
