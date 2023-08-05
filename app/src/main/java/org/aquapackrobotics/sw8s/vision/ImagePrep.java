@@ -46,13 +46,6 @@ public class ImagePrep {
     public Mat block = new Mat();
     public Rect ROI = new Rect();
 
-    /**
-     * Constructor of this class
-     * 
-     * @param slice_size    width of each slices
-     * @param resize_width  configures width of the inputImg
-     * @param resize_height configures height of the inputImg
-     */
     public ImagePrep(double scale) {
         this.SCALE = scale;
     }
@@ -309,7 +302,7 @@ public class ImagePrep {
     /**
      * obtain an arraylist of unique colors
      * 
-     * @param gray_image
+     * @param yuv_image input image
      * @return arraylist
      */
     protected Set<IntPair> uniqueColor_YUV(Mat yuv_image) {
@@ -324,7 +317,18 @@ public class ImagePrep {
         return unique_colors;
 
     }
+    protected Set<IntPair> uniqueColor_YUV_Wall(Mat yuv_image) {
+        Set<org.aquapackrobotics.sw8s.vision.IntPair> unique_colors = new HashSet<>();
+        for (int h = 0; h < yuv_image.height(); h++) {
+            for (int w = 0; w < yuv_image.width(); w++) {
+                double[] color = yuv_image.get(h, w);
+                IntPair color_set = new IntPair((int) color[0], (int) color[0]);
+                unique_colors.add(color_set);
+            }
+        }
+        return unique_colors;
 
+    }
     public void debug() {
         System.out.println("done processing\n");
     }

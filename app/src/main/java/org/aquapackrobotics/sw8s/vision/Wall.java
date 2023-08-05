@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 
 /**
  * Code for "PathYUV" task
- * 
+ *
  * Usage:
  * private PathYUV path_process = new PathYUV(); // initiate
  * private ImagePrep path_prep = path_process;
@@ -23,24 +23,24 @@ import org.opencv.imgproc.Imgproc;
  * path_prep.sliceSize(25, 25); // preprocess (prepare for kmeans)
  * path_prep.localKmeans(2,4); // preprocess (compute kmeans)
  * Mat local_kmeans = path_prep.resultImg; // preprocess output
- * 
+ *
  * path_process.iteratePathBinaryPCA(local_kmeans); // no image output
  * // or
  * Mat pca_draw = path_process.iteratePathBinaryPCAAndDraw(local_kmeans); //
  * draw image with drawn vectors
- * 
+ *
  * // grab the output for first path (see results and results_prop below)
  * if (path_process.result.indexOf(true) >= 0) {
  * System.out.println(Arrays.toString(path_process.results_prop.get(path_process.result.indexOf(true))));
  * }
- * 
+ *
  * numerical outputs see results_prop and results array
- * 
+ *
  * @author Xingjian Li
  *
  */
 
-public class PathYUV extends ImagePrep {
+public class Wall extends ImagePrep {
     private final IntPair PATH_COLOR_LOW;
     private final IntPair PATH_COLOR_HIGH;
     private final int PATH_WIDTH_LOW;
@@ -58,21 +58,21 @@ public class PathYUV extends ImagePrep {
     // positive vert_offset means path is down of the center
     // positive angle means path is sloped right(positive)
     public ArrayList<double[]> results_prop = new ArrayList<>(); // array with each element containing [color, width,
-                                                                    // angle, hori_offset, vert_offset]
+    // angle, hori_offset, vert_offset]
     public ArrayList<Boolean> result = new ArrayList<>(); // array containing boolean values where true = path, false =
-                                                            // not path
+    // not path
     private final IntPair kMeans;
     private final IntPair sliceParams;
 
     /**
      * Constructs a new PathYUV with given color and width targets
      */
-    public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale) {
+    public Wall(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale) {
         this(color_low, color_high, width_low, width_high, scale, new IntPair(25, 25), new IntPair(4, 8));
     }
 
-    public PathYUV(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale,
-            IntPair sliceParams, IntPair kMeans) {
+    public Wall(IntPair color_low, IntPair color_high, int width_low, int width_high, double scale,
+                   IntPair sliceParams, IntPair kMeans) {
         super(scale);
         PATH_COLOR_LOW = color_low;
         PATH_COLOR_HIGH = color_high;
@@ -82,16 +82,16 @@ public class PathYUV extends ImagePrep {
         this.kMeans = kMeans;
     }
 
-    public PathYUV(double scale) {
+    public Wall(double scale) {
         // OpenCV uses range [0, 255] for colors, so 127 is halfway on the axis
-        this(new IntPair(Integer.MIN_VALUE, 152), new IntPair(152, Integer.MAX_VALUE), 20,
-                800, scale);
+        this(new IntPair(Integer.MIN_VALUE, 215), new IntPair(215, Integer.MAX_VALUE), 0,
+                2000000, scale);
     }
 
     /**
      * Constructs a new PathYUV using default parameters
      */
-    public PathYUV() {
+    public Wall() {
         /* color low, color high, width low, width high */
         this(0.5);
     }
@@ -99,7 +99,7 @@ public class PathYUV extends ImagePrep {
     /**
      * Same as iteratePathBinaryPCA(), but also returns image with vectors drawn,
      * see drawPCA()
-     * 
+     *
      * @param colored_image
      * @return images of vectors drawn
      */
@@ -107,7 +107,7 @@ public class PathYUV extends ImagePrep {
         Mat draw = colored_image.clone();
         Mat yuv_image = new Mat();
         Imgproc.cvtColor(colored_image, yuv_image, Imgproc.COLOR_BGR2YUV);
-        Set<IntPair> all_colors = uniqueColor_YUV(yuv_image);
+        Set<IntPair> all_colors = uniqueColor_YUV_Wall(yuv_image);
         this.results_prop.clear();
         this.result.clear();
         int i = 0;
@@ -145,9 +145,13 @@ public class PathYUV extends ImagePrep {
         return parts;
     }
 
+    public Set<IntPair> getUniqueYUV(Mat yuv_image) {
+        return uniqueColor_YUV_Wall(yuv_image);
+    }
+
     /**
      * draw PCA vectors
-     * 
+     *
      * @param input_image
      * @param is_path     different color for the vector
      * @return drawn image
@@ -170,7 +174,7 @@ public class PathYUV extends ImagePrep {
 
     /**
      * process the path properties and filter for the correct one
-     * 
+     *
      * @param color
      * @return
      */
@@ -209,7 +213,7 @@ public class PathYUV extends ImagePrep {
 
     /**
      * filter with some thresholds
-     * 
+     *
      * @param color
      * @return
      */
@@ -222,7 +226,7 @@ public class PathYUV extends ImagePrep {
 
     /**
      * output results for movements
-     * 
+     *
      * @return
      */
     public double computeAngle() {
@@ -235,8 +239,7 @@ public class PathYUV extends ImagePrep {
     }
 
     public double[] computeOffset(double[] img_center) {
-        double[] offset = { this.mean[0] - img_center[0], this.mean[1] - img_center[1] };
-        return offset;
+        return new double[]{ this.mean[0] - img_center[0], this.mean[1] - img_center[1] };
     }
 
     public void processFrame(Mat frame) {
@@ -264,58 +267,17 @@ public class PathYUV extends ImagePrep {
 
     public VisualObject relativePosition(Mat frame) throws Exception {
         processFrame(frame);
-        if (result.indexOf(true) >= 0) {
+        if (result.contains(true)) {
             return new VisualObject(results_prop.get(result.indexOf(true)));
         }
-        throw new Exception("Not yet updated.");
+        throw new VisualObjectException("Not yet updated.");
     }
 
     public VisualObject relativePosition(Mat frame, String saveFile) throws Exception {
         processFrame(frame, saveFile);
-        if (result.indexOf(true) >= 0) {
+        if (result.contains(true)) {
             return new VisualObject(results_prop.get(result.indexOf(true)));
         }
-        throw new Exception("Not yet updated.");
-    }
-
-    public VisualObject relativeAvgPosition(Mat frame) {
-        VisualObject res = new VisualObject(new double[] { 0, 0, 0, 0, 0 });
-        int count = 0;
-        processFrame(frame);
-        for (int i = 0; i < result.size(); ++i) {
-            if (result.get(i)) {
-                res.add(new VisualObject(results_prop.get(i)));
-                count++;
-            }
-        }
-        res.divide(count);
-        return res;
-    }
-
-    public VisualObject relativeAvgPosition(Mat frame, String saveFile) {
-        VisualObject res = new VisualObject(new double[] { 0, 0, 0, 0, 0 });
-        int count = 0;
-        processFrame(frame, saveFile);
-        for (int i = 0; i < result.size(); ++i) {
-            if (result.get(i)) {
-                res.add(new VisualObject(results_prop.get(i)));
-                count++;
-            }
-        }
-        res.divide(count);
-        return res;
-    }
-
-    public VisualObject[] relativePositions(Mat frame) throws Exception {
-        processFrame(frame);
-        if (result.contains(true)) {
-            ArrayList<VisualObject> paths = new ArrayList<>();
-            for (int i = 0; i < result.size(); ++i) {
-                if (result.get(i) == true)
-                    paths.add(new VisualObject(results_prop.get(i)));
-            }
-            return paths.toArray(VisualObject[]::new);
-        }
-        throw new Exception("Not yet updated.");
+        throw new VisualObjectException("Not yet updated.");
     }
 }
