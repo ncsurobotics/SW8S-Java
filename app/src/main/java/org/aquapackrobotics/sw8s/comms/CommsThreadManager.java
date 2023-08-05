@@ -251,6 +251,20 @@ public class CommsThreadManager {
         return scheduleTask(speedsCallable);
     }
 
+    public ScheduledFuture<byte[]> setDepthHold(double x, double y, double pitchSpeed, double rollSpeed,
+            double yawSpeed, double targetDepth) throws ExecutionException, InterruptedException {
+        Callable<byte[]> speedsCallable = new Callable<>() {
+            @Override
+            public byte[] call() throws Exception {
+                short id = controlBoardCommunication.SetDepthHold(x, y, pitchSpeed, rollSpeed, yawSpeed,
+                        targetDepth);
+                return controlListener.getMsgById(id);
+            }
+        };
+
+        return scheduleTask(speedsCallable);
+    }
+
     public ScheduledFuture<byte[]> matrixUpdate() throws ExecutionException, InterruptedException {
         Callable<byte[]> speedsCallable = new Callable<>() {
             @Override

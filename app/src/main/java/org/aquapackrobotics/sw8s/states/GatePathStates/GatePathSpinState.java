@@ -6,27 +6,26 @@ import java.util.concurrent.ScheduledFuture;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.states.State;
 
-public class GatePathSubmergeState extends State {
+public class GatePathSpinState extends State {
 
-    private ScheduledFuture<byte[]> depthRead;
+    private ScheduledFuture<byte[]> rotRead;
     private String missionName;
     private double initialYaw;
-    private double prevTime;
     private final double MISSION_DEPTH;
+    private int rollCount = 0;
 
-    public GatePathSubmergeState(CommsThreadManager manager, String missionName, double initialYaw,
+    public GatePathSpinState(CommsThreadManager manager, String missionName, double initialYaw,
             double MISSION_DEPTH) {
         super(manager);
         this.missionName = missionName;
         this.initialYaw = initialYaw;
-        this.prevTime = System.currentTimeMillis();
         this.MISSION_DEPTH = MISSION_DEPTH;
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            depthRead = manager.MSPeriodicRead((byte) 1);
-            var mreturn = manager.setStability2Speeds(0, 0.8, 0, 0, initialYaw,
+            rotRead = manager.BNO055PeriodicRead((byte) 1);
+            var mreturn = manager.setDepthHold(0, 0.8, 0, 0.8, 0,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
@@ -37,15 +36,12 @@ public class GatePathSubmergeState extends State {
 
     public boolean onPeriodic() {
         try {
-            if (System.currentTimeMillis() - this.prevTime > 100) {
-                this.prevTime = System.currentTimeMillis();
-                System.out.println("Depth: " + String.valueOf(manager.getDepth()));
-                System.out.println("Current Angle: " + String.valueOf(manager.getYaw()));
-                System.out.println("Target Angle: " + String.valueOf(initialYaw));
-            }
-            if (depthRead.isDone()) {
-                if (manager.getDepth() < (MISSION_DEPTH + 0.5) && (Math.abs(manager.getYaw() - initialYaw) < 5)) {
-                    Thread.sleep(4000); // sleep two seconds
+            if (rotRead.isDone()) {
+                if (manager.getGyro()[5] > 350) {
+                    ++rollCount;
+                    Thread.sleep(200);
+                }
+                if (rollCount >= 2) {
                     return true;
                 }
             }
@@ -61,6 +57,6 @@ public class GatePathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GatePathSpinState(manager, missionName, initialYaw, MISSION_DEPTH);
+        return new GatePathDetectState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

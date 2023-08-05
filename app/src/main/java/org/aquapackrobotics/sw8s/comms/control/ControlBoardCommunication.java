@@ -30,6 +30,7 @@ public class ControlBoardCommunication {
     private static final byte[] WATCHDOG_FEED_STRING = "WDGF".getBytes();
     private static final byte[] STABILITY_ASSIST_1 = "SASSIST1".getBytes();
     private static final byte[] STABILITY_ASSIST_2 = "SASSIST2".getBytes();
+    private static final byte[] DEPTH_HOLD = "DHOLD".getBytes();
     private static final byte[] MOTOR_MATRIX_UPDATE = "MMATU".getBytes();
     private static final byte[] IMU_AXIS_CONFIG = "BNO055A".getBytes();
     private static final byte[] MOTOR_MATRIX_SET = "MMATS".getBytes();
@@ -261,6 +262,29 @@ public class ControlBoardCommunication {
         logCommand(messageStruct, "setStabilityAssist_2",
                 Arrays.toString(new double[] { x, y, targetPitch,
                         targetRoll, targetYaw, targetDepth }));
+
+        return messageStruct.id;
+    }
+
+    public short SetDepthHold(double x, double y, double pitchSpeed, double rollSpeed, double yawSpeed,
+            double targetDepth) {
+        ByteArrayOutputStream DepthHold = new ByteArrayOutputStream();
+        DepthHold.writeBytes(DEPTH_HOLD);
+
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) x);
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) y);
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) pitchSpeed);
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) rollSpeed);
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) yawSpeed);
+        SerialCommunicationUtility.writeEncodedFloat(DepthHold, (float) targetDepth);
+
+        MessageStruct messageStruct = SerialCommunicationUtility.constructMessage(DepthHold.toByteArray());
+        byte[] depthHoldMessage = messageStruct.message;
+        controlBoardPort.writeBytes(depthHoldMessage, depthHoldMessage.length);
+
+        logCommand(messageStruct, "setDepthHold",
+                Arrays.toString(new double[] { x, y, pitchSpeed,
+                        rollSpeed, yawSpeed, targetDepth }));
 
         return messageStruct.id;
     }
