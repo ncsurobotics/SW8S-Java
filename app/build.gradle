@@ -210,6 +210,16 @@ task testPath(type: Jar) {
     archiveFileName = "test-jar-path.jar"
 }
 
+distributions {
+    main {
+        distributionBaseName = 'someName'
+        distributionClassifier = 'classifier'
+        contents {
+            from 'models/'
+        }
+    }
+}
+
 application {
     // Define the main class for the application.
     mainClass = mainClassName

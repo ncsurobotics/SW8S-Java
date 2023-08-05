@@ -86,6 +86,7 @@ public class GatePoles extends nn_cv2 {
     }
 
     public boolean detected() {
+        System.out.println("TESTING DETECTION");
         for (var target : find) {
             if (super.output.indexOf(target.to_int()) >= 0) {
                 return true;
@@ -218,6 +219,7 @@ public class GatePoles extends nn_cv2 {
         this.translation[0] = (this.translation[0] - super.processImg.cols() / 2) / (super.processImg.cols() / 2);
         this.translation[1] = -(this.translation[1] - super.processImg.rows() / 2) / (super.processImg.rows() / 2);
 
+        System.out.println("Poles count: " + count);
         return count >= 2;
     }
 

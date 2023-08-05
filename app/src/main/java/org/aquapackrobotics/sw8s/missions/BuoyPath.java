@@ -18,7 +18,7 @@ public class BuoyPath extends Mission {
         super(manager);
         this.missionName = missionName;
         try {
-            Linux.changeExposure(Camera.FRONT, 12);
+            Linux.changeExposure(Camera.FRONT, 13);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;

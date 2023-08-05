@@ -42,7 +42,7 @@ public class GatePathAlignState extends State {
         Dir.mkdir();
         this.missionName = missionName;
         this.initialYaw = initialYaw;
-        this.curPitch = 30;
+        this.curPitch = 0;
         this.combinedAngle = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
     }

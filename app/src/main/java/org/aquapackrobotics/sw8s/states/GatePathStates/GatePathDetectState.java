@@ -67,6 +67,7 @@ public class GatePathDetectState extends State {
         this.combinedAngle = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
         this.strafe = -0.15;
+        // this.strafe = 0;
         this.count = 0;
         this.count_max = 10;
         try {

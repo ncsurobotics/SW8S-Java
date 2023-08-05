@@ -26,7 +26,7 @@ public class GatePathMission extends Mission {
         CameraFeedSender.openCapture(Camera.FRONT, missionName);
         this.missionName = missionName;
         try {
-            Linux.changeExposure(Camera.FRONT, 14);
+            Linux.changeExposure(Camera.FRONT, 11);
             Linux.changeExposure(Camera.BOTTOM, 13);
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())

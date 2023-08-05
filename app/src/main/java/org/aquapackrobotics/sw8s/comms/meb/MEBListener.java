@@ -183,10 +183,8 @@ public class MEBListener implements SerialPortDataListener, ICommPortListener {
                 if (armStatus == (byte) 1) {
                     mebStatus.isArmed = true;
                     wasArmed = true;
-                    System.out.println("ARMED");
                 } else {
                     mebStatus.isArmed = false;
-                    System.out.println("KILLED");
                     if (wasArmed) {
                         System.out.println("Kill after arm, exiting");
                         System.exit(5);
