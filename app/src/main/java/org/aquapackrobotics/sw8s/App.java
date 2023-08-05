@@ -171,6 +171,7 @@ public class App {
                         System.out.println("New TOP: " + String.valueOf(Camera.BOTTOM.getID()));
                         continue;
                     case "--arm":
+                        CameraFeedSender.openCapture(Camera.FRONT); // TODO REMOVE
                         while (!MEBStatus.isArmed) {
                             Thread.sleep(100);
                         }

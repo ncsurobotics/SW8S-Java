@@ -36,7 +36,7 @@ public class BuoySpinInitState extends State {
         try {
             if (depthRead.isDone()) {
                 if (manager.getDepth() > MISSION_DEPTH + 0.5) {
-                    Thread.sleep(2000);
+                    Thread.sleep(15000);
                     return true;
                 }
             }
@@ -52,7 +52,6 @@ public class BuoySpinInitState extends State {
     }
 
     public State nextState() {
-        // return new BuoyReadState(manager);
         return new BuoySpinState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }
