@@ -173,7 +173,7 @@ public class App {
                         while (!MEBStatus.isArmed) {
                             Thread.sleep(100);
                         }
-                        Thread.sleep(10000);
+                        Thread.sleep(4000);
                         System.out.println("ARMED");
                         continue;
                 }

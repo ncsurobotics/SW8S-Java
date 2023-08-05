@@ -20,7 +20,7 @@ public class Translation {
     }
 
     public static DoublePair movement(DoublePair pair, double cutoff) {
-        return movement(pair, cutoff, 0.3);
+        return movement(pair, cutoff, 0.2);
     }
 
     public static DoublePair movement(DoublePair pair) {

@@ -23,7 +23,6 @@ public class BuoySpinForwardState extends State {
     private double initialYaw;
     private double noDetectCount;
     private final double MISSION_DEPTH;
-    private double combinedAngle;
     private String missionName;
 
     public BuoySpinForwardState(CommsThreadManager manager, String missionName, double initialYaw,
@@ -39,7 +38,6 @@ public class BuoySpinForwardState extends State {
         this.initialYaw = initialYaw;
         this.noDetectCount = -1;
         this.MISSION_DEPTH = MISSION_DEPTH;
-        combinedAngle = manager.getYaw();
     }
 
     public void onEnter() throws ExecutionException, InterruptedException {
@@ -72,7 +70,7 @@ public class BuoySpinForwardState extends State {
                 printWriter.println("Computed: " + trans);
                 printWriter.close();
 
-                manager.setStability2Speeds(trans.x, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
+                manager.setStability2Speeds(trans.x, 0.8, 0, 0, initialYaw, MISSION_DEPTH);
             } catch (Exception e) {
                 e.printStackTrace();
             }

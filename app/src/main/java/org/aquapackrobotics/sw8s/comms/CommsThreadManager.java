@@ -75,7 +75,7 @@ public class CommsThreadManager {
 
             ImuAxisConfig((byte) 6).get();
             System.out.println("WAITING FOR CONFIGURE");
-            Thread.sleep(3000);
+            Thread.sleep(5000);
 
             stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, false).get();
             stabAssistPID('Y', 0.15, 0.0, 0.0, 0.1, false).get();
@@ -83,6 +83,9 @@ public class CommsThreadManager {
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
 
             startWatchDog();
+            // BNO055PeriodicRead((byte) 1).get();
+            // MSPeriodicRead((byte) 1).get();
+            Thread.sleep(500);
 
         } catch (Exception e) {
             System.out.println("Could not set motor matrix");
@@ -343,6 +346,51 @@ public class CommsThreadManager {
                     return null;
                 }
                 return data;
+            }
+        };
+        return scheduleTask(readCallable);
+    }
+
+    public ScheduledFuture<double[]> quatCalculatedBN055Read() throws ExecutionException, InterruptedException {
+        Callable<double[]> readCallable = new Callable<>() {
+            @Override
+            public double[] call() throws Exception {
+                float[] data = new float[7];
+
+                short id = controlBoardCommunication.BNO055Read();
+                ByteBuffer buffer_data = ByteBuffer.wrap(
+                        controlListener.getMsgById(id));
+
+                try {
+                    for (int i = 0; i < 7; i++) {
+                        data[i] = buffer_data.getFloat();
+                    }
+                    double quat_w = data[0];
+                    double quat_x = data[1];
+                    double quat_y = data[2];
+                    double quat_z = data[3];
+
+                    double pitch, roll, roll_denom, roll_numer, yaw, yaw_denom, yaw_numer;
+
+                    pitch = 180.0 * Math.asin(2.0 * (quat_y * quat_z + quat_w * quat_x)) / Math.PI;
+                    if (Math.abs(90 - Math.abs(pitch)) < 0.1) {
+                        yaw = 2.0 * 180.0 * Math.atan2(quat_y, quat_w) / Math.PI;
+                        roll = 0.0;
+                    } else {
+                        roll_numer = 2.0 * (quat_w * quat_y - quat_x * quat_z);
+                        roll_denom = 1.0 - 2.0 * (quat_x * quat_x + quat_y * quat_y);
+                        roll = 180.0 * Math.atan2(roll_numer, roll_denom) / Math.PI;
+
+                        yaw_numer = -2.0 * (quat_x * quat_y - quat_w * quat_z);
+                        yaw_denom = 1.0 - 2.0 * (quat_x * quat_x + quat_z * quat_z);
+                        yaw = 180.0 * Math.atan2(yaw_numer, yaw_denom) / Math.PI;
+                    }
+
+                    return new double[] { quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw };
+                } catch (BufferUnderflowException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         };
         return scheduleTask(readCallable);

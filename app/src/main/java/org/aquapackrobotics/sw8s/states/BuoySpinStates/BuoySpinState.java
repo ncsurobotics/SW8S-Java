@@ -40,7 +40,7 @@ public class BuoySpinState extends State {
             if (rotRead.isDone()) {
                 if (Math.abs(manager.getYaw() - initialYaw) <= 10) {
                     ++rollCount;
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }
                 if (rollCount >= 2) {
                     return true;

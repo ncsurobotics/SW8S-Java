@@ -24,6 +24,7 @@ public class BuoySpinInitState extends State {
         try {
             var mreturn = manager.setStability2Speeds(0, 0.8, 0, 0, initialYaw,
                     MISSION_DEPTH);
+            System.out.println("MISSION DEPTH: " + MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
             depthRead = manager.BNO055PeriodicRead((byte) 1);
@@ -33,11 +34,13 @@ public class BuoySpinInitState extends State {
     }
 
     public boolean onPeriodic() {
+        System.out.println("Initial yaw: " + initialYaw);
+        System.out.println("Current yaw: " + manager.getYaw());
         try {
             if (depthRead.isDone()) {
                 if (manager.getDepth() > MISSION_DEPTH + 0.5) {
                     Thread.sleep(15000);
-                    return true;
+                    // return true;
                 }
             }
 
