@@ -266,9 +266,9 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
                 imuData.quat_x.enqueue(num2);
                 imuData.quat_y.enqueue(num3);
                 imuData.quat_z.enqueue(num4);
-                // imuData.gyrox.enqueue(num5);
-                // imuData.gyrox.enqueue(num6);
-                // imuData.gyrox.enqueue(num7);
+                imuData.accum_pitch.enqueue(num5);
+                imuData.accum_roll.enqueue(num6);
+                imuData.accum_yaw.enqueue(num7);
 
             } else if (ByteArrayUtility.startsWith(strippedMessage, ACKNOWLEDGE.getBytes())) {
                 // Pushes message onto message stack if acknowledge message
@@ -326,5 +326,9 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
         }
 
         return new double[] { quat_w, quat_x, quat_y, quat_z, pitch, roll, yaw };
+    }
+
+    public double getAccumulatedYaw() {
+        return imuData.accum_yaw.getCurrentValue();
     }
 }

@@ -172,7 +172,6 @@ public class App {
                         CameraFeedSender.openCapture(Camera.FRONT); // TODO REMOVE
                         while (!MEBStatus.isArmed) {
                             Thread.sleep(100);
-                            System.out.println("Not armed");
                         }
                         Thread.sleep(10000);
                         System.out.println("ARMED");

@@ -25,10 +25,11 @@ public class BuoySpinState extends State {
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
             rotRead = manager.BNO055PeriodicRead((byte) 1);
-            var mreturn = manager.setDepthHold(0, 0.8, 0, 0.4, 0,
+            var mreturn = manager.setStability1Speeds(0, 0, 0.8, 0, 0,
                     MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
+            Thread.sleep(300);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,9 +38,9 @@ public class BuoySpinState extends State {
     public boolean onPeriodic() {
         try {
             if (rotRead.isDone()) {
-                if (manager.getGyro()[5] > 330) {
+                if (Math.abs(manager.getYaw() - initialYaw) <= 10) {
                     ++rollCount;
-                    Thread.sleep(200);
+                    Thread.sleep(500);
                 }
                 if (rollCount >= 2) {
                     return true;
@@ -47,7 +48,9 @@ public class BuoySpinState extends State {
             }
 
             return false;
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
             return false;
         }

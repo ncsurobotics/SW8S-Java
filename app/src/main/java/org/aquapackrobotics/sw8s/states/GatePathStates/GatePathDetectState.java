@@ -40,6 +40,7 @@ public class GatePathDetectState extends State {
     private double strafe;
     private int count;
     private int count_max;
+    private int spin_count;
 
     private ScheduledFuture<Boolean> pathRunnable;
     private ScheduledFuture<Boolean> gateRunnable;
@@ -66,13 +67,31 @@ public class GatePathDetectState extends State {
         this.curPitch = 0;
         this.combinedAngle = initialYaw;
         this.MISSION_DEPTH = MISSION_DEPTH;
-        this.strafe = -0.15;
+        this.strafe = 0;
         // this.strafe = 0;
         this.count = 0;
         this.count_max = 10;
         try {
             pathRunnable = manager.scheduleCallable(pathAlign());
             gateRunnable = manager.scheduleCallable(gateAlign(gate));
+            manager.scheduleRunnable(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(24000);
+                                // Accumlated yaw to 360 * 3
+                                manager.setStability1Speeds(0, 0, 0.6, 0, 0, MISSION_DEPTH);
+                                double firstAccYaw = manager.getAccumulatedYaw();
+                                while ((manager.getAccumulatedYaw() - firstAccYaw) < 360 * 2) {
+                                    Thread.sleep(100);
+                                }
+                                manager.setStability1Speeds(0, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }

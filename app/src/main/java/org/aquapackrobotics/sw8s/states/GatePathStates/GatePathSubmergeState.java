@@ -61,6 +61,6 @@ public class GatePathSubmergeState extends State {
     }
 
     public State nextState() {
-        return new GatePathSpinState(manager, missionName, initialYaw, MISSION_DEPTH);
+        return new GatePathDetectState(manager, missionName, initialYaw, MISSION_DEPTH);
     }
 }

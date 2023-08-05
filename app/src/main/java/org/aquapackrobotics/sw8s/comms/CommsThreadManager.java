@@ -385,6 +385,10 @@ public class CommsThreadManager {
         return getGyro()[6];
     }
 
+    public double getAccumulatedYaw() {
+        return controlListener.getAccumulatedYaw();
+    }
+
     public boolean getArm() {
         return MEBStatus.isArmed;
     }
