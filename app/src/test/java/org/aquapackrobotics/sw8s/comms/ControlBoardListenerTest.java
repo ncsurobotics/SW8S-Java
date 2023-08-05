@@ -54,19 +54,19 @@ public class ControlBoardListenerTest {
     @Test
     public void testWatchDogStatus() {
         // Makes sure WatchDogKill is initially set to false
-        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        Assert.assertFalse(WatchDogStatus.watchDogKill.get());
 
         // Sends watchdog enable message
         listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
-        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        Assert.assertFalse(WatchDogStatus.watchDogKill.get());
 
         // Sends watchdog kill message
         listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogKillMessage).message);
-        Assert.assertTrue(WatchDogStatus.getInstance().getWatchDogKill());
+        Assert.assertTrue(WatchDogStatus.watchDogKill.get());
 
         // Sends watchdog enable message
         listener.eventBytesHandler(SerialCommunicationUtility.constructMessage(watchdogEnableMessage).message);
-        Assert.assertFalse(WatchDogStatus.getInstance().getWatchDogKill());
+        Assert.assertFalse(WatchDogStatus.watchDogKill.get());
     }
 
     @Test

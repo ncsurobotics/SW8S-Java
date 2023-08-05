@@ -240,9 +240,9 @@ public class ControlBoardListener implements SerialPortDataListener, ICommPortLi
 
             if (ByteArrayUtility.startsWith(strippedMessage, WATCHDOG_STATUS.getBytes())) {
                 if (strippedMessage[4] == (byte) 0)
-                    WatchDogStatus.getInstance().setWatchDogKill(true);
+                    WatchDogStatus.watchDogKill.set(true);
                 else if (strippedMessage[4] == (byte) 1)
-                    WatchDogStatus.getInstance().setWatchDogKill(false);
+                    WatchDogStatus.watchDogKill.set(false);
             } else if (ByteArrayUtility.startsWith(strippedMessage, MS5837_STATUS.getBytes())) {
                 byte[] data = Arrays.copyOfRange(strippedMessage, 7, strippedMessage.length);
                 ByteBuffer buffer = ByteBuffer.wrap(data);
