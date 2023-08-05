@@ -49,12 +49,8 @@ public class CommsThreadManager {
         System.out
                 .println("Port " + robotPort.getPortDescription() + " is " + (robotPort.isOpen() ? "open" : "closed"));
         try {
-            var axis_respond = ImuAxisConfig((byte) 6);
-            System.out.println("RESPONSE: " + Arrays.toString(axis_respond.get()));
-            System.out.println("GET IMU");
-            setMotorSpeeds(0, 0, 0, 0, 0, 0, 0, 0);
             startWatchDog();
-            Thread.sleep(3000);
+
             byte motor_num1 = (byte) 1;
             byte motor_num2 = (byte) 2;
             byte motor_num3 = (byte) 3;
@@ -74,13 +70,21 @@ public class CommsThreadManager {
             matrixSet(motor_num6, 0, 0, -1, 1, 1, 0).get();
             matrixUpdate().get(); // ADDED, MISSING FROM SPEC
 
+            setThrusterInversions(true, true, false, false, true, false, false, true).get();
+
+            setDofSpeeds((float) 0.7071, (float) 0.7071, (float) 1.0,
+                    (float) 0.4413, (float) 1.0, (float) 0.8139).get();
+
+            ImuAxisConfig((byte) 6).get();
+
             stabAssistPID('X', 0.8, 0.0, 0.0, 0.6, false).get();
             stabAssistPID('Y', 0.15, 0.0, 0.0, 0.1, false).get();
             stabAssistPID('Z', 1.6, 1e-6, 0.0, 0.8, false).get();
             stabAssistPID('D', 1.5, 0.0, 0.0, 1.0, false).get();
 
-            setDofSpeeds((float) 0.7071, (float) 0.7071, (float) 1.0,
-                    (float) 0.4413, (float) 1.0, (float) 0.8139).get();
+            System.out.println("WAITING FOR CONFIGURE");
+            Thread.sleep(3000);
+
         } catch (Exception e) {
             System.out.println("Could not set motor matrix");
         }
