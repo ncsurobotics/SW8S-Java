@@ -47,7 +47,7 @@ def calculate_quaternion(data: list[float]):
         yaw_denom = 1.0 - 2.0 * (new_data.quat_x*new_data.quat_x + new_data.quat_z*new_data.quat_z)
         new_data.yaw = 180.0 * math.atan2(yaw_numer, yaw_denom) / math.pi
 
-    print([new_data.quat_w, new_data.quat_x, new_data.quat_y, new_data.quat_z, new_data.pitch, new_data.yaw, new_data.roll])
+    print([new_data.quat_w, new_data.quat_x, new_data.quat_y, new_data.quat_z, new_data.pitch, new_data.roll, new_data.yaw])
 
 data = []
 for arg in sys.argv[1:]:
