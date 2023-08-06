@@ -8,6 +8,7 @@ import org.aquapackrobotics.sw8s.comms.Linux;
 import org.aquapackrobotics.sw8s.states.State;
 import org.aquapackrobotics.sw8s.states.BuoyPathStates.BuoyPathForwardState;
 import org.aquapackrobotics.sw8s.states.BuoyPathStates.BuoyPathInitState;
+import org.aquapackrobotics.sw8s.vision.Buoy;
 
 public class BuoyPath extends Mission {
     private static final double MISSION_DEPTH = -2.7;
@@ -47,6 +48,11 @@ public class BuoyPath extends Mission {
     protected State nextState(State state) {
         if (state instanceof BuoyPathForwardState && buoy_count < 1) {
             ++buoy_count;
+            if (Buoy.global_target == Buoy.Target.Earth_1) {
+                Buoy.global_target = Buoy.Target.Earth_2;
+            } else if (Buoy.global_target == Buoy.Target.Abydos_1) {
+                Buoy.global_target = Buoy.Target.Abydos_2;
+            }
             return new BuoyPathForwardState(manager, missionName, initialYaw, MISSION_DEPTH);
         }
         return state.nextState();

@@ -161,6 +161,13 @@ public class GatePathDetectState extends State {
 
                         manager.setStability2Speeds(trans.x, 0.8, curPitch, 0, combinedAngle, MISSION_DEPTH);
                         Imgcodecs.imwrite(DirGate.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+
+                        if (gate.contains(GatePoles.Target.Gate_Earth)) {
+                            Buoy.global_target = Buoy.Target.Earth_1;
+                        } else if (gate.contains(GatePoles.Target.Gate_Abydos)) {
+                            Buoy.global_target = Buoy.Target.Abydos_1;
+                        }
+
                         return true;
                     } else {
                         Imgcodecs.imwrite(DirGate.toString() + "/failure/" + Instant.now().toString() + ".jpeg",

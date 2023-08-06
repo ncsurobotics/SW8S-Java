@@ -56,6 +56,8 @@ public class Buoy extends nn_cv2 {
         }
     }
 
+    public volatile static Target global_target = Target.Earth_1;
+
     private static String model_path = "models/buoy_320.onnx";
     private static String larger_model_path = "models/buoy_640.onnx";
     private final Target[] find;

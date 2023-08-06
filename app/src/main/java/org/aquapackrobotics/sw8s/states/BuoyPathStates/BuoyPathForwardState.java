@@ -19,6 +19,7 @@ public class BuoyPathForwardState extends State {
 
     private ScheduledFuture<byte[]> MISSION_DEPTHRead;
     private final Buoy target;
+    private final Buoy target_all;
     private final PathYUV path;
     private final File Dir;
     private final File DirPath;
@@ -37,7 +38,8 @@ public class BuoyPathForwardState extends State {
         super(manager);
         CameraFeedSender.openCapture(Camera.BOTTOM);
         CameraFeedSender.openCapture(Camera.FRONT);
-        target = new Buoy(false);
+        target = new Buoy(true, new Buoy.Target[] { Buoy.global_target });
+        target_all = new Buoy(true);
         path = new PathYUV();
         Dir = new File("/mnt/data/" + testName + "/buoy");
         Dir.mkdirs();
@@ -112,7 +114,34 @@ public class BuoyPathForwardState extends State {
                 e.printStackTrace();
             }
             Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+            return false;
         } else {
+            yoloout = target_all.detectYoloV5(frame);
+            if (target_all.detected()) {
+                noDetectCount = 0;
+                target_all.transAlign();
+                try {
+                    PrintWriter printWriter = new PrintWriter(Dir.toString() + "/" + Instant.now().toString() + ".txt");
+                    printWriter.print(Arrays.toString(target_all.translation));
+                    System.out.println(Arrays.toString(target_all.translation));
+                    System.out.println("Translation [x, y, distance]: " + Arrays.toString(target_all.translation));
+                    Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+
+                    DoublePair trans = Translation.movement(
+                            new DoublePair(target_all.translation[0], target_all.translation[1]));
+                    System.out.println("Computed: " + trans);
+                    printWriter.println("Computed: " + trans);
+                    printWriter.close();
+
+                    manager.setStability2Speeds(trans.x, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
+                    secondNoDetectCount = 0;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Imgcodecs.imwrite(Dir.toString() + "/" + Instant.now().toString() + ".jpeg", yoloout);
+                return false;
+            }
+
             if (noDetectCount >= 0) {
                 ++noDetectCount;
             }

@@ -190,22 +190,11 @@ public class GatePoles extends nn_cv2 {
             int t = target.to_int();
             for (int i = 0; i < super.output.size(); ++i) {
                 if (super.output.get(i) == t) {
-                    double x = super.output_description.get(super.output.indexOf(i)).x +
-                            super.output_description.get(super.output.indexOf(i)).width / 2;
-                    x = x / (super.processImg.width() / 2);
-                    x = x < 0.5 ? -x : x - 0.5;
-                    double y = super.output_description.get(super.output.indexOf(i)).y +
-                            super.output_description.get(super.output.indexOf(i)).height / 2;
-                    y = y / (super.processImg.height() / 2);
-                    y = y < 0.5 ? -y : y - 0.5;
-                    this.translation[0] += x;
-                    this.translation[1] += y;
-                    // distance is referenced as the ratio of the object height and image height
-                    // higher distance means further away, normalized between [0,1]
-                    double min_dist = super.processImg.height();
-                    double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
-                            / min_dist;
-                    this.translation[2] += distance;
+                    double[] next_translation = Translation.modelTranslate(super.processImg,
+                            super.output_description.get(super.output.indexOf(i)));
+                    this.translation[0] += next_translation[0];
+                    this.translation[1] += next_translation[1];
+                    this.translation[2] += next_translation[2];
                     ++count;
                     ;
                 }
@@ -242,5 +231,9 @@ public class GatePoles extends nn_cv2 {
             }
         }
         return false;
+    }
+
+    public boolean contains(Target target) {
+        return super.output.indexOf(target.to_int()) >= 0;
     }
 }
