@@ -41,56 +41,27 @@ public class OctagonYUVFollowState extends State {
     public boolean onPeriodic() {
         Mat frame = CameraFeedSender.getFrame(Camera.BOTTOM);
         try {
-            /*
-             * VisualObject footage = target.relativePosition(frame,
-             * Dir.toString() + "/" + Instant.now().toString() + ".jpeg");
-             * double x = (footage.horizontal_offset / Math.abs(footage.horizontal_offset))
-             * * 0.2;
-             * System.out.println("X: " + String.valueOf(x));
-             * double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
-             * 0.2;
-             * System.out.println("Y: " + String.valueOf(y));
-             * depth += 0.02;
-             * if (depth >= -0.5)
-             * return true;
-             * System.out.println("Depth: " + String.valueOf(depth));
-             * var mreturn = manager.setStability2Speeds(x, y, 0, 0, manager.getYaw(),
-             * depth);
-             * while (!mreturn.isDone())
-             */
             VisualObject footage = target.relativePosition(frame,
                     Dir.toString() + "/" + Instant.now().toString());
-            double x = -(footage.horizontal_offset / Math.abs(footage.horizontal_offset)) * 0.2;
-            System.out.println("Horizontal Offset: " + String.valueOf(footage.horizontal_offset));
-            System.out.println("X: " + String.valueOf(x));
-            double y = -(footage.vertical_offset / Math.abs(footage.vertical_offset)) *
-                    0.2;
-            System.out.println("Vertical Offset: " + String.valueOf(footage.vertical_offset));
-            System.out.println("Y: " + String.valueOf(y));
-            double angle = Math.toDegrees(footage.angle);
-            // angle = angle > 360 ? angle % 360 : angle;
-            System.out.println("Angle: " + String.valueOf(angle));
-            System.out.println("System Angle: " + String.valueOf(manager.getYaw()));
-            // double combinedAngle = (manager.getYaw() + angle) % 360;
-            combinedAngle = manager.getYaw();
-            if (angle > 10.0)
-                combinedAngle -= 5.0;
-            else if (angle < -10)
-                combinedAngle += 5.0;
-            System.out.println("Combined Angle: " + String.valueOf(combinedAngle));
-
+            DoubleTriple trans = Translation.movement_triple(
+                    new DoublePair(footage.horizontal_offset, footage.vertical_offset),
+                    manager.getYaw(), footage.angle);
+            combinedAngle = trans.z;
             if (Math.abs(footage.horizontal_offset) < 20
                     && Math.abs(footage.vertical_offset) < 20) {
                 depth += 0.05;
             }
 
-            var mreturn = manager.setStability2Speeds(x, y, 0, 0,
+            var mreturn = manager.setStability2Speeds(trans.x, trans.y, 0, 0,
                     combinedAngle,
                     depth);
             while (!mreturn.isDone())
                 ;
             ;
         } catch (Exception e) {
+        }
+        if (depth >= 0) {
+            return true;
         }
         return false;
     }

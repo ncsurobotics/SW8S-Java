@@ -106,7 +106,6 @@ public class BuoyPathForwardState extends State {
                 printWriter.println("Computed: " + trans);
                 printWriter.close();
 
-
                 manager.setStability2Speeds(trans.x, 0.8, 0, 0, combinedAngle, MISSION_DEPTH);
                 secondNoDetectCount = 0;
             } catch (Exception e) {
@@ -149,10 +148,10 @@ public class BuoyPathForwardState extends State {
 
     public void onExit() throws ExecutionException, InterruptedException {
         System.out.println("Exiting buoy");
-        manager.setStability2Speeds(0, 1, 0, 0, initialYaw, MISSION_DEPTH);
+        manager.setStability2Speeds(0, 0.8, 0, 0, initialYaw, MISSION_DEPTH);
         Thread.sleep(4000);
-        manager.setStability2Speeds(0, 0.55, 0, 0, initialYaw, MISSION_DEPTH);
-        while ((manager.getYaw() - initialYaw) > 10) {
+        manager.setStability2Speeds(0, -0.5, 0, 0, initialYaw, MISSION_DEPTH);
+        while (Math.abs(manager.getYaw() - initialYaw) > 10) {
             System.out.println("DIFFERENCE: " + manager.getYaw() + ", " + initialYaw);
             Thread.sleep(100);
         }

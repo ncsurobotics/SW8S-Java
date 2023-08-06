@@ -24,6 +24,7 @@ public class BinTargetState extends State {
     private final File Dir;
     private final File DirPath;
     private double yaw;
+    private final double initialYaw;
     private final double MISSION_DEPTH;
 
     private double depth;
@@ -40,7 +41,7 @@ public class BinTargetState extends State {
         DirPath = new File("/mnt/data/" + testName + "/path");
         DirPath.mkdirs();
         new File(Dir.toString() + "/failure/").mkdirs();
-        yaw = initialYaw;
+        this.initialYaw = initialYaw;
 
         this.MISSION_DEPTH = MISSION_DEPTH;
     }
@@ -131,9 +132,7 @@ public class BinTargetState extends State {
 
     public void onExit() throws ExecutionException, InterruptedException {
         System.out.println("Exiting bin");
-        manager.setStability2Speeds(0, 1.0, 0, 0, yaw, MISSION_DEPTH);
-        Thread.sleep(2000);
-        manager.setGlobalSpeeds(0, 0, 0, 0, 0, 0);
+        manager.setStability2Speeds(0, 0.6, 0, 0, initialYaw, MISSION_DEPTH);
     }
 
     public State nextState() {

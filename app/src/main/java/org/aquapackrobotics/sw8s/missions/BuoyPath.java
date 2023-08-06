@@ -6,6 +6,7 @@ import org.aquapackrobotics.sw8s.comms.Camera;
 import org.aquapackrobotics.sw8s.comms.CommsThreadManager;
 import org.aquapackrobotics.sw8s.comms.Linux;
 import org.aquapackrobotics.sw8s.states.State;
+import org.aquapackrobotics.sw8s.states.BuoyPathStates.BuoyPathForwardState;
 import org.aquapackrobotics.sw8s.states.BuoyPathStates.BuoyPathInitState;
 
 public class BuoyPath extends Mission {
@@ -13,6 +14,8 @@ public class BuoyPath extends Mission {
 
     private String missionName;
     private double initialYaw;
+
+    private int buoy_count = 0;
 
     public BuoyPath(CommsThreadManager manager, String missionName) {
         super(manager);
@@ -42,6 +45,10 @@ public class BuoyPath extends Mission {
 
     @Override
     protected State nextState(State state) {
+        if (state instanceof BuoyPathForwardState && buoy_count < 1) {
+            ++buoy_count;
+            return new BuoyPathForwardState(manager, missionName, initialYaw, MISSION_DEPTH);
+        }
         return state.nextState();
     }
 }

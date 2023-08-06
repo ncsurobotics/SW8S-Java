@@ -32,7 +32,7 @@ public class OctagonYUVForwardState extends State {
 
     public void onEnter() throws ExecutionException, InterruptedException {
         try {
-            var mreturn = manager.setStability2Speeds(0, 0.4, 0, 0, targetYaw, MISSION_DEPTH);
+            var mreturn = manager.setStability2Speeds(0.6, 0.8, 0, 0, targetYaw, MISSION_DEPTH);
             while (!mreturn.isDone())
                 ;
         } catch (Exception e) {
