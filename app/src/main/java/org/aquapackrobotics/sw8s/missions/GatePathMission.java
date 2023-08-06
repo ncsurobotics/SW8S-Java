@@ -31,7 +31,7 @@ public class GatePathMission extends Mission {
             var mreturn = manager.BNO055PeriodicRead((byte) 1);
             while (!mreturn.isDone())
                 ;
-            Thread.sleep(500); // Give sensor time to get itself ready
+            Thread.sleep(2000); // Give sensor time to get itself ready
         } catch (Exception e) {
             e.printStackTrace();
         }
