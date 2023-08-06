@@ -86,7 +86,7 @@ public class GatePathDetectState extends State {
                                 while ((manager.getAccumulatedYaw() - firstAccYaw) < 360 * 2) {
                                     Thread.sleep(100);
                                 }
-                                manager.setStability1Speeds(0, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
+                                manager.setStability2Speeds(0, 0.8, curPitch, 0, initialYaw, MISSION_DEPTH);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
