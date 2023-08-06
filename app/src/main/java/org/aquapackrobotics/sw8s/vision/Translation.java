@@ -1,5 +1,8 @@
 package org.aquapackrobotics.sw8s.vision;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Rect2d;
+
 public class Translation {
     public static DoublePair convert(DoublePair pair) {
         return new DoublePair(pair.x, -pair.y);
@@ -40,5 +43,21 @@ public class Translation {
 
     public static DoubleTriple movement_triple(DoublePair pair, double curAngle, double measuredAngle) {
         return movement(pair, curAngle, measuredAngle, 0.1, 0.3);
+    }
+
+    public static double signed_unit(double x, double x_width, int img_width) {
+        double y;
+        y = x + (x_width / 2); // Center in width
+        y /= img_width; // bound [0, 1]
+        y -= 0.5; // bound [-0.5, 0.5]
+        y *= 2; // bound [-1, 1]
+        return y;
+    }
+
+    public static double[] modelTranslate(Mat img, Rect2d dim) {
+        double x = signed_unit(dim.x, dim.width, img.width());
+        double y = -signed_unit(dim.y, dim.height, img.height());
+        double distance = (img.height() - dim.height) / img.height();
+        return new double[] { x, y, distance };
     }
 }

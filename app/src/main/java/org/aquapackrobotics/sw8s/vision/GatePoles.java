@@ -77,7 +77,7 @@ public class GatePoles extends nn_cv2 {
 
     public GatePoles(boolean larger, Target[] find) {
         super.numObjects = 4;
-        //super.CONFIDENCE_MIN = 0.3;
+        // super.CONFIDENCE_MIN = 0.3;
         if (larger) {
             super.loadModel(larger_model_path, 640, 1);
         } else {
@@ -236,31 +236,11 @@ public class GatePoles extends nn_cv2 {
         for (var target : local_find) {
             int i = target.to_int();
             if (super.output.indexOf(i) >= 0) {
-                found = true;
-                // middle coordinate, top left + width or height
-                double x = super.output_description.get(super.output.indexOf(i)).x +
-                        super.output_description.get(super.output.indexOf(i)).width / 2;
-                x = x / (super.processImg.width() / 2);
-                x = x < 0.5 ? -x : x - 0.5;
-                double y = super.output_description.get(super.output.indexOf(i)).y +
-                        super.output_description.get(super.output.indexOf(i)).height / 2;
-                y = y / (super.processImg.height() / 2);
-                y = y < 0.5 ? -y : y - 0.5;
-                this.translation[0] = x;
-                this.translation[1] = y;
-                // distance is referenced as the ratio of the object height and image height
-                // higher distance means further away, normalized between [0,1]
-                double min_dist = super.processImg.height();
-                double distance = (min_dist - super.output_description.get(super.output.indexOf(i)).height)
-                        / min_dist;
-                this.translation[2] = distance;
-                break; // Only process for first match
+                this.translation = Translation.modelTranslate(super.processImg,
+                        super.output_description.get(super.output.indexOf(i)));
+                return true; // Only process for first match
             }
         }
-
-        // transform the target with respect to the center of image, within [-1,1]
-        this.translation[0] = (this.translation[0] - super.processImg.cols() / 2) / (super.processImg.cols() / 2);
-        this.translation[1] = -(this.translation[1] - super.processImg.rows() / 2) / (super.processImg.rows() / 2);
-        return found;
+        return false;
     }
 }
