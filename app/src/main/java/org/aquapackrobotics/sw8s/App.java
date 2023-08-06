@@ -54,10 +54,10 @@ public class App {
             }
 
             Mission mission = null;
-            // CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
-            // CameraFeedSender.openCapture(Camera.FRONT, missionName);
-            // Linux.changeExposure(Camera.BOTTOM, 20);
-            // Linux.changeExposure(Camera.FRONT, 18);
+            CameraFeedSender.openCapture(Camera.BOTTOM, missionName);
+            CameraFeedSender.openCapture(Camera.FRONT, missionName);
+            Linux.changeExposure(Camera.BOTTOM, 20);
+            Linux.changeExposure(Camera.FRONT, 18);
             // Linux.disableAutofocus(Camera.FRONT);
             // Linux.disableAutofocus(Camera.BOTTOM);
 
